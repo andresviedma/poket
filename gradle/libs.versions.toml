@@ -1,0 +1,32 @@
+[versions]
+
+# Core
+kotlin = "2.0.21"
+kotlinx-coroutines = "1.8.1"
+kotlinx-datetime = "0.6.2"
+micrometer = "1.12.3"
+
+# Build
+publish = "2.0.0"
+dokka = "1.9.20"
+
+[libraries]
+
+# Core
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version.ref = "micrometer" }
+micrometer-core = { group = "io.micrometer", name = "micrometer-core", version.ref = "micrometer" }
+
+# Test
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+[plugins]
+
+# Tools
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish" }
