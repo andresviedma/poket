@@ -8,9 +8,12 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
     implementation(platform(libs.micrometer.bom))
+
+    api(libs.slf4j)
     implementation(libs.micrometer.core)
 
     testImplementation(libs.kotlin.test)
