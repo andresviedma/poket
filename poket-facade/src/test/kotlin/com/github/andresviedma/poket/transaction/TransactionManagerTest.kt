@@ -9,11 +9,14 @@ import com.github.andresviedma.trekkie.Given
 import com.github.andresviedma.trekkie.When
 import com.github.andresviedma.trekkie.then
 import com.github.andresviedma.trekkie.thenExceptionThrown
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.*
 
 class TransactionManagerTest : StringSpec({
+    isolationMode = IsolationMode.InstancePerTest
+
     val events = mutableListOf<String>()
     val handler1 = TestTransactionHandler(events, "1")
     val handler2 = TestTransactionHandler(events, "2")
