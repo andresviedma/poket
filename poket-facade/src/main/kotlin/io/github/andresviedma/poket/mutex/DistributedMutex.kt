@@ -8,10 +8,11 @@ import java.time.Duration
 
 private val log = KotlinLogging.logger {}
 
-class DistributedMutexFactory constructor(
+class DistributedMutexFactory(
     private val lockSystemProvider: LockSystemProvider,
     private val configProvider: ConfigProvider
 ) {
+    @Suppress("unused")
     fun createMutex(type: String, baseTypeConfig: MutexTypeConfig? = null) =
         DistributedMutex(lockSystemProvider, configProvider, type, baseTypeConfig = baseTypeConfig)
 

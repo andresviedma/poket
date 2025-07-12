@@ -18,6 +18,7 @@ class ConfigProvider(
 ) {
     private val cachedConfigs: ConcurrentMap<KClass<*>, ConfigCacheEntry> = ConcurrentHashMap()
 
+    @Suppress("unused")
     suspend fun warmup() {
         sources.forEach { it.warmup() }
     }
@@ -29,7 +30,7 @@ class ConfigProvider(
             ?.let { it.config as T }
             ?: fetchConfig(configClass)
 
-    inline suspend fun <reified T : Any> get(): T =
+    suspend inline fun <reified T : Any> get(): T =
         getConfig(T::class)
 
     inline fun <reified T : ConfigSource> source(): T? =

@@ -10,6 +10,7 @@ import kotlinx.datetime.Clock
 /**
  * Main entry point to create a typed cache with configuration settings by type of cached element.
  */
+@Suppress("unused")
 class ObjectCacheFactory(
     private val mutexFactory: DistributedMutexFactory,
     private val cacheSystemProvider: CacheSystemProvider,
@@ -68,6 +69,7 @@ class ObjectCache<K : Any, V : Any>(
             getCacheSystem(config).getObject(config.namespace(), key, valueClass)
         }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     suspend fun getList(keys: List<K>): Map<K, V> =
         ifEnabled { config ->
             getCacheSystem(config).getObjectList(config.namespace(), keys, valueClass)
@@ -100,6 +102,7 @@ class ObjectCache<K : Any, V : Any>(
      * forceInvalidation should be true when the target data that is being cached has being changed. This
      * mechanism is necessary for potentially needed cross-DC invalidations of distributed cache systems.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     suspend fun putList(values: Map<K, V>, ttlInSecondsOverride: Long? = null, forceInvalidation: Boolean = true) {
         ifEnabled { config ->
             val ttl = ttlInSecondsOverride ?: config.ttlInSeconds!!
@@ -124,6 +127,7 @@ class ObjectCache<K : Any, V : Any>(
     /**
      * Invalidates the given keys in the cache.
      */
+    @Suppress("unused")
     suspend fun invalidateList(keys: List<K>) {
         ifEnabled { config ->
             getCacheSystem(config).invalidateObjectList(config.namespace(), keys)

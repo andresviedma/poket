@@ -31,6 +31,7 @@ suspend fun <T> undoable(undo: suspend (T) -> Unit, action: suspend () -> T): T 
  *          (action)
  *      }
  */
+@Suppress("unused")
 suspend fun <T> undoableEvenIfNotFinished(undo: suspend (T?) -> Unit, action: suspend () -> T): T =
     try {
         action()

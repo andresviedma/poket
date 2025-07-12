@@ -32,6 +32,7 @@ fun MeterRegistry.timer(timer: String, tags: Map<String, Any?> = emptyMap()): Ti
         .publishPercentileHistogram()
         .register(this)
 
+@Suppress("unused")
 fun MeterRegistry.incrementCounter(counter: String, tags: Map<String, Any?> = emptyMap(), increment: Number = 1) {
     counter(counter, tags).increment(increment.toDouble())
 }

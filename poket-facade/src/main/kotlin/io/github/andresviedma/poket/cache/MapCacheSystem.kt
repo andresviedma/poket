@@ -51,6 +51,7 @@ open class MapCacheSystem : CacheSystem {
     private fun keyMap(namespace: String): ConcurrentHashMap<Any, MapCacheEntry> =
         cacheMap.getOrPut(namespace) { ConcurrentHashMap() }
 
+    @Suppress("unused")
     fun clear() {
         cacheMap.clear()
     }

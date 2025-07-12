@@ -1,6 +1,5 @@
 package io.github.andresviedma.poket.cache
 
-import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
 import io.github.andresviedma.poket.config.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.mutex.local.distributedMutexFactoryStub
@@ -19,6 +18,7 @@ import com.github.andresviedma.trekkie.When
 import com.github.andresviedma.trekkie.Where
 import com.github.andresviedma.trekkie.then
 import com.github.andresviedma.trekkie.thenExceptionThrown
+import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.data.row
@@ -51,17 +51,17 @@ class ObjectCacheTest : FeatureSpec({
         private fun boom() { throw Exception("boom") }
     }
 
-    val baseConfig = io.github.andresviedma.poket.cache.CacheConfig(
-        default = io.github.andresviedma.poket.cache.CacheTypeConfig(
+    val baseConfig = CacheConfig(
+        default = CacheTypeConfig(
             cacheSystem = cacheSystem.getId(),
             ttlInSeconds = 30,
             requestCollapsing = false
         ),
         type = mapOf(
-            "test2" to io.github.andresviedma.poket.cache.CacheTypeConfig(
+            "test2" to CacheTypeConfig(
                 cacheSystem = cacheSystem2.getId()
             ),
-            "error" to io.github.andresviedma.poket.cache.CacheTypeConfig(
+            "error" to CacheTypeConfig(
                 cacheSystem = errorCacheSystem.getId()
             )
         )
@@ -104,8 +104,8 @@ class ObjectCacheTest : FeatureSpec({
         customSerializer = customSerializer
     )
 
-    fun io.github.andresviedma.poket.cache.CacheConfig.withErrorConfigHandling(override: io.github.andresviedma.poket.cache.CacheTypeConfig.() -> io.github.andresviedma.poket.cache.CacheTypeConfig) =
-        copy(type = mapOf("error" to io.github.andresviedma.poket.cache.CacheTypeConfig(cacheSystem = errorCacheSystem.getId())
+    fun CacheConfig.withErrorConfigHandling(override: CacheTypeConfig.() -> CacheTypeConfig) =
+        copy(type = mapOf("error" to CacheTypeConfig(cacheSystem = errorCacheSystem.getId())
             .override()))
 
     suspend fun waitForAsyncJobs() =
@@ -139,12 +139,12 @@ class ObjectCacheTest : FeatureSpec({
 
         Where(
             row("component namespace",
-                io.github.andresviedma.poket.cache.CacheTypeConfig(distributedComponentNamespace = "myservice"), "myservice-test-1"),
-            row("version", io.github.andresviedma.poket.cache.CacheTypeConfig(version = "v10"), "test-1-v10")
+                CacheTypeConfig(distributedComponentNamespace = "myservice"), "myservice-test-1"),
+            row("version", CacheTypeConfig(version = "v10"), "test-1-v10")
         ) { (description, cacheConfig, namespace) ->
             scenario("value in cache: namespace with specific $description") {
                 Given(config) {
-                    override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                    override(CacheConfig::class) {
                         copy(
                             type = mapOf(
                                 "test" to cacheConfig
@@ -213,10 +213,10 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("configured cache system that does not exist") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     copy(
                         type = mapOf(
-                            "test" to io.github.andresviedma.poket.cache.CacheTypeConfig(cacheSystem = "kk")
+                            "test" to CacheTypeConfig(cacheSystem = "kk")
                         )
                     )
                 }
@@ -228,7 +228,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = true) }
                 }
             }
@@ -239,7 +239,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions disabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = false) }
                 }
             }
@@ -453,7 +453,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnPutError = true) }
                 }
             }
@@ -464,7 +464,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions disabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnPutError = false) }
                 }
             }
@@ -599,7 +599,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnInvalidateError = true) }
                 }
             }
@@ -610,7 +610,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when exceptions disabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnInvalidateError = false) }
                 }
             }
@@ -659,10 +659,10 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("request collapsing, value not yet in cache, no ongoing request") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     copy(
                         type = mapOf(
-                            "test" to io.github.andresviedma.poket.cache.CacheTypeConfig(requestCollapsing = true)
+                            "test" to CacheTypeConfig(requestCollapsing = true)
                         )
                     )
                 }
@@ -685,10 +685,10 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("request collapsing of two requests") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     copy(
                         type = mapOf(
-                            "test" to io.github.andresviedma.poket.cache.CacheTypeConfig(requestCollapsing = true)
+                            "test" to CacheTypeConfig(requestCollapsing = true)
                         )
                     )
                 }
@@ -779,7 +779,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when get exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = true) }
                 }
             }
@@ -790,7 +790,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when put exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnPutError = true) }
                 }
             }
@@ -801,7 +801,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when get and put exceptions disabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = false, failOnPutError = false, failOnInvalidateError = true) }
                 }
             }
@@ -814,10 +814,10 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("cache with background updates, value already in cache not outdated") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     copy(
                         type = mapOf(
-                            "test" to io.github.andresviedma.poket.cache.CacheTypeConfig(outdateTimeInSeconds = 60 * 5)
+                            "test" to CacheTypeConfig(outdateTimeInSeconds = 60 * 5)
                         )
                     )
                 }
@@ -844,10 +844,10 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("cache with background updates, value already in cache and outdated") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     copy(
                         type = mapOf(
-                            "test" to io.github.andresviedma.poket.cache.CacheTypeConfig(outdateTimeInSeconds = 60 * 5)
+                            "test" to CacheTypeConfig(outdateTimeInSeconds = 60 * 5)
                         )
                     )
                 }
@@ -1021,7 +1021,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when get exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = true) }
                 }
             }
@@ -1034,7 +1034,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when put exceptions enabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnPutError = true) }
                 }
             }
@@ -1047,7 +1047,7 @@ class ObjectCacheTest : FeatureSpec({
 
         scenario("error in cache when get and put exceptions disabled") {
             Given(config) {
-                override(io.github.andresviedma.poket.cache.CacheConfig::class) {
+                override(CacheConfig::class) {
                     withErrorConfigHandling { copy(failOnGetError = false, failOnPutError = false, failOnInvalidateError = true) }
                 }
             }

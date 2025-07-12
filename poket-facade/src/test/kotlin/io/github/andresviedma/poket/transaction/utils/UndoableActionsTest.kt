@@ -11,6 +11,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
@@ -103,26 +104,28 @@ class UndoableActionsTest : StringSpec({
         When {
             val channel = EventSyncChannel()
             coroutineScope {
-                async {
-                    transactional {
-                        undoable(
-                            undo = {
-                                // non cancellable = job appears as not completed
-                                if (!coroutineContext.job.isCompleted) {
-                                    events.add("undo in NonCancellable")
+                awaitAll(
+                    async {
+                        transactional {
+                            undoable(
+                                undo = {
+                                    // non cancellable = job appears as not completed
+                                    if (!coroutineContext.job.isCompleted) {
+                                        events.add("undo in NonCancellable")
+                                    }
                                 }
+                            ) {
+                                events.add("action")
                             }
-                        ) {
-                            events.add("action")
+                            channel.send("action-done")
+                            delay(100)
                         }
-                        channel.send("action-done")
-                        delay(100)
+                    },
+                    async {
+                        channel.waitFor("action-done")
+                        error("boom")
                     }
-                }
-                async {
-                    channel.waitFor("action-done")
-                    error("boom")
-                }
+                )
             }
         } thenExceptionThrown { _: IllegalStateException ->
             events shouldBe listOf("action", "undo in NonCancellable")

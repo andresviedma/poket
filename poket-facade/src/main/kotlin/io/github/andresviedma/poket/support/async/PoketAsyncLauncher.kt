@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 
 object PoketAsyncRunnerProvider {
+    @Suppress("MemberVisibilityCanBePrivate")
     internal var injectedLauncher: PoketAsyncRunner? = null
 
     private val defaultLauncher = DefaultPoketAsyncRunner()

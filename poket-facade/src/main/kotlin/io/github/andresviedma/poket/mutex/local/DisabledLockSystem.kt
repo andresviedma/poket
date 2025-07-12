@@ -7,6 +7,7 @@ import java.time.Duration
 /**
  * Implementation of a lock system that is disabled and does not really get a lock.
  */
+@Suppress("unused")
 class DisabledLockSystem : LockSystem {
     override fun getId(): String = "disabled"
 

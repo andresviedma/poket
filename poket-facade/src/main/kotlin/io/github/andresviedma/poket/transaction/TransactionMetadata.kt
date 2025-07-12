@@ -20,6 +20,7 @@ class TransactionMetadata(
         classList.any { it.isInstance(e) }
 }
 
+@Suppress("unused")
 enum class TransactionIsolationLevel {
     /** No DB locks done, a transaction will read changes done by other before committing them */
     READ_UNCOMMITTED,

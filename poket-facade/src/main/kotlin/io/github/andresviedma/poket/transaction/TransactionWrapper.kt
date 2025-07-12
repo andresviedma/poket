@@ -1,8 +1,5 @@
 package io.github.andresviedma.poket.transaction
 
-import io.github.andresviedma.poket.transaction.TransactionIsolationLevel
-import io.github.andresviedma.poket.transaction.TransactionManager
-import io.github.andresviedma.poket.transaction.TransactionMetadata
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -10,10 +7,12 @@ import kotlin.coroutines.CoroutineContext
  * code inside in a transaction.
  */
 object TransactionWrapper {
+    @Suppress("MemberVisibilityCanBePrivate")
     internal var injectedTransactionManager: TransactionManager = TransactionManager()
 
     var overriddenTransactionManager: TransactionManager? = null
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val transactionManager get() = overriddenTransactionManager ?: injectedTransactionManager
 
     /**

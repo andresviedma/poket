@@ -14,6 +14,7 @@ fun distributedMutexFactoryStub(lockSystem: LockSystem = lockSystemStub()) = Dis
 
 fun lockSystemStub(): LockSystemStub = LockSystemStub()
 
+@Suppress("unused")
 class LockSystemStub : LockSystem {
     private val willGetLock: MutableList<Boolean> = LinkedList()
 

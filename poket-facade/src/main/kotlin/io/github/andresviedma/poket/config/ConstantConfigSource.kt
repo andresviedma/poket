@@ -15,10 +15,11 @@ class ConstantConfigSource(
     override suspend fun <T : Any> getConfig(configClass: KClass<T>): T? =
         getConfigObject(configClass)
 
-    @Suppress("unchecked_cast")
+    @Suppress("unchecked_cast", "MemberVisibilityCanBePrivate")
     fun <T : Any> getConfigObject(configClass: KClass<T>): T? =
         objects[configClass.java as Class<Any>] as T?
 
+    @Suppress("MemberVisibilityCanBePrivate")
     fun addConfigObject(configObject: Any) {
         objects[configObject.javaClass] = configObject
     }

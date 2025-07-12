@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
 import kotlin.reflect.KClass
 
+@Suppress("unused")
 class JacksonPoketSerializer(
     private val objectMapper: ObjectMapper,
 ) : PoketSerializer {

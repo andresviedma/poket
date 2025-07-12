@@ -38,6 +38,7 @@ class TransactionManager(
             transactionalBlock(metadata, block)
         }
 
+    @Suppress("unused")
     suspend fun <T> transactionalNew(metadata: TransactionMetadata = TransactionMetadata(), block: suspend () -> T): T =
         withContext(asNewContextElement()) {
             transactionalBlock(metadata, block)

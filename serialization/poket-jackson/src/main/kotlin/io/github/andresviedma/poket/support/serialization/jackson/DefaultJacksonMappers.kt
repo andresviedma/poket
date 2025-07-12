@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
+@Suppress("unused")
 object DefaultJacksonMappers {
     /** Default Jackson ObjectMapper to be used for serialization */
     val DEFAULT_JACKSON_SERIALIZER: ObjectMapper = jacksonObjectMapper()
