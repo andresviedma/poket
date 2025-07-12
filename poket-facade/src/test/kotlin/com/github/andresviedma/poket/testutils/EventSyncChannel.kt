@@ -1,4 +1,4 @@
-package com.github.andresviedma.poket.utils
+package com.github.andresviedma.poket.testutils
 
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope

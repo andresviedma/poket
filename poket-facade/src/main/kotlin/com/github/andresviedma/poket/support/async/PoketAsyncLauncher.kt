@@ -1,34 +1,36 @@
-package com.github.andresviedma.poket.async
+package com.github.andresviedma.poket.support.async
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
+import kotlinx.coroutines.newFixedThreadPoolContext
 
-object DataAsyncRunnerProvider {
-    internal var injectedLauncher: DataAsyncRunner? = null
+object PoketAsyncRunnerProvider {
+    internal var injectedLauncher: PoketAsyncRunner? = null
 
-    private val defaultLauncher = DefaultDataAsyncRunner()
+    private val defaultLauncher = DefaultPoketAsyncRunner()
 
-    val launcher: DataAsyncRunner get() =
+    val launcher: PoketAsyncRunner
+        get() =
         injectedLauncher ?: defaultLauncher
 }
 
-interface DataAsyncRunner {
+interface PoketAsyncRunner {
     suspend fun launch(operation: String, block: suspend Job.() -> Unit): Job
 }
 
 private val logger = KotlinLogging.logger {}
 
-class DefaultDataAsyncRunner : DataAsyncRunner {
+class DefaultPoketAsyncRunner : PoketAsyncRunner {
     private val parentJob = Job()
+    @OptIn(DelicateCoroutinesApi::class)
     private val scope: CoroutineScope = CoroutineScope(
-        Executors.newFixedThreadPool(10).asCoroutineDispatcher() + parentJob
+         newFixedThreadPoolContext(10, "poket-async") + parentJob
     )
 
     override suspend fun launch(operation: String, block: suspend Job.() -> Unit): Job =

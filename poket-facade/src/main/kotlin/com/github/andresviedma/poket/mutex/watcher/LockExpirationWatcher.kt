@@ -1,6 +1,6 @@
 package com.github.andresviedma.poket.mutex.watcher
 
-import com.github.andresviedma.poket.async.DataAsyncRunnerProvider
+import com.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import com.github.andresviedma.poket.mutex.LockContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Job
@@ -19,7 +19,7 @@ class LockExpirationWatcher(
     suspend fun scheduleTtlExpiration(lock: String, ttl: Duration, context: LockContext) {
         if (ttl.toMillis() == 0L) return
 
-        locks[lock] = DataAsyncRunnerProvider.launcher.launch("lock-expiration") {
+        locks[lock] = PoketAsyncRunnerProvider.launcher.launch("lock-expiration") {
             try {
                 delay(ttl.toMillis())
                 if (isActive) {

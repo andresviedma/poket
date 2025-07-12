@@ -40,6 +40,9 @@ class ConfigProvider(
     fun <T : Any> override(config: T) =
         source<ConstantConfigSource>()?.override(config)
 
+    fun <T : Any> override(configClass: KClass<T>, block: T.() -> T) =
+        source<ConstantConfigSource>()?.override(configClass, block)
+
     @Suppress("UNCHECKED_CAST")
     fun <T : ConfigSource> source(clazz: Class<T>): T? =
         sources.firstOrNull { clazz.isInstance(it) } as? T

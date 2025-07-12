@@ -1,4 +1,4 @@
-package com.github.andresviedma.poket.utils
+package com.github.andresviedma.poket.testutils
 
 import io.micrometer.core.instrument.Statistic
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry

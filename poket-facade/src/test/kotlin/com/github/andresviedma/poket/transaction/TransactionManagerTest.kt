@@ -4,7 +4,7 @@ import com.github.andresviedma.poket.transaction.TransactionWrapper.blockingTran
 import com.github.andresviedma.poket.transaction.TransactionWrapper.newTransactionCoroutineContext
 import com.github.andresviedma.poket.transaction.TransactionWrapper.transactionCoroutineContext
 import com.github.andresviedma.poket.transaction.suspendable.transactional
-import com.github.andresviedma.poket.utils.EventSyncChannel
+import com.github.andresviedma.poket.testutils.EventSyncChannel
 import com.github.andresviedma.trekkie.Given
 import com.github.andresviedma.trekkie.When
 import com.github.andresviedma.trekkie.then
