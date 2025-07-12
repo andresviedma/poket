@@ -1,5 +1,7 @@
 package com.github.andresviedma.poket.config
 
+import com.github.andresviedma.poket.mutex.MutexConfig
+import com.github.andresviedma.poket.mutex.MutexTypeConfig
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.util.concurrent.ConcurrentHashMap
@@ -31,6 +33,16 @@ class ConfigProvider(
 
     inline suspend fun <reified T : Any> get(): T =
         getConfig(T::class)
+
+    inline fun <reified T : ConfigSource> source(): T? =
+        source(T::class.java)
+
+    fun <T : Any> override(config: T) =
+        source<ConstantConfigSource>()?.override(config)
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T : ConfigSource> source(clazz: Class<T>): T? =
+        sources.firstOrNull { clazz.isInstance(it) } as? T
 
     private suspend fun <T : Any> fetchConfig(configClass: KClass<T>): T =
         sources.firstNotNullOfOrNull { source ->

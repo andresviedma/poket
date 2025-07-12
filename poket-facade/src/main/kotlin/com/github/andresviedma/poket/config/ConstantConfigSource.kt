@@ -35,6 +35,6 @@ class ConstantConfigSource(
 
 fun configWith(vararg configObjects: Any): ConfigProvider =
     ConfigProvider(
-        listOf(ConstantConfigSource(configObjects)),
+        listOf(ConstantConfigSource(*configObjects)),
         Clock.System // should not matter since it's not a hot-reloading source
     )
