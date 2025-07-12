@@ -4,11 +4,11 @@ import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.minutes
 
 data class CacheConfig(
-    val type: Map<String, io.github.andresviedma.poket.cache.CacheTypeConfig> = emptyMap(),
-    val default: io.github.andresviedma.poket.cache.CacheTypeConfig = io.github.andresviedma.poket.cache.CacheTypeConfig()
+    val type: Map<String, CacheTypeConfig> = emptyMap(),
+    val default: CacheTypeConfig = CacheTypeConfig()
 ) {
-    fun getTypeConfig(type: String, defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?): io.github.andresviedma.poket.cache.CacheTypeConfig =
-        io.github.andresviedma.poket.cache.CacheTypeConfig.Companion.DEFAULTS
+    fun getTypeConfig(type: String, defaultTypeConfig: CacheTypeConfig?): CacheTypeConfig =
+        CacheTypeConfig.DEFAULTS
             .overriddenWith(default)
             .overriddenWith(defaultTypeConfig)
             .overriddenWith(this.type[type])
@@ -64,8 +64,8 @@ data class CacheTypeConfig(
                     (now - Instant.fromEpochMilliseconds(generationTime)).inWholeSeconds > outdateTimeInSeconds!!.toLong()
             )
 
-    fun overriddenWith(typeOverride: io.github.andresviedma.poket.cache.CacheTypeConfig?) =
-        io.github.andresviedma.poket.cache.CacheTypeConfig(
+    fun overriddenWith(typeOverride: CacheTypeConfig?) =
+        CacheTypeConfig(
             cacheSystem = typeOverride?.cacheSystem ?: cacheSystem,
             ttlInSeconds = typeOverride?.ttlInSeconds ?: ttlInSeconds,
             version = typeOverride?.version ?: version,
@@ -84,7 +84,7 @@ data class CacheTypeConfig(
         loadTestRollingFactor?.let { "r" + (1..it).random() }
 
     companion object {
-        val DEFAULTS = io.github.andresviedma.poket.cache.CacheTypeConfig(
+        val DEFAULTS = CacheTypeConfig(
             cacheSystem = "memory",
             ttlInSeconds = 5.minutes.inWholeSeconds,
             requestCollapsing = true,

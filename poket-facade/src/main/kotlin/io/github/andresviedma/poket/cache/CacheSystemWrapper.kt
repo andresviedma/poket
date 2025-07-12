@@ -22,7 +22,7 @@ internal class CacheSystemWrapper(
     metrics: CacheMetrics,
     configProvider: ConfigProvider,
     customSerializer: PoketSerializer?,
-    defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?
+    defaultTypeConfig: CacheTypeConfig?
 
 ) : CacheSystemDecorator(
     TransactionAwareCacheSystem(

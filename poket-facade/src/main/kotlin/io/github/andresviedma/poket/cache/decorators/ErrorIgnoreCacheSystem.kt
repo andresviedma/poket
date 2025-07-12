@@ -1,8 +1,6 @@
 package io.github.andresviedma.poket.cache.decorators
 
-import io.github.andresviedma.poket.cache.CacheConfig
 import io.github.andresviedma.poket.cache.CacheSystem
-import io.github.andresviedma.poket.cache.CacheTypeConfig
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
 

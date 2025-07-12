@@ -20,6 +20,16 @@ micrometer-core = { group = "io.micrometer", name = "micrometer-core", version.r
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.7" }
 
+# Jackson
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.16.1" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
+jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
+jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
+jackson-jdk8 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jdk8" }
+jackson-module-paranamer = { group = "com.fasterxml.jackson.module", name = "jackson-module-paranamer" }
+jackson-datatype-guava = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-guava" }
+# jackson-datatype-protobuf = "com.hubspot.jackson:jackson-datatype-protobuf:0.9.14"
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

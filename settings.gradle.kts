@@ -24,4 +24,6 @@ plugins {
 
 include(
     ":poket-facade",
+
+    ":serialization:poket-jackson"
 )

@@ -18,7 +18,7 @@ class CacheSystemProvider(
         cacheSystemId: String,
         type: String,
         customSerializer: PoketSerializer?,
-        defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?
+        defaultTypeConfig: CacheTypeConfig?
     ): CacheSystem =
         usedSystems.getOrPut(type) {
             CacheSystemWrapper(

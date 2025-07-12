@@ -20,7 +20,7 @@ class ObjectCacheFactory(
         type: String,
         serializationVersion: String = "1",
         customSerializer: PoketSerializer? = null,
-        defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig? = null
+        defaultTypeConfig: CacheTypeConfig? = null
     ): ObjectCache<K, V> =
         createCache(type, V::class.java, serializationVersion, customSerializer, defaultTypeConfig)
 
@@ -29,7 +29,7 @@ class ObjectCacheFactory(
         valueClass: Class<V>,
         serializationVersion: String = "1",
         customSerializer: PoketSerializer? = null,
-        defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig? = null
+        defaultTypeConfig: CacheTypeConfig? = null
     ): ObjectCache<K, V> =
         ObjectCache(
             mutexFactory, cacheSystemProvider, configProvider, cacheMetrics,
@@ -55,7 +55,7 @@ class ObjectCache<K : Any, V : Any>(
     private val customSerializer: PoketSerializer? = null,
 
     /** Config that will be used as default for this cache, with precedence over "default" cache config */
-    private val defaultTypeConfig: io.github.andresviedma.poket.cache.CacheTypeConfig? = null
+    private val defaultTypeConfig: CacheTypeConfig? = null
 ) {
     private val collapsingMutex: DistributedMutex =
         mutexFactory.createMutex(type = "cache::$type", forceIgnoreLockErrors = true)
@@ -206,15 +206,15 @@ class ObjectCache<K : Any, V : Any>(
             generator()
         }.also { put(key, it, forceInvalidation = false) }
 
-    private suspend inline fun getConfig(): io.github.andresviedma.poket.cache.CacheTypeConfig =
-        configProvider.get<io.github.andresviedma.poket.cache.CacheConfig>().getTypeConfig(type, defaultTypeConfig)
+    private suspend inline fun getConfig(): CacheTypeConfig =
+        configProvider.get<CacheConfig>().getTypeConfig(type, defaultTypeConfig)
 
-    private suspend inline fun <T> ifEnabled(block: (io.github.andresviedma.poket.cache.CacheTypeConfig) -> T): T? {
+    private suspend inline fun <T> ifEnabled(block: (CacheTypeConfig) -> T): T? {
         val config = getConfig()
         return if (config.disabled == true) null else block(config)
     }
 
-    private fun getCacheSystem(config: io.github.andresviedma.poket.cache.CacheTypeConfig, suffix: String? = null) =
+    private fun getCacheSystem(config: CacheTypeConfig, suffix: String? = null) =
         systemProvider.getCacheSystem(
             config.cacheSystem!!,
             listOfNotNull(type, suffix).joinToString("-"),
@@ -224,16 +224,16 @@ class ObjectCache<K : Any, V : Any>(
 
     private suspend fun <X> recordTimer(
         timer: String,
-        config: io.github.andresviedma.poket.cache.CacheTypeConfig,
+        config: CacheTypeConfig,
         recordHitMiss: Boolean = false,
         blockSize: Int? = null,
         block: suspend () -> X
     ): X =
         metrics.recordTimer(timer, config.cacheSystem!!, config.namespace(), recordHitMiss, blockSize, block)
 
-    private fun io.github.andresviedma.poket.cache.CacheTypeConfig.namespace(): String =
+    private fun CacheTypeConfig.namespace(): String =
         namespace(type, serializationVersion)
 
-    private fun io.github.andresviedma.poket.cache.CacheTypeConfig.generationTimeNamespace(): String =
+    private fun CacheTypeConfig.generationTimeNamespace(): String =
         namespace(type, "gents")
 }
