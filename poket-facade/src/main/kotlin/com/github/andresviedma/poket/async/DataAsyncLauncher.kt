@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 object DataAsyncRunnerProvider {
-    private var injectedLauncher: DataAsyncRunner? = null
+    internal var injectedLauncher: DataAsyncRunner? = null
 
     private val defaultLauncher = DefaultDataAsyncRunner()
 
