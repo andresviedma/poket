@@ -1,5 +1,6 @@
-package io.github.andresviedma.poket.transaction
+package io.github.andresviedma.poket.transaction.utils
 
+import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.TransactionWrapper.currentTransactionData
 
 suspend fun <T> runAfterTransactionCommit(action: suspend () -> T) {

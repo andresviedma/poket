@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.transaction
 
+import io.github.andresviedma.poket.transaction.utils.TransactionHookRegister
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.asContextElement
