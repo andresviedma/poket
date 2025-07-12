@@ -16,16 +16,16 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.job
 
-class UndoableActionsTest : StringSpec({
+class SagasTest : StringSpec({
     isolationMode = IsolationMode.InstancePerTest
 
     val events = mutableListOf<String>()
-    TransactionWrapper.overriddenTransactionManager = TransactionManager(UndoableActionsTransactionHandler())
+    TransactionWrapper.overriddenTransactionManager = TransactionManager(SagaTransactionHandler())
 
     "successful transaction" {
         When {
             transactional {
-                undoable(undo = { events.add("undo") }) {
+                sagaOperation(undo = { events.add("undo") }) {
                     events.add("action")
                 }
             }
@@ -36,7 +36,7 @@ class UndoableActionsTest : StringSpec({
 
     "successful with no transaction" {
         When {
-            undoable(undo = { events.add("undo") }) {
+            sagaOperation(undo = { events.add("undo") }) {
                 events.add("action")
             }
         } then {
@@ -46,7 +46,7 @@ class UndoableActionsTest : StringSpec({
 
     "error with no transaction" {
         When {
-            undoable(undo = { events.add("undo") }) {
+            sagaOperation(undo = { events.add("undo") }) {
                 events.add("action")
             }
             error("boom")
@@ -55,10 +55,10 @@ class UndoableActionsTest : StringSpec({
         }
     }
 
-    "transaction with error in undoable" {
+    "transaction with error in saga operation" {
         When {
             transactional {
-                undoable(undo = { events.add("undo") }) {
+                sagaOperation(undo = { events.add("undo") }) {
                     events.add("action")
                     error("boom")
                 }
@@ -68,10 +68,10 @@ class UndoableActionsTest : StringSpec({
         }
     }
 
-    "transaction with error after undoable" {
+    "transaction with error after saga operation" {
         When {
             transactional {
-                undoable(undo = { events.add("undo") }) {
+                sagaOperation(undo = { events.add("undo") }) {
                     events.add("action")
                 }
                 error("boom")
@@ -81,16 +81,16 @@ class UndoableActionsTest : StringSpec({
         }
     }
 
-    "transaction with error after 2 undoables" {
+    "transaction with error after 2 saga operations" {
         When {
             transactional {
-                undoable(undo = { events.add("undo1") }) {
+                sagaOperation(undo = { events.add("undo1") }) {
                     events.add("action1")
                 }
-                undoable(undo = { events.add("undo2") }) {
+                sagaOperation(undo = { events.add("undo2") }) {
                     events.add("action2")
                 }
-                undoable(undo = { events.add("undo3") }) {
+                sagaOperation(undo = { events.add("undo3") }) {
                     events.add("action3")
                     error("boom")
                 }
@@ -100,14 +100,14 @@ class UndoableActionsTest : StringSpec({
         }
     }
 
-    "transaction with cancelled coroutine after undoable" {
+    "transaction with cancelled coroutine after saga operation" {
         When {
             val channel = EventSyncChannel()
             coroutineScope {
                 awaitAll(
                     async {
                         transactional {
-                            undoable(
+                            sagaOperation(
                                 undo = {
                                     // non cancellable = job appears as not completed
                                     if (!coroutineContext.job.isCompleted) {

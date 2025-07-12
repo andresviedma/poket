@@ -8,69 +8,72 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 
 /**
- * Transaction-aware execution of actions that can be undone by running a different (opposite) function.
- * If this is run inside a transaction and it is rolled back, the undo action will be run, but only if the action
+ * Implementation of the saga pattern in the context of a generic transaction.
+ *
+ * Transaction-aware execution of an operation in a saga, so that it can be undone by running a different (opposite)
+ * compensation operation.
+ * If this is run inside a transaction and it is rolled back, the undo operation will be run, but only if the action
  * was completed successfully with no exception.
- * If not in a transaction, the action will just be executed normally.
+ * If not in a transaction, the original operation will just be executed normally.
  *
  * Usage:
- *      undoable(undo = { (undo action) }) {
+ *      sagaOperation(undo = { (undo action) }) {
  *          (action)
  *      }
  */
-suspend fun <T> undoable(undo: suspend (T) -> Unit, action: suspend () -> T): T =
+suspend fun <T> sagaOperation(undo: suspend (T) -> Unit, action: suspend () -> T): T =
     action()
-        .also { addUndo(it, undo) }
+        .also { addSagaUndo(it, undo) }
 
 /**
- * Same as undoable, but in this case the undo function will be executed also if the action throws an exception
+ * Same as sagaOperation, but in this case the undo function will be executed also if the operation throws an exception
  * and is not finished. In that case, the undo function will receive null as parameter.
  *
  * Usage:
- *      undoableEvenIfNotFinished(undo = { (undo action) }) {
+ *      sagaOperationIfNotFinished(undo = { (undo action) }) {
  *          (action)
  *      }
  */
 @Suppress("unused")
-suspend fun <T> undoableEvenIfNotFinished(undo: suspend (T?) -> Unit, action: suspend () -> T): T =
+suspend fun <T> sagaOperationIfNotFinished(undo: suspend (T?) -> Unit, action: suspend () -> T): T =
     try {
         action()
-            .also { addUndo(it, undo) }
+            .also { addSagaUndo(it, undo) }
     } catch (exception: Throwable) {
-        addUndo(null, undo)
+        addSagaUndo(null, undo)
         throw exception
     }
 
-private fun <T> addUndo(it: T, undo: suspend (T) -> Unit) {
-    currentTransactionData<UndoableActionsRegister>()?.addUndoAction(it, undo)
+private fun <T> addSagaUndo(it: T, undo: suspend (T) -> Unit) {
+    currentTransactionData<SagaRegister>()?.addSagaUndo(it, undo)
 }
 
-private class UndoableActionsRegister {
+private class SagaRegister {
     private val transactionUndoes: MutableList<suspend () -> Unit> = mutableListOf()
 
-    fun <T> addUndoAction(data: T, undo: suspend (T) -> Unit) {
+    fun <T> addSagaUndo(data: T, undo: suspend (T) -> Unit) {
         if (inTransaction()) {
             transactionUndoes.add { undo(data) }
         }
     }
 
-    fun clearUndoActions(): List<suspend () -> Unit> =
+    fun clearSagas(): List<suspend () -> Unit> =
         transactionUndoes.toList()
             .also { transactionUndoes.clear() }
 }
 
 private val logger = KotlinLogging.logger {}
 
-class UndoableActionsTransactionHandler : TransactionDataHandler {
+class SagaTransactionHandler : TransactionDataHandler {
     override suspend fun commitTransaction(transactionData: Any?) {
-        if (transactionData is UndoableActionsRegister) {
-            transactionData.clearUndoActions()
+        if (transactionData is SagaRegister) {
+            transactionData.clearSagas()
         }
     }
 
     override suspend fun rollbackTransaction(transactionData: Any?) {
-        if (transactionData is UndoableActionsRegister) {
-            transactionData.clearUndoActions().reversed().forEach { undo ->
+        if (transactionData is SagaRegister) {
+            transactionData.clearSagas().reversed().forEach { undo ->
                 try {
                     undo()
                 } catch (exception: Throwable) {
@@ -81,5 +84,5 @@ class UndoableActionsTransactionHandler : TransactionDataHandler {
     }
 
     override suspend fun startTransaction(metadata: TransactionMetadata): Any =
-        UndoableActionsRegister()
+        SagaRegister()
 }
