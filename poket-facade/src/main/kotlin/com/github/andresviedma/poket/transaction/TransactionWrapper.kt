@@ -1,5 +1,8 @@
 package com.github.andresviedma.poket.transaction
 
+import com.github.andresviedma.poket.transaction.TransactionIsolationLevel
+import com.github.andresviedma.poket.transaction.TransactionManager
+import com.github.andresviedma.poket.transaction.TransactionMetadata
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -17,7 +20,7 @@ object TransactionWrapper {
      * Wraps the given block of code in a transaction.
      * If it is nested in a different transaction it will join the existing transaction.
      */
-    suspend fun <T> transactional(
+    suspend fun <T> suspendableTransactional(
         isolationLevel: TransactionIsolationLevel? = null, // use default
         rollbackOn: Set<Class<out Throwable>> = emptySet(),
         dontRollbackOn: Set<Class<out Throwable>> = emptySet(),

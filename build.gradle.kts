@@ -1,32 +1,54 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.jvm)
-    alias(libs.plugins.nexusPublish)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.publishOnCentral)
     alias(libs.plugins.dokka)
+    `java-library`
 }
 
 repositories {
     mavenCentral()
 }
 
-fun getRepositoryUsername(): String =
-    findProperty("OSSRH_USERNAME")?.toString() ?: System.getenv("OSSRH_USERNAME") ?: ""
+group = "io.github.andresviedma"
+val poketVersion: String by project
+version = poketVersion
 
-fun getRepositoryPassword(): String =
-    findProperty("OSSRH_PASSWORD")?.toString() ?: System.getenv("OSSRH_PASSWORD") ?: ""
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            username.set(getRepositoryUsername())
-            password.set(getRepositoryPassword())
-        }
-    }
-}
+val Provider<PluginDependency>.id: String get() = get().pluginId
 
 allprojects {
-    val poketVersion: String by project
+    group = rootProject.group
+    version = rootProject.version
 
-    group = "com.github.andresviedma"
-    version = poketVersion
+    with(rootProject.libs.plugins) {
+        apply(plugin = kotlin.jvm.id)
+        apply(plugin = publishOnCentral.id)
+        apply(plugin = dokka.id)
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    publishOnCentral {
+        val repoOwner = "andresviedma"
+        projectLongName.set("Trekkie test")
+        projectDescription.set("Kotlin testing specification framework inspired by Spock framework")
+        scmConnection.set("scm:git:https://github.com/$repoOwner/${rootProject.name}")
+        projectUrl.set("https://github.com/$repoOwner/${rootProject.name}")
+        licenseName.set("Apache License 2.0")
+        licenseUrl.set("https://www.apache.org/licenses/LICENSE-2.0")
+    }
+
+    publishing.publications.withType<MavenPublication>().configureEach {
+        pom {
+            developers {
+                developer {
+                    id.set("andresviedma")
+                    name.set("Andrés Viedma")
+                    email.set("andres.viedma@gmail.com")
+                }
+            }
+        }
+    }
 }

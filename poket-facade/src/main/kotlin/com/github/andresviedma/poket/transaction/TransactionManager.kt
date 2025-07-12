@@ -1,6 +1,6 @@
 package com.github.andresviedma.poket.transaction
 
-import com.github.andresviedma.poket.monitoring.logger
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.asContextElement
 import kotlinx.coroutines.runBlocking
@@ -9,6 +9,8 @@ import java.util.Deque
 import java.util.LinkedList
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Generic transaction coordinator.
@@ -26,8 +28,6 @@ class TransactionManager(
 
     private val transactionHandlers: List<TransactionDataHandler> get() =
         (secondaryTransactionHandlers + primaryTransactionHandlers).toList()
-
-    private val log by logger()
 
     fun inTransaction(): Boolean =
         currentContext()?.inTransaction == true
@@ -166,11 +166,10 @@ class TransactionManager(
                 handler.commitTransaction(transactionData)
             }
             if (originalException != null) {
-                log.warn(
+                logger.warn(originalException) {
                     "Transaction commit run although an exception occurred: " +
-                        "${originalException.javaClass.simpleName} ${originalException.message}",
-                    originalException
-                )
+                            "${originalException.javaClass.simpleName} ${originalException.message}"
+                }
             }
         }
     }

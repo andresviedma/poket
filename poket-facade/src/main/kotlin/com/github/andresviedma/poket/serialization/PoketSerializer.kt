@@ -1,6 +1,8 @@
 package com.github.andresviedma.poket.serialization
 
+import kotlin.reflect.KClass
+
 interface PoketSerializer {
-    fun serialize(myObject: Any): String
-    fun <T> deserialize(serialized: String): T
+    fun <T : Any> serialize(deserialized: T): String
+    fun <T : Any> deserialize(serialized: String, resultClass: KClass<T>): T
 }

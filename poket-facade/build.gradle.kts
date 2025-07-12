@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.jvm)
-    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.jvm)
 }
 
 kotlin {
@@ -11,11 +10,15 @@ dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.datetime)
+
     implementation(platform(libs.micrometer.bom))
-
-    api(libs.slf4j)
     implementation(libs.micrometer.core)
+    api(libs.kotlin.logging)
+    api(libs.slf4j)
 
+    testImplementation(libs.trekkie.kotest)
+    testImplementation(libs.kotest.assertions)
+    testImplementation(libs.kotest.junit5)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.kotlinx.coroutines.test)
 }
