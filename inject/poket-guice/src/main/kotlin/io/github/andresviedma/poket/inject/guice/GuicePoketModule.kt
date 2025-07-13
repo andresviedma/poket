@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.functions
 
-class PoketModule(
+class GuicePoketModule(
     private val bindings: InjectorBindings,
 ) : AbstractModule() {
     override fun configure() {

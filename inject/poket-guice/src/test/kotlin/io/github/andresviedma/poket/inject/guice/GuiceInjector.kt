@@ -11,7 +11,7 @@ class GuiceInjector : GenericInjector<Injector> {
 
     override fun createInjector(vararg bindings: InjectorBindings): Injector =
         Guice.createInjector(
-            bindings.map { PoketModule(it) }
+            bindings.map { GuicePoketModule(it) }
         ).also { injector = it }
 
     override fun reset() {

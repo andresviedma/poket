@@ -47,14 +47,16 @@ private fun Scope.callFunction(function: KFunction<*>, objectInstance: Any? = nu
 
 private fun Scope.getInjectedParameters(function: KFunction<*>, objectInstance: Any? = null) =
     function.parameters.associateWith {
-        if (objectInstance != null && (it.type.classifier as KClass<*>).isInstance(objectInstance)) {
-            objectInstance
-        } else if (it.type.classifier == Lazy::class && it.type.arguments.first().type!!.classifier == Set::class) {
-            val setType = it.type.arguments.first().type!!
-            lazy { getAll<Any>(setType.arguments.first().type!!.classifier as KClass<*>).toSet() }
-        } else if (it.type.classifier == Set::class) {
-            getAll<Any>(it.type.arguments.first().type!!.classifier as KClass<*>).toSet()
-        } else {
-            get<Any>(it.type.classifier as KClass<*>)
+        when {
+            objectInstance != null && (it.type.classifier as KClass<*>).isInstance(objectInstance) ->
+                objectInstance
+            it.type.classifier == Lazy::class && it.type.arguments.first().type!!.classifier == Set::class -> {
+                val setType = it.type.arguments.first().type!!
+                lazy { getAll<Any>(setType.arguments.first().type!!.classifier as KClass<*>).toSet() }
+            }
+            it.type.classifier == Set::class ->
+                getAll<Any>(it.type.arguments.first().type!!.classifier as KClass<*>).toSet()
+            else ->
+                get<Any>(it.type.classifier as KClass<*>)
         }
     }
