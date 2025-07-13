@@ -8,12 +8,16 @@ import kotlin.coroutines.CoroutineContext
  */
 object TransactionWrapper {
     @Suppress("MemberVisibilityCanBePrivate")
-    internal var injectedTransactionManager: TransactionManager = TransactionManager()
+    internal var injectedTransactionManager: TransactionManager = TransactionManager.withHandlers()
 
     var overriddenTransactionManager: TransactionManager? = null
 
     @Suppress("MemberVisibilityCanBePrivate")
     val transactionManager get() = overriddenTransactionManager ?: injectedTransactionManager
+
+    fun init(transactionManager: TransactionManager): TransactionWrapper = apply {
+        injectedTransactionManager = transactionManager
+    }
 
     /**
      * Wraps the given block of code in a transaction.

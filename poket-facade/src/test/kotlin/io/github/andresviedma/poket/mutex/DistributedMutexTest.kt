@@ -28,7 +28,7 @@ class DistributedMutexTest : FeatureSpec({
     )
     val mutexConfig = configWith(MutexConfig(default = mutexSettings))
     val mutex = DistributedMutex(
-        LockSystemProvider(lockSystem),
+        LockSystemProvider.withLockSystems(lockSystem),
         mutexConfig,
         "test-mutex"
     )

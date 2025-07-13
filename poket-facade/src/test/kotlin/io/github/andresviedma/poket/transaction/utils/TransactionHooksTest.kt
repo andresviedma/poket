@@ -17,7 +17,7 @@ class TransactionHooksTest : StringSpec({
 
     val events = mutableListOf<String>()
     val handler1 = TestTransactionHandler(events, "1")
-    TransactionWrapper.overriddenTransactionManager = TransactionManager(handler1)
+    TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(handler1)
 
     "out of a transaction" {
         When {

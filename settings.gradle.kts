@@ -25,5 +25,7 @@ plugins {
 include(
     ":poket-facade",
 
-    ":serialization:poket-jackson"
+    ":inject:koin",
+
+    ":serialization:poket-jackson",
 )

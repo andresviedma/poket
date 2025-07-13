@@ -30,6 +30,15 @@ jackson-module-paranamer = { group = "com.fasterxml.jackson.module", name = "jac
 jackson-datatype-guava = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-guava" }
 # jackson-datatype-protobuf = "com.hubspot.jackson:jackson-datatype-protobuf:0.9.14"
 
+# Guice
+guice = { module = "com.google.inject:guice", version = "7.0.0" }
+guice-assistedinject = { module = "com.google.inject.extensions:guice-assistedinject", version = "7.0.0" }
+guice-kotlin = { module = "dev.misfitlabs.kotlinguice4:kotlin-guice", version = "3.0.0" }
+
+# Koin
+koin-bom = { module = "io.insert-koin:koin-bom", version = "4.0.3" }
+koin-core = { module = "io.insert-koin:koin-core" }
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }

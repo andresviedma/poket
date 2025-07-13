@@ -13,9 +13,10 @@ import kotlin.time.Duration.Companion.seconds
  * changes.
  */
 class ConfigProvider(
-    private val sources: List<ConfigSource>,
+    private val lazySources: Lazy<Set<ConfigSource>>,
     private val clock: Clock,
 ) {
+    private val sources: List<ConfigSource> get() = lazySources.value.toList()
     private val cachedConfigs: ConcurrentMap<KClass<*>, ConfigCacheEntry> = ConcurrentHashMap()
 
     @Suppress("unused")

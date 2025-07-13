@@ -21,7 +21,7 @@ class TransactionManagerTest : StringSpec({
     val handler1 = TestTransactionHandler(events, "1")
     val handler2 = TestTransactionHandler(events, "2")
 
-    TransactionWrapper.overriddenTransactionManager = TransactionManager(handler1, handler2)
+    TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(handler1, handler2)
 
     "successful transaction" {
         When {

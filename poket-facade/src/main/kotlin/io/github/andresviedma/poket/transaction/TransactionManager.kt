@@ -20,15 +20,12 @@ private val logger = KotlinLogging.logger {}
  * when they can have been already committed.
  */
 class TransactionManager(
-    @PrimaryStorage private val primaryTransactionHandlers: Set<TransactionDataHandler>,
-    private val secondaryTransactionHandlers: Set<TransactionDataHandler>
+    private val lazyTransactionHandlers: Lazy<Set<TransactionDataHandler>>,
 ) {
-    constructor(vararg handlers: TransactionDataHandler) : this(handlers.toSet(), emptySet())
-
     private val transactionContext: ThreadLocal<TransactionContext?> = ThreadLocal.withInitial { null }
 
-    private val transactionHandlers: List<TransactionDataHandler> get() =
-        (secondaryTransactionHandlers + primaryTransactionHandlers).toList()
+    private val transactionHandlers: List<TransactionDataHandler>
+        get() = lazyTransactionHandlers.value.sortedBy { if (it.isPrimaryStorage()) 0 else 1 }
 
     fun inTransaction(): Boolean =
         currentContext()?.inTransaction == true
@@ -44,7 +41,10 @@ class TransactionManager(
             transactionalBlock(metadata, block)
         }
 
-    private suspend fun <T> transactionalBlock(metadata: TransactionMetadata = TransactionMetadata(), block: suspend () -> T): T {
+    private suspend fun <T> transactionalBlock(
+        metadata: TransactionMetadata = TransactionMetadata(),
+        block: suspend () -> T
+    ): T {
         val transactionHandlersData = mutableListOf<Any?>()
         val startedHere = startOrJoinTransaction(metadata, transactionHandlersData)
 
@@ -103,7 +103,10 @@ class TransactionManager(
     fun currentContext(): TransactionContext? =
         transactionContext.get()
 
-    private suspend fun startOrJoinTransaction(metadata: TransactionMetadata, transactionHandlersData: MutableList<Any?>): Boolean =
+    private suspend fun startOrJoinTransaction(
+        metadata: TransactionMetadata,
+        transactionHandlersData: MutableList<Any?>
+    ): Boolean =
         if (!inTransaction()) {
             val ctx = currentContextForced()
             ctx.inTransaction = true
@@ -135,7 +138,7 @@ class TransactionManager(
     }
 
     /** For commit / rollback, make sure they are run even if current job has been cancelled */
-    private suspend fun nonCancellable(block: suspend() -> Unit) {
+    private suspend fun nonCancellable(block: suspend () -> Unit) {
         withContext(NonCancellable) { block() }
     }
 
@@ -181,12 +184,12 @@ class TransactionManager(
             ?.clearTransactionHooks(commit = commit)
             ?.forEach { action -> action() }
     }
-}
 
-/** Handlers injected with this qualifier will be considered for "main" storage and committed first */
-@Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.TYPE)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class PrimaryStorage
+    companion object {
+        fun withHandlers(vararg handlers: TransactionDataHandler) =
+            TransactionManager(lazyOf(handlers.toSet()))
+    }
+}
 
 data class TransactionContext(
     var inTransaction: Boolean = false

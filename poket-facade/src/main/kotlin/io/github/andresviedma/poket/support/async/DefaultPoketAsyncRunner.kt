@@ -10,28 +10,13 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 
-object PoketAsyncRunnerProvider {
-    @Suppress("MemberVisibilityCanBePrivate")
-    internal var injectedLauncher: PoketAsyncRunner? = null
-
-    private val defaultLauncher = DefaultPoketAsyncRunner()
-
-    val launcher: PoketAsyncRunner
-        get() =
-        injectedLauncher ?: defaultLauncher
-}
-
-interface PoketAsyncRunner {
-    suspend fun launch(operation: String, block: suspend Job.() -> Unit): Job
-}
-
 private val logger = KotlinLogging.logger {}
 
 class DefaultPoketAsyncRunner : PoketAsyncRunner {
     private val parentJob = Job()
     @OptIn(DelicateCoroutinesApi::class)
     private val scope: CoroutineScope = CoroutineScope(
-         newFixedThreadPoolContext(10, "poket-async") + parentJob
+        newFixedThreadPoolContext(10, "poket-async") + parentJob
     )
 
     override suspend fun launch(operation: String, block: suspend Job.() -> Unit): Job =

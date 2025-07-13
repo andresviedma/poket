@@ -71,8 +71,8 @@ class ObjectCacheTest : FeatureSpec({
 
     val meterRegistry = testMicrometerRegistry()
 
-    val cacheProvider = CacheSystemProvider(CacheMetrics(meterRegistry), config, cacheSystem, cacheSystem2, errorCacheSystem)
-    TransactionWrapper.overriddenTransactionManager = TransactionManager(ObjectCacheTransactionHandler(cacheProvider))
+    val cacheProvider = CacheSystemProvider.withCacheSystems(CacheMetrics(meterRegistry), config, cacheSystem, cacheSystem2, errorCacheSystem)
+    TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(ObjectCacheTransactionHandler(cacheProvider))
 
     fun objectCache(type: String, serializationVersion: String = "1", customSerializer: PoketSerializer? = null) =
         ObjectCache<String, String>(

@@ -40,4 +40,6 @@ class TestTransactionHandler(
             super.rollbackTransaction(transactionData)
         }
     }
+
+    override fun isPrimaryStorage(): Boolean = true
 }

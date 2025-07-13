@@ -20,7 +20,7 @@ class SagasTest : StringSpec({
     isolationMode = IsolationMode.InstancePerTest
 
     val events = mutableListOf<String>()
-    TransactionWrapper.overriddenTransactionManager = TransactionManager(SagaTransactionHandler())
+    TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(SagaTransactionHandler())
 
     "successful transaction" {
         When {

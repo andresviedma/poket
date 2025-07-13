@@ -27,7 +27,7 @@ class DistributedMutexErrorHandlingTest : FeatureSpec({
     val errorLockSystem = errorLockSystem("error-all", errorOnLock = true, errorOnRelease = true)
     val errorLockSystem2 = errorLockSystem("error-all2", errorOnLock = true, errorOnRelease = true)
     val errorReleaseLockSystem = errorLockSystem("error-release", errorOnLock = false, errorOnRelease = true)
-    val lockSystems = LockSystemProvider(
+    val lockSystems = LockSystemProvider.withLockSystems(
         setOf(workingLockSystem, errorLockSystem, errorLockSystem2, errorReleaseLockSystem)
     )
 

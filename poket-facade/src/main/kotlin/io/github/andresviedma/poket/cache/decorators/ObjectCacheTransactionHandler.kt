@@ -28,6 +28,8 @@ internal class ObjectCacheTransactionHandler(
 
     override suspend fun rollbackTransaction(transactionData: Any?) {
     }
+
+    override fun isPrimaryStorage(): Boolean = false
 }
 
 internal data class PendingCacheOperations(

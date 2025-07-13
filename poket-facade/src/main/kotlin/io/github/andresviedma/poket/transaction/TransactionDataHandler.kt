@@ -36,4 +36,9 @@ interface TransactionDataHandler {
      * @param transactionData Any transaction context data returned by the handler when it was started.
      */
     suspend fun rollbackTransaction(transactionData: Any?) {}
+
+    /**
+     * If true, the will be considered for "main" storage and committed first.
+     */
+    fun isPrimaryStorage(): Boolean
 }

@@ -85,4 +85,6 @@ class SagaTransactionHandler : TransactionDataHandler {
 
     override suspend fun startTransaction(metadata: TransactionMetadata): Any =
         SagaRegister()
+
+    override fun isPrimaryStorage(): Boolean = false
 }
