@@ -14,4 +14,3 @@ interface GenericInjector <I : Any> {
 }
 
 inline fun <reified T : Any> GenericInjector<*>.getInstance(): T = getInstance(T::class)
-

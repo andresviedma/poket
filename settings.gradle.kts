@@ -25,6 +25,8 @@ plugins {
 include(
     ":poket-facade",
 
+    ":backends:poket-caffeine",
+
     ":inject:poket-guice",
     ":inject:poket-koin",
     ":inject:inject-testcommon",

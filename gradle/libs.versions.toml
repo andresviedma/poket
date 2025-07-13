@@ -39,6 +39,9 @@ guice-kotlin = { module = "dev.misfitlabs.kotlinguice4:kotlin-guice", version = 
 koin-bom = { module = "io.insert-koin:koin-bom", version = "4.0.3" }
 koin-core = { module = "io.insert-koin:koin-core" }
 
+# Caffine memory cache
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2" }
+
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
