@@ -1,14 +1,7 @@
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-}
-
-kotlin {
-    jvmToolchain(1_8)
-}
-
 dependencies {
     implementation(projects.poket.poketFacade)
 
+    implementation(platform(libs.guice.bom))
     implementation(libs.guice)
     implementation(libs.kotlin.reflect)
 

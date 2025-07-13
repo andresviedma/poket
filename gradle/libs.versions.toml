@@ -4,7 +4,6 @@
 kotlin = "2.0.21"
 kotlinx-coroutines = "1.8.1"
 kotlinx-datetime = "0.6.2"
-micrometer = "1.12.3"
 slf4j = "2.0.17"
 
 [libraries]
@@ -12,32 +11,36 @@ slf4j = "2.0.17"
 # Core
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
-kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
+kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
-micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version.ref = "micrometer" }
-micrometer-core = { group = "io.micrometer", name = "micrometer-core", version.ref = "micrometer" }
+micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version = "1.12.3" }
+micrometer-core = { group = "io.micrometer", name = "micrometer-core" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.7" }
 
 # Jackson
-jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.16.1" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.19.1" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
 jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
 jackson-jdk8 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jdk8" }
 jackson-module-paranamer = { group = "com.fasterxml.jackson.module", name = "jackson-module-paranamer" }
-jackson-datatype-guava = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-guava" }
-# jackson-datatype-protobuf = "com.hubspot.jackson:jackson-datatype-protobuf:0.9.14"
 
 # Guice
-guice = { module = "com.google.inject:guice", version = "7.0.0" }
-guice-assistedinject = { module = "com.google.inject.extensions:guice-assistedinject", version = "7.0.0" }
+guice-bom = { module = "com.google.inject:guice-bom", version = "7.0.0" }
+guice = { module = "com.google.inject:guice" }
+guice-assistedinject = { module = "com.google.inject.extensions:guice-assistedinject" }
 guice-kotlin = { module = "dev.misfitlabs.kotlinguice4:kotlin-guice", version = "3.0.0" }
 
 # Koin
 koin-bom = { module = "io.insert-koin:koin-bom", version = "4.0.3" }
 koin-core = { module = "io.insert-koin:koin-core" }
+
+# Redisson (Redis library)
+redisson = { module = "org.redisson:redisson", version = "3.50.0" }
 
 # Caffine memory cache
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2" }
@@ -45,11 +48,14 @@ caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
 trekkie-kotest = { module = "io.github.andresviedma:trekkie-kotest", version = "0.1.1-beta3" }
 kotest-bom = { group = "io.kotest", name = "kotest-bom", version = "5.9.1" }
 kotest-junit5 = { group = "io.kotest", name = "kotest-runner-junit5" }
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core" }
+
+testcontainers-bom = "org.testcontainers:testcontainers-bom:1.21.3"
+testcontainers = { group = "org.testcontainers", name = "testcontainers" }
 
 [plugins]
 

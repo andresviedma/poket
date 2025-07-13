@@ -1,0 +1,164 @@
+package io.github.andresviedma.poket.backends.redisson
+
+import io.github.andresviedma.poket.backends.redisson.env.BaseSpec
+import io.github.andresviedma.poket.backends.redisson.env.IntegrationEnvironment
+import io.github.andresviedma.trekkie.Given
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.then
+import io.kotest.matchers.shouldBe
+import java.time.Instant
+
+class RedissonCacheSystemTest : BaseSpec({
+
+    val redisConfig = RedissonConfig.singleConnection(IntegrationEnvironment.redis.address)
+    val redisCache = RedissonCacheSystem(RedissonClientProvider(redisConfig))
+
+    feature("getAndSetCacheData") {
+        scenario("cache entry exists") {
+            Given {
+                redisCache.setObject("testNamespace", "testKey", "testValue", 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey", String::class.java)
+            } then {
+                it shouldBe "testValue"
+            }
+        }
+
+        scenario("cache entry not exists") {
+            When {
+                redisCache.getObject("testNamespace", "testNoExistantKey", String::class.java)
+            } then {
+                it shouldBe null
+            }
+        }
+
+        scenario("multiple cache entries") {
+            val data = TestDataClass("a", 5)
+            val data2 = TestDataClass("b", 10)
+            val data3 = TestDataClass("c", 15)
+            Given {
+                redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
+            }
+            When {
+                redisCache.getObjectList("testNamespace", listOf("testNoExistantKey", "testKey", "testKey3"), String::class.java)
+            } then {
+                it.size shouldBe 2
+                it["testKey"] shouldBe data
+                it["testKey3"] shouldBe data3
+            }
+        }
+    }
+    feature("setCacheData") {
+        scenario("override cache entry value") {
+            Given {
+                redisCache.setObject("testNamespace", "testKey", "testValue", 3600, false)
+            }
+            When {
+                redisCache.setObject("testNamespace", "testKey", "testValue2", 3600, false)
+                redisCache.getObject("testNamespace", "testKey", String::class.java)
+            } then {
+                it shouldBe "testValue2"
+            }
+        }
+
+        scenario("set data class") {
+            val data = TestDataClass("a", 5)
+            Given {
+                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey", TestDataClass::class.java)
+            } then {
+                it shouldBe data
+            }
+        }
+
+        scenario("set Instant") {
+            val data = Instant.now()
+            Given {
+                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey", Instant::class.java)
+            } then {
+                it shouldBe data
+            }
+        }
+
+        scenario("set class") {
+            val data = TestClass("a", 5)
+            Given {
+                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey", TestClass::class.java)
+            } then {
+                it!!.foo shouldBe "a"
+                it.bar shouldBe 5
+            }
+        }
+        scenario("set sealed class") {
+            val data = SealedTestClass.Class1(50)
+            Given {
+                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey", SealedTestClass::class.java)
+            } then {
+                it!!::class.simpleName shouldBe "Class1"
+                (it as SealedTestClass.Class1).foo shouldBe 50
+            }
+        }
+        scenario("set multiple data") {
+            val data = TestDataClass("a", 5)
+            val data2 = SealedTestClass.Class1(50)
+            val data3 = Instant.now()
+            Given {
+                redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
+            }
+            When {
+                redisCache.getObject("testNamespace", "testKey2", SealedTestClass::class.java)
+            } then {
+                it!!::class.simpleName shouldBe "Class1"
+                (it as SealedTestClass.Class1).foo shouldBe 50
+            }
+        }
+    }
+
+    feature("invalidateObject") {
+        scenario("invalidate object") {
+            Given {
+                redisCache.setObject("testNamespace", "testKey", "testValue", 3600, false)
+            }
+            When {
+                redisCache.invalidateObject("testNamespace", "testKey")
+                redisCache.getObject("testNamespace", "testKey", String::class.java)
+            } then {
+                it shouldBe null
+            }
+        }
+        scenario("invalidate object list") {
+            Given {
+                redisCache.setObjectList("testNamespace", mapOf("testKey" to "testValue", "testKey2" to "testValue2", "testKey3" to "testValue3"), 3600, false)
+            }
+            When {
+                redisCache.invalidateObjectList("testNamespace", listOf("testKey", "testKey2"))
+                redisCache.getObjectList("testNamespace", listOf("testKey", "testKey2", "testKey3"), String::class.java)
+            } then {
+                it shouldBe mapOf("testKey3" to "testValue3")
+            }
+        }
+    }
+})
+
+data class TestDataClass(val foo: String, val bar: Int)
+
+class TestClass(val foo: String, val bar: Int)
+
+sealed class SealedTestClass {
+    class Class1(val foo: Int) : SealedTestClass()
+
+    @Suppress("UNUSED")
+    class Class2(val bar: Int) : SealedTestClass()
+}

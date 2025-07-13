@@ -30,6 +30,23 @@ allprojects {
         mavenCentral()
     }
 
+    kotlin {
+        jvmToolchain(1_8)
+    }
+
+    dependencies {
+        // BOMs
+        implementation(platform(rootProject.libs.kotlin.bom))
+        implementation(platform(rootProject.libs.kotlinx.coroutines.bom))
+        implementation(platform(rootProject.libs.micrometer.bom))
+        implementation(platform(rootProject.libs.jackson.bom))
+        implementation(platform(rootProject.libs.koin.bom))
+        implementation(platform(rootProject.libs.guice.bom))
+
+        testImplementation(platform(rootProject.libs.kotest.bom))
+        testImplementation(platform(rootProject.libs.testcontainers.bom))
+    }
+
     publishOnCentral {
         val repoOwner = "andresviedma"
         projectLongName.set("Trekkie test")

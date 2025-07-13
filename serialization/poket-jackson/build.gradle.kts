@@ -1,17 +1,9 @@
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-}
-
-kotlin {
-    jvmToolchain(1_8)
-}
-
 dependencies {
     implementation(projects.poket.poketFacade)
 
-    implementation(platform(libs.jackson.bom))
-    implementation(libs.jackson.databind)
-    implementation(libs.jackson.kotlin)
-    implementation(libs.jackson.jdk8)
-    implementation(libs.jackson.jsr310)
+    api(platform(libs.jackson.bom))
+    api(libs.jackson.databind)
+    api(libs.jackson.kotlin)
+    api(libs.jackson.jdk8)
+    api(libs.jackson.jsr310)
 }

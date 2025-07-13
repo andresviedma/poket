@@ -1,11 +1,3 @@
-plugins {
-    alias(libs.plugins.kotlin.jvm)
-}
-
-kotlin {
-    jvmToolchain(1_8)
-}
-
 dependencies {
     implementation(projects.poket.poketFacade)
 
