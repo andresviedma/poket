@@ -1,12 +1,12 @@
 package io.github.andresviedma.poket.transaction.utils
 
-import com.github.andresviedma.trekkie.When
-import com.github.andresviedma.trekkie.then
-import com.github.andresviedma.trekkie.thenExceptionThrown
 import io.github.andresviedma.poket.testutils.EventSyncChannel
 import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.suspendable.transactional
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe

@@ -12,6 +12,7 @@ object PoketAsyncRunnerProvider {
         get() =
         injectedLauncher ?: defaultLauncher
 
+    @Suppress("unused")
     fun init(launcher: PoketAsyncRunner?) = apply {
         injectedLauncher = launcher
     }

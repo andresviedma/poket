@@ -1,10 +1,10 @@
 package io.github.andresviedma.poket.inject.koin
 
-import com.github.andresviedma.trekkie.When
-import com.github.andresviedma.trekkie.With
-import com.github.andresviedma.trekkie.row
-import com.github.andresviedma.trekkie.then
 import io.github.andresviedma.poket.support.inject.InjectorBindings
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.With
+import io.github.andresviedma.trekkie.row
+import io.github.andresviedma.trekkie.then
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs

@@ -13,7 +13,6 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.local.DisabledLockSystem
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
-import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.inject.InjectorBindings
 import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionManager

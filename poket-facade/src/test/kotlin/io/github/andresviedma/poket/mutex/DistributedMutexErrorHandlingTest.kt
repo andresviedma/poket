@@ -4,7 +4,11 @@ import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.ConstantConfigSource
 import io.github.andresviedma.poket.config.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
-import com.github.andresviedma.trekkie.*
+import io.github.andresviedma.trekkie.Given
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.Where
+import io.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import java.time.Duration

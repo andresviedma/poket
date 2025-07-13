@@ -15,6 +15,7 @@ object TransactionWrapper {
     @Suppress("MemberVisibilityCanBePrivate")
     val transactionManager get() = overriddenTransactionManager ?: injectedTransactionManager
 
+    @Suppress("unused")
     fun init(transactionManager: TransactionManager): TransactionWrapper = apply {
         injectedTransactionManager = transactionManager
     }

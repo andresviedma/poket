@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.cache
 
+import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
 import io.github.andresviedma.poket.config.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.mutex.local.distributedMutexFactoryStub
@@ -13,12 +14,11 @@ import io.github.andresviedma.poket.testutils.testMicrometerRegistry
 import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.suspendable.transactional
-import com.github.andresviedma.trekkie.Given
-import com.github.andresviedma.trekkie.When
-import com.github.andresviedma.trekkie.Where
-import com.github.andresviedma.trekkie.then
-import com.github.andresviedma.trekkie.thenExceptionThrown
-import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
+import io.github.andresviedma.trekkie.Given
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.Where
+import io.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.data.row

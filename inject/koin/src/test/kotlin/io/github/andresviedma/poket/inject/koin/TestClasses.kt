@@ -1,11 +1,11 @@
+@file:Suppress("unused")
+
 package io.github.andresviedma.poket.inject.koin
 
 interface X
 
-class X0 : X
 class X1 : X
 class X2 : X
-class X3 : X
 
 class XContainer(val elements: Lazy<Set<X>>)
 

@@ -2,10 +2,10 @@ package io.github.andresviedma.poket.mutex
 
 import io.github.andresviedma.poket.config.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
-import com.github.andresviedma.trekkie.Given
-import com.github.andresviedma.trekkie.When
-import com.github.andresviedma.trekkie.and
-import com.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.Given
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.and
+import io.github.andresviedma.trekkie.then
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.result.shouldBeFailure

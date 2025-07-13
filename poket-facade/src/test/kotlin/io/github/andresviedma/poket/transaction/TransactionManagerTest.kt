@@ -1,18 +1,25 @@
 package io.github.andresviedma.poket.transaction
 
+import io.github.andresviedma.poket.testutils.EventSyncChannel
 import io.github.andresviedma.poket.transaction.TransactionWrapper.blockingTransactional
 import io.github.andresviedma.poket.transaction.TransactionWrapper.newTransactionCoroutineContext
 import io.github.andresviedma.poket.transaction.TransactionWrapper.transactionCoroutineContext
 import io.github.andresviedma.poket.transaction.suspendable.transactional
-import io.github.andresviedma.poket.testutils.EventSyncChannel
-import com.github.andresviedma.trekkie.Given
-import com.github.andresviedma.trekkie.When
-import com.github.andresviedma.trekkie.then
-import com.github.andresviedma.trekkie.thenExceptionThrown
+import io.github.andresviedma.trekkie.Given
+import io.github.andresviedma.trekkie.When
+import io.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TransactionManagerTest : StringSpec({
     isolationMode = IsolationMode.InstancePerTest
