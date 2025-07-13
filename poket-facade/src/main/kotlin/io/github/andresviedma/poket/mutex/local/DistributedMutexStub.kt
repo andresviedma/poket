@@ -6,7 +6,7 @@ import java.time.Duration
 import java.util.LinkedList
 
 fun distributedMutexFactoryStub(lockSystem: LockSystem = lockSystemStub()) = DistributedMutexFactory(
-    LockSystemProvider(lazyOf(setOf(lockSystem))),
+    LockSystemProvider.withLockSystems(lockSystem),
     configWith(
         MutexConfig(default = MutexTypeConfig(lockSystem = lockSystem.getId()))
     )

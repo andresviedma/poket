@@ -20,12 +20,12 @@ private val logger = KotlinLogging.logger {}
  * when they can have been already committed.
  */
 class TransactionManager(
-    private val lazyTransactionHandlers: Lazy<Set<TransactionDataHandler>>,
+    transactionHandlersSet: Set<TransactionDataHandler>,
 ) {
     private val transactionContext: ThreadLocal<TransactionContext?> = ThreadLocal.withInitial { null }
 
-    private val transactionHandlers: List<TransactionDataHandler>
-        get() = lazyTransactionHandlers.value.sortedBy { if (it.isPrimaryStorage()) 0 else 1 }
+    private val transactionHandlers: List<TransactionDataHandler> =
+        transactionHandlersSet.sortedBy { if (it.isPrimaryStorage()) 0 else 1 }
 
     fun inTransaction(): Boolean =
         currentContext()?.inTransaction == true
@@ -187,7 +187,7 @@ class TransactionManager(
 
     companion object {
         fun withHandlers(vararg handlers: TransactionDataHandler) =
-            TransactionManager(lazyOf(handlers.toSet()))
+            TransactionManager(handlers.toSet())
     }
 }
 

@@ -5,11 +5,10 @@ import io.github.andresviedma.poket.support.serialization.PoketSerializer
 import java.util.concurrent.ConcurrentHashMap
 
 class CacheSystemProvider(
-    private val lazyRegisteredSystems: Lazy<Set<CacheSystem>>,
+    private val registeredSystems: Set<CacheSystem>,
     private val cacheMetrics: CacheMetrics,
     private val configProvider: ConfigProvider
 ) {
-    private val registeredSystems: Set<CacheSystem> get() = lazyRegisteredSystems.value
     private val usedSystems = ConcurrentHashMap<String, CacheSystemWrapper>()
 
     internal fun getCacheSystem(
@@ -38,7 +37,7 @@ class CacheSystemProvider(
 
     companion object {
         fun withCacheSystems(cacheMetrics: CacheMetrics, configProvider: ConfigProvider, vararg systems: CacheSystem) =
-            CacheSystemProvider(lazyOf(systems.toSet()), cacheMetrics, configProvider)
+            CacheSystemProvider(systems.toSet(), cacheMetrics, configProvider)
     }
 }
 

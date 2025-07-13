@@ -8,6 +8,7 @@ import kotlin.reflect.KClass
  */
 data class InjectorBindings(
     val singletons: List<KClass<*>> = emptyList(),
+    val interfaceObjects: Map<KClass<*>, Any> = emptyMap(),
     val multiBindings: Map<KClass<*>, List<KClass<*>>> = emptyMap(),
     val staticWrappers: List<KClass<*>> = emptyList(),
 )

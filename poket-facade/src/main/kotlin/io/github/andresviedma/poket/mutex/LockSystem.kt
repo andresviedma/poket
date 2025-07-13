@@ -3,17 +3,15 @@ package io.github.andresviedma.poket.mutex
 import java.time.Duration
 
 class LockSystemProvider(
-    private val lazyRegisteredSystems: Lazy<Set<LockSystem>>
+    private val registeredSystems: Set<LockSystem>
 ) {
-    private val registeredSystems: Set<LockSystem> get() = lazyRegisteredSystems.value
-
     fun getLockSystem(type: String): LockSystem =
         registeredSystems.firstOrNull { it.getId() == type }
             ?: error("LockSystem unknown: $type")
 
     companion object {
         fun withLockSystems(registeredSystems: Set<LockSystem>) =
-            LockSystemProvider(lazyOf(registeredSystems))
+            LockSystemProvider(registeredSystems)
         fun withLockSystems(vararg registeredSystems: LockSystem) =
             withLockSystems(registeredSystems.toSet())
 
