@@ -18,9 +18,6 @@ import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
-import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import kotlinx.datetime.Clock
 
 val poketCoreModule = InjectorBindings(
     singletons = listOf(

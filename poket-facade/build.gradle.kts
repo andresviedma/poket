@@ -4,15 +4,13 @@ dependencies {
     api(libs.kotlinx.datetime)
 
     implementation(platform(libs.micrometer.bom))
-    implementation(libs.micrometer.core)
-    api(libs.kotlin.logging)
-    api(libs.slf4j)
+    api(libs.micrometer.core)
+    implementation(libs.kotlin.logging)
 
     testImplementation(libs.trekkie.kotest)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.kotest.junit5)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.slf4j)
 }
 
 tasks.withType<Test>().configureEach {
