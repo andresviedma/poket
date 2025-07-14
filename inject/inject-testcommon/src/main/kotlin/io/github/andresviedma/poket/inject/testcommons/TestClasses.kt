@@ -23,3 +23,12 @@ object BWrapper {
         this.b = b
     }
 }
+
+object NullableBWrapper {
+    private var b: B? = null
+    val myb get() = b
+
+    fun init(b: B?): NullableBWrapper = apply {
+        this.b = b
+    }
+}

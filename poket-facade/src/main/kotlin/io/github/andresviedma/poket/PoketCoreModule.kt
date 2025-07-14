@@ -3,9 +3,9 @@ package io.github.andresviedma.poket
 import io.github.andresviedma.poket.cache.CacheMetrics
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.CacheSystemProvider
-import io.github.andresviedma.poket.cache.MapCacheSystem
 import io.github.andresviedma.poket.cache.ObjectCacheFactory
 import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
+import io.github.andresviedma.poket.cache.local.MapCacheSystem
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.ConfigSource
 import io.github.andresviedma.poket.mutex.DistributedMutexFactory
@@ -13,6 +13,8 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.local.DisabledLockSystem
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
+import io.github.andresviedma.poket.support.SystemProvider
+import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.inject.InjectorBindings
 import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionManager
@@ -51,6 +53,7 @@ val poketCoreModule = InjectorBindings(
     ),
     staticWrappers = listOf(
         TransactionWrapper::class,
-        // PoketAsyncRunnerProvider::class,
+        PoketAsyncRunnerProvider::class,
+        SystemProvider::class,
     ),
 )

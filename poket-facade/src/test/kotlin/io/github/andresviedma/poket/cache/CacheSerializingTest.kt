@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.cache
 
+import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 

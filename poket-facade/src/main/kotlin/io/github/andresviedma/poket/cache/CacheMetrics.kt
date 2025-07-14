@@ -1,14 +1,15 @@
 package io.github.andresviedma.poket.cache
 
+import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.metrics.recordTimer
 import io.github.andresviedma.poket.support.metrics.timer
 import io.micrometer.core.instrument.MeterRegistry
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-class CacheMetrics(
-    private val meterRegistry: MeterRegistry
-) {
+class CacheMetrics {
+    private val meterRegistry: MeterRegistry = SystemProvider.meterRegistry
+
     suspend fun <X> recordTimer(
         timer: String,
         cacheSystem: String,

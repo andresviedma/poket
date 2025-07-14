@@ -1,6 +1,5 @@
 package io.github.andresviedma.poket.config
 
-import kotlinx.datetime.Clock
 import kotlin.reflect.KClass
 
 /**
@@ -37,5 +36,4 @@ class ConstantConfigSource(
 fun configWith(vararg configObjects: Any): ConfigProvider =
     ConfigProvider(
         setOf(ConstantConfigSource(*configObjects)),
-        Clock.System // should not matter since it's not a hot-reloading source
     )

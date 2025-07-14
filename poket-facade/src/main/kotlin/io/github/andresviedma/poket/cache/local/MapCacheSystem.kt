@@ -1,5 +1,6 @@
-package io.github.andresviedma.poket.cache
+package io.github.andresviedma.poket.cache.local
 
+import io.github.andresviedma.poket.cache.CacheSystem
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -37,11 +38,23 @@ open class MapCacheSystem : CacheSystem {
     }
 
     override suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, V>, ttlSeconds: Long, forceInvalidation: Boolean) {
-        keyMap(namespace).putAll(values.mapValues { MapCacheEntry(value = it.value, ttlSeconds = ttlSeconds, invalidation = forceInvalidation) })
+        keyMap(namespace).putAll(values.mapValues {
+            MapCacheEntry(
+                value = it.value,
+                ttlSeconds = ttlSeconds,
+                invalidation = forceInvalidation
+            )
+        })
     }
 
     override suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, Triple<V, Long, Boolean>>) {
-        keyMap(namespace).putAll(values.mapValues { MapCacheEntry(value = it.value.first, ttlSeconds = it.value.second, invalidation = it.value.third) })
+        keyMap(namespace).putAll(values.mapValues {
+            MapCacheEntry(
+                value = it.value.first,
+                ttlSeconds = it.value.second,
+                invalidation = it.value.third
+            )
+        })
     }
 
     override suspend fun <K : Any> invalidateObjectList(namespace: String, keys: List<K>) {

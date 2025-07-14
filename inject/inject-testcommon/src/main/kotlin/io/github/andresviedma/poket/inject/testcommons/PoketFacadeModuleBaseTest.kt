@@ -2,8 +2,8 @@ package io.github.andresviedma.poket.inject.testcommons
 
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.CacheSystemProvider
-import io.github.andresviedma.poket.cache.MapCacheSystem
 import io.github.andresviedma.poket.cache.ObjectCacheFactory
+import io.github.andresviedma.poket.cache.local.MapCacheSystem
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.ConfigSource
 import io.github.andresviedma.poket.mutex.DistributedMutexFactory
@@ -12,31 +12,17 @@ import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.local.DisabledLockSystem
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.poketCoreModule
-import io.github.andresviedma.poket.support.inject.InjectorBindings
 import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import kotlinx.datetime.Clock
 
 open class PoketFacadeModuleBaseTest <I : Any> (
     private val engine: GenericInjector<I>,
 ) : StringSpec({
 
-    engine.createInjector(
-        poketCoreModule,
-
-        InjectorBindings(
-            interfaceObjects = mapOf(
-                Clock::class to Clock.System,
-                MeterRegistry::class to SimpleMeterRegistry(),
-            ),
-        )
-    )
-
+    engine.createInjector(poketCoreModule)
     afterSpec { engine.reset() }
 
     "config bindings" {

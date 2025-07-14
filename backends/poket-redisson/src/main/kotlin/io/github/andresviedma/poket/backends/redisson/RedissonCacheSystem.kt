@@ -1,7 +1,7 @@
 package io.github.andresviedma.poket.backends.redisson
 
 import io.github.andresviedma.poket.cache.CacheSystem
-import io.github.andresviedma.poket.cache.cacheKeyToString
+import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import kotlinx.coroutines.reactive.awaitFirstOrDefault
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import java.time.Duration

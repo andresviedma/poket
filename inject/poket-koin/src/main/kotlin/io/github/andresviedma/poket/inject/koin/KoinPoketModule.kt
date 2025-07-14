@@ -28,13 +28,24 @@ fun poketModule(bindings: InjectorBindings) = module {
         single { value }.bind(clazz as KClass<Any>)
     }
 
-    bindings.staticWrappers.forEach { clazz ->
-        single(createdAtStart = true) {
-            val initFunction = clazz.functions.first { it.name == "init" }
-            clazz.cast(callFunction(initFunction, clazz.objectInstance))
+    if (bindings.staticWrappers.isNotEmpty()) {
+        single<KoinInitializer>(createdAtStart = true) { // beware, there can be only one module with static wrappers
+            KoinInitializer.init(this, bindings.staticWrappers)
         }
     }
- }
+}
+
+private class KoinInitializer {
+    companion object {
+        fun init(scope: Scope, wrappers: List<KClass<*>>): KoinInitializer {
+            wrappers.forEach { clazz ->
+                val initFunction = clazz.functions.first { it.name == "init" }
+                scope.callFunction(initFunction, clazz.objectInstance)
+            }
+            return KoinInitializer()
+        }
+    }
+}
 
 private fun Module.singleton(clazz: KClass<Any>): KoinDefinition<Any> =
     single {
@@ -56,6 +67,8 @@ private fun Scope.getInjectedParameters(function: KFunction<*>, objectInstance: 
             }
             it.type.classifier == Set::class ->
                 getAll<Any>(it.type.arguments.first().type!!.classifier as KClass<*>).toSet()
+            it.type.isMarkedNullable ->
+                getOrNull<Any>(it.type.classifier as KClass<*>)
             else ->
                 get<Any>(it.type.classifier as KClass<*>)
         }

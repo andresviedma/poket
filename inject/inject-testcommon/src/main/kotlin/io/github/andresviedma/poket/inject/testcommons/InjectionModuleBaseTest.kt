@@ -1,6 +1,7 @@
 package io.github.andresviedma.poket.inject.testcommons
 
 import io.github.andresviedma.poket.support.inject.InjectorBindings
+import io.github.andresviedma.trekkie.Expect
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
@@ -74,10 +75,23 @@ open class InjectionModuleBaseTest <I : Any> (
                 )
             )
         }
-        When {
-            engine.getInstance<B>()
-        } then { b ->
+        Expect {
+            val b = engine.getInstance<B>()
             BWrapper.myb shouldBeSameInstanceAs b
+
+        }
+    }
+
+    "nullable static bindings" {
+        Given(engine) {
+            createInjector(
+                InjectorBindings(
+                    staticWrappers = listOf(NullableBWrapper::class),
+                )
+            )
+        }
+        Expect {
+            NullableBWrapper.myb shouldBe null
         }
     }
 })

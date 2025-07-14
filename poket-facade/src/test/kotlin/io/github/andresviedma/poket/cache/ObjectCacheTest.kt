@@ -1,9 +1,11 @@
 package io.github.andresviedma.poket.cache
 
 import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
+import io.github.andresviedma.poket.cache.local.MapCacheSystem
 import io.github.andresviedma.poket.config.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.mutex.local.distributedMutexFactoryStub
+import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.async.DefaultPoketAsyncRunner
 import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.serialization.ClassPoketSerializer
@@ -37,6 +39,9 @@ class ObjectCacheTest : FeatureSpec({
         override fun getId(): String = "memory-perpetual-2"
     }
 
+    val meterRegistry = testMicrometerRegistry()
+    SystemProvider.overriddenMeterRegistry = meterRegistry
+
     @Suppress("ktlint:standard:statement-wrapping")
     val errorCacheSystem = object : MapCacheSystem() {
         override fun getId(): String = "error-system"
@@ -69,9 +74,7 @@ class ObjectCacheTest : FeatureSpec({
     val disabledConfig = baseConfig.copy(default = baseConfig.default.copy(disabled = true))
     val config = configWith(baseConfig)
 
-    val meterRegistry = testMicrometerRegistry()
-
-    val cacheProvider = CacheSystemProvider.withCacheSystems(CacheMetrics(meterRegistry), config, cacheSystem, cacheSystem2, errorCacheSystem)
+    val cacheProvider = CacheSystemProvider.withCacheSystems(CacheMetrics(), config, cacheSystem, cacheSystem2, errorCacheSystem)
     TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(ObjectCacheTransactionHandler(cacheProvider))
 
     fun objectCache(type: String, serializationVersion: String = "1", customSerializer: PoketSerializer? = null) =
@@ -79,7 +82,7 @@ class ObjectCacheTest : FeatureSpec({
             mutexFactory = distributedMutexFactoryStub(LocalLockSystem()),
             systemProvider = cacheProvider,
             configProvider = config,
-            metrics = CacheMetrics(meterRegistry),
+            metrics = CacheMetrics(),
             type = type,
             valueClass = String::class.java,
             serializationVersion = serializationVersion,
@@ -98,7 +101,7 @@ class ObjectCacheTest : FeatureSpec({
         mutexFactory = distributedMutexFactoryStub(LocalLockSystem()),
         systemProvider = cacheProvider,
         configProvider = config,
-        metrics = CacheMetrics(meterRegistry),
+        metrics = CacheMetrics(),
         type = "test",
         valueClass = Int::class.java,
         customSerializer = customSerializer

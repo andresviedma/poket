@@ -61,11 +61,19 @@ private class StaticInitializer @Inject constructor(
 
     private fun getInjectedParameters(function: KFunction<*>, objectInstance: Any? = null) =
         function.parameters.associateWith {
-            if (objectInstance != null && (it.type.classifier as KClass<*>).isInstance(objectInstance)) {
-                objectInstance
-            } else {
-                val paramClass = (it.type.classifier as KClass<*>).java
-                injector.getInstance(paramClass)
+            when {
+                objectInstance != null && (it.type.classifier as KClass<*>).isInstance(objectInstance) ->
+                    objectInstance
+
+                it.type.isMarkedNullable -> {
+                    val paramClass = (it.type.classifier as KClass<*>).java
+                    runCatching { injector.getInstance(paramClass) }.getOrNull()
+                }
+
+                else -> {
+                    val paramClass = (it.type.classifier as KClass<*>).java
+                    injector.getInstance(paramClass)
+                }
             }
         }
 

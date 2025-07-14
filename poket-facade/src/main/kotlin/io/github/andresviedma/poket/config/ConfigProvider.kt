@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.config
 
+import io.github.andresviedma.poket.support.SystemProvider
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import java.util.concurrent.ConcurrentHashMap
@@ -14,8 +15,8 @@ import kotlin.time.Duration.Companion.seconds
  */
 class ConfigProvider(
     private val sources: Set<ConfigSource>,
-    private val clock: Clock,
 ) {
+    private val clock: Clock = SystemProvider.clock
     private val cachedConfigs: ConcurrentMap<KClass<*>, ConfigCacheEntry> = ConcurrentHashMap()
 
     @Suppress("unused")

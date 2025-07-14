@@ -1,10 +1,10 @@
-package io.github.andresviedma.poket.cache
+package io.github.andresviedma.poket.cache.utils
 
 import kotlin.reflect.KClass
 import kotlin.reflect.full.functions
 
 /**
- * Utility functions to serialize arbitrary cache keys or values to strings.
+ * Utility functions to serialize arbitrary cache keys to strings.
  * Cache system implementations may use this at their disposal.
  */
 
@@ -18,17 +18,6 @@ private fun simpleKeyToString(key: Any): String =
         is Collection<*> -> key.joinToString(DEFAULT_KEY_SEPARATOR).ifEmpty { "-" }
         else -> tryDecompose(key).joinToString(DEFAULT_KEY_SEPARATOR)
     }
-
-/*
-fun cacheValueToString(value: Any): String =
-    objectMapper.writeValueAsString(value)
-
-inline fun <reified T> parseCachedValue(serializedValue: String): T =
-    parseCachedValue(serializedValue, T::class.java)
-
-fun <T> parseCachedValue(serializedValue: String, resultClass: Class<T>): T =
-    objectMapper.readValue(serializedValue, resultClass)
-*/
 
 private fun tryDecompose(value: Any): List<*> {
     val clazz = value.javaClass.kotlin
