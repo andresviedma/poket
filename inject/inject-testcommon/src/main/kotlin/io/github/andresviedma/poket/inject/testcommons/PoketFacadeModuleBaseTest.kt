@@ -11,7 +11,7 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.local.DisabledLockSystem
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
-import io.github.andresviedma.poket.poketCoreModule
+import io.github.andresviedma.poket.poketCoreBindings
 import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
@@ -22,7 +22,7 @@ open class PoketFacadeModuleBaseTest <I : Any> (
     private val engine: GenericInjector<I>,
 ) : StringSpec({
 
-    engine.createInjector(poketCoreModule)
+    engine.createInjector(poketCoreBindings)
     afterSpec { engine.reset() }
 
     "config bindings" {

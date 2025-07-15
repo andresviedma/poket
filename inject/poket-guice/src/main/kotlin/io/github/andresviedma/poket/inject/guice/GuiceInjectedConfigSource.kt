@@ -7,6 +7,6 @@ import kotlin.reflect.KClass
 class GuiceInjectedConfigSource(
     private val injector: Injector
 ) : ConfigSource {
-    override suspend fun <T : Any> getConfig(configClass: KClass<T>): T =
+    override suspend fun <T : Any> getConfig(configClass: KClass<T>): T? =
         injector.getInstance(configClass.java)
 }

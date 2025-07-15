@@ -13,24 +13,25 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.cast
 import kotlin.reflect.full.functions
 
-fun poketModule(bindings: InjectorBindings) = module {
-    bindings.singletons.forEach { clazz ->
+fun poketModule(vararg bindings: InjectorBindings) = module {
+    bindings.flatMap { it.singletons }.forEach { clazz ->
         singleton(clazz as KClass<Any>)
     }
 
-    bindings.multiBindings.forEach { (interfaze, implementations) ->
+    bindings.flatMap { it.multiBindings.entries }.forEach { (interfaze, implementations) ->
         implementations.forEach { implementation ->
             singleton(implementation as KClass<Any>).bind(interfaze as KClass<Any>)
         }
     }
 
-    bindings.interfaceObjects.forEach { (clazz, value) ->
-        single { value }.bind(clazz as KClass<Any>)
+    bindings.flatMap { it.interfaceObjects.entries }.forEach { (clazz, instance) ->
+        single { instance }.bind(clazz as KClass<Any>)
     }
 
-    if (bindings.staticWrappers.isNotEmpty()) {
+    val staticWrappers = bindings.flatMap { it.staticWrappers }
+    if (staticWrappers.isNotEmpty()) {
         single<KoinInitializer>(createdAtStart = true) { // beware, there can be only one module with static wrappers
-            KoinInitializer.init(this, bindings.staticWrappers)
+            KoinInitializer.init(this, staticWrappers)
         }
     }
 }

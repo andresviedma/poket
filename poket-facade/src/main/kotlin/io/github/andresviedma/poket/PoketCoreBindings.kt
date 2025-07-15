@@ -21,7 +21,7 @@ import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
 
-val poketCoreModule = InjectorBindings(
+val poketCoreBindings = InjectorBindings(
     singletons = listOf(
         ConfigProvider::class,
 

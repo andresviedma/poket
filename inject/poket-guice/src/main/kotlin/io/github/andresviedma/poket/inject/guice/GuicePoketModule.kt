@@ -12,16 +12,18 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.functions
 
 class GuicePoketModule(
-    private val bindings: InjectorBindings,
+    private val bindings: List<InjectorBindings>,
 ) : AbstractModule() {
+    constructor(vararg bindings: InjectorBindings) : this(bindings.toList())
+
     override fun configure() {
-        bindings.singletons.forEach {
+        bindings.flatMap { it.singletons }.forEach {
             bind(it.java)
                 .toConstructor(classConstructor(it))
                 .`in`(Singleton::class.java)
         }
 
-        bindings.multiBindings.forEach { (interfaze, implementations) ->
+        bindings.flatMap { it.multiBindings.entries }.forEach { (interfaze, implementations) ->
             val setBinder = Multibinder.newSetBinder(binder(), interfaze.java)
             implementations.forEach { implementation ->
                 setBinder.addBinding()
@@ -33,11 +35,11 @@ class GuicePoketModule(
             }
         }
 
-        bindings.interfaceObjects.forEach { (clazz, instance) ->
+        bindings.flatMap { it.interfaceObjects.entries }.forEach { (clazz, instance) ->
             bind(clazz.java).toInstance(casted(instance))
         }
 
-        bindings.staticWrappers.forEach { clazz ->
+        bindings.flatMap { it.staticWrappers }.forEach { clazz ->
             StaticInitializer.addWrapper(clazz)
         }
 
