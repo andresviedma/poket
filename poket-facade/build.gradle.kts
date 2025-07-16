@@ -11,6 +11,8 @@ dependencies {
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.kotest.junit5)
     testImplementation(libs.slf4j)
+
+    testImplementation(libs.jackson.kotlin)
 }
 
 tasks.withType<Test>().configureEach {

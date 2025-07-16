@@ -119,6 +119,6 @@ internal class ErrorIgnoreCacheSystem(
             }
         }
 
-    private suspend fun getConfig(): io.github.andresviedma.poket.cache.CacheTypeConfig =
+    private fun getConfig(): io.github.andresviedma.poket.cache.CacheTypeConfig =
         configProvider.get<io.github.andresviedma.poket.cache.CacheConfig>().getTypeConfig(type, defaultConfig)
 }

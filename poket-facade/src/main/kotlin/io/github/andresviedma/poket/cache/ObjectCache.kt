@@ -210,10 +210,10 @@ class ObjectCache<K : Any, V : Any>(
             generator()
         }.also { put(key, it, forceInvalidation = false) }
 
-    private suspend inline fun getConfig(): CacheTypeConfig =
+    private fun getConfig(): CacheTypeConfig =
         configProvider.get<CacheConfig>().getTypeConfig(type, defaultTypeConfig)
 
-    private suspend inline fun <T> ifEnabled(block: (CacheTypeConfig) -> T): T? {
+    private inline fun <T> ifEnabled(block: (CacheTypeConfig) -> T): T? {
         val config = getConfig()
         return if (config.disabled == true) null else block(config)
     }

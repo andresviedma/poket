@@ -5,6 +5,6 @@ import org.koin.core.context.GlobalContext
 import kotlin.reflect.KClass
 
 class KoinInjectedConfigSource : ConfigSource {
-    override suspend fun <T : Any> getConfig(configClass: KClass<T>): T? =
+    override fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? =
         GlobalContext.get().getOrNull(configClass)
 }

@@ -2,16 +2,16 @@ package io.github.andresviedma.poket.config
 
 import kotlin.reflect.KClass
 
-/**
- * Interface for implementations of configuration sources.
- */
 interface ConfigSource {
 
-    fun getDefaultReloadConfig(): ConfigSourceReloadConfig? = null
+    /** If the source supports hot-reload, configuration of how/when the data will be reloaded */
+    fun getReloadConfig(): ConfigSourceReloadConfig? = null
 
-    suspend fun warmup() {}
+    /** If the source accesses the network, it should load the data here and store it locally */
+    suspend fun reloadInfo(): Boolean = false
 
-    suspend fun <T : Any> getConfig(configClass: KClass<T>): T? = null
+    /** Not suspendable, should get the config with no network call */
+    fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? = null
 }
 
 data class ConfigSourceReloadConfig(

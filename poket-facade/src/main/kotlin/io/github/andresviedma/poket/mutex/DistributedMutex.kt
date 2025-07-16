@@ -74,7 +74,7 @@ class DistributedMutex(
     private fun lockName(keys: Array<out Any>): String =
         (listOf(type) + keys).toList().joinToString("::")
 
-    private suspend fun getMutexConfig(): MutexConfig =
+    private fun getMutexConfig(): MutexConfig =
         configProvider.get()
 
     private suspend fun LockContext.releaseLock(name: String, config: MutexTypeConfig) {

@@ -11,7 +11,7 @@ class ConstantConfigSource(
 ) : ConfigSource {
     private val objects = configObjects.associateBy { it.javaClass }.toMutableMap()
 
-    override suspend fun <T : Any> getConfig(configClass: KClass<T>): T? =
+    override fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? =
         getConfigObject(configClass)
 
     @Suppress("unchecked_cast", "MemberVisibilityCanBePrivate")
@@ -30,6 +30,11 @@ class ConstantConfigSource(
     fun <T : Any> override(configClass: KClass<T>, block: T.() -> T) {
         getConfigObject(configClass)?.block()
             ?.let { override(it) }
+    }
+
+    @Suppress("unused")
+    fun reset() {
+        objects.clear()
     }
 }
 
