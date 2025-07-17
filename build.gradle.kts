@@ -47,6 +47,10 @@ allprojects {
         testImplementation(platform(rootProject.libs.testcontainers.bom))
     }
 
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
+
     publishOnCentral {
         val repoOwner = "andresviedma"
         projectLongName.set("Trekkie test")

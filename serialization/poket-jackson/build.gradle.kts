@@ -6,4 +6,6 @@ dependencies {
     api(libs.jackson.kotlin)
     api(libs.jackson.jdk8)
     api(libs.jackson.jsr310)
+
+    testImplementation(libs.trekkie.kotest)
 }
