@@ -52,8 +52,8 @@ caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
-trekkie-kotest = { module = "io.github.andresviedma:trekkie-kotest", version = "0.1.1-beta4" }
-trekkie-mockk = { module = "io.github.andresviedma:trekkie-mockk", version = "0.1.1-beta4" }
+trekkie-kotest = { module = "io.github.andresviedma:trekkie-kotest", version = "0.1.1-beta5" }
+trekkie-mockk = { module = "io.github.andresviedma:trekkie-mockk", version = "0.1.1-beta5" }
 kotest-bom = { group = "io.kotest", name = "kotest-bom", version = "5.9.1" }
 kotest-junit5 = { group = "io.kotest", name = "kotest-runner-junit5" }
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core" }

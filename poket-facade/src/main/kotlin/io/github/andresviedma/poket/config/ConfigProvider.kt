@@ -87,9 +87,7 @@ class ConfigProvider(
     }
 
     private suspend fun startReloaderDaemon() {
-        println("*** before start daemon")
         if (sources.any { it.getReloadConfig()?.outdateTime != null }) {
-            println("*** starting daemon")
             reloaderJob = PoketAsyncRunnerProvider.launcher.launch("config-reloader") {
                 while (true) {
                     delay(reloadCheckInterval)
@@ -105,15 +103,12 @@ class ConfigProvider(
             val ttl = source.getReloadConfig()?.outdateTime
             val lastUpdate = sourcesLastUpdated[source]
             if (ttl != null && lastUpdate != null && (now - lastUpdate > ttl)) {
-                println("*** RELOAD")
                 source.reloadInfo()
                     .also { sourcesLastUpdated[source] = now }
             } else {
-                println("No reload, elapsed: ${now - lastUpdate!!}, required at least: $ttl")
                 false
             }
         }.contains(true)
-        if (somethingChanged) println("*** Something changed: $somethingChanged")
         if (somethingChanged) cachedConfigs.clear()
     }
 }

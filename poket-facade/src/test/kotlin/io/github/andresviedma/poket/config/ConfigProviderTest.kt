@@ -7,10 +7,10 @@ import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
+import io.github.andresviedma.trekkie.times
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.coVerify
 import io.mockk.spyk
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -47,8 +47,8 @@ class ConfigProviderTest : FeatureSpec({
                 configProvider.get<TestConfig>()
                 configProvider.get<TestConfig>()
             } then {
-                coVerify(exactly = 1) { source1.reloadInfo() }
-                coVerify(exactly = 1) { source2.reloadInfo() }
+                1 * { source1.reloadInfo() }
+                1 * { source2.reloadInfo() }
             }
         }
 
@@ -60,8 +60,8 @@ class ConfigProviderTest : FeatureSpec({
                 configProvider.warmup()
                 configProvider.get<TestConfig>()
             } then {
-                coVerify(exactly = 1) { source1.reloadInfo() }
-                coVerify(exactly = 1) { source2.reloadInfo() }
+                1 * { source1.reloadInfo() }
+                1 * { source2.reloadInfo() }
             }
         }
     }
@@ -78,16 +78,16 @@ class ConfigProviderTest : FeatureSpec({
                 configProvider.get<TestConfig>()
             } then {
                 it shouldBe configObject1
-                coVerify(exactly = 1) { source1.reloadInfo() }
-                coVerify(exactly = 1) { source2.reloadInfo() }
+                1 * { source1.reloadInfo() }
+                1 * { source2.reloadInfo() }
             }
             When {
                 source1.override(configObject2)
                 clock.fastForward(source1ReloadTime + 10.milliseconds)
                 delay(50.milliseconds)
             } then {
-                coVerify(exactly = 2) { source1.reloadInfo() }
-                coVerify(exactly = 1) { source2.reloadInfo() }
+                2 * { source1.reloadInfo() }
+                1 * { source2.reloadInfo() }
             }
             When {
                 configProvider.get<TestConfig>()
