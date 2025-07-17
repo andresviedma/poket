@@ -1,6 +1,6 @@
 package io.github.andresviedma.poket.mutex
 
-import io.github.andresviedma.poket.config.configWith
+import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When

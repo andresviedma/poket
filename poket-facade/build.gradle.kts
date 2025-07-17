@@ -7,9 +7,11 @@ dependencies {
     implementation(libs.kotlin.logging)
 
     testImplementation(libs.trekkie.kotest)
+    testImplementation(libs.trekkie.mockk)
     testImplementation(libs.kotest.assertions)
     testImplementation(libs.kotest.junit5)
     testImplementation(libs.slf4j)
 
     testImplementation(libs.jackson.kotlin)
+    testImplementation(libs.mockk)
 }

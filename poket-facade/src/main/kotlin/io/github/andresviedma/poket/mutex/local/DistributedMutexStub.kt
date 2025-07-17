@@ -1,6 +1,6 @@
 package io.github.andresviedma.poket.mutex.local
 
-import io.github.andresviedma.poket.config.configWith
+import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.*
 import java.time.Duration
 import java.util.LinkedList

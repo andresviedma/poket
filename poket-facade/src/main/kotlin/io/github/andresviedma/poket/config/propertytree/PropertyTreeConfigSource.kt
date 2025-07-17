@@ -34,7 +34,7 @@ class PropertyTreeConfigSource(
     }
 
     override fun getReloadConfig(): ConfigSourceReloadConfig? =
-        treeNodeSources.mapNotNull { it.getReloadConfig()?.outdateTimeInSeconds }.ifEmpty { null }
+        treeNodeSources.mapNotNull { it.getReloadConfig()?.outdateTime }.ifEmpty { null }
             ?.let { ConfigSourceReloadConfig(it.min()) }
 
     fun getPropertyValue(property: String): String? =

@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.config.propertytree
 
+import io.github.andresviedma.poket.config.utils.JacksonObjectMapper
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then

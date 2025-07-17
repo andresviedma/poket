@@ -7,11 +7,11 @@ interface TreeNodeSource {
     fun getReloadConfig(): ConfigSourceReloadConfig? = null
 }
 
-interface ConfigPropertiesSource {
+fun interface ConfigPropertiesSource {
     suspend fun loadAllProperties(): Map<String, String>
 }
 
-interface ConfigTreeSource {
+fun interface ConfigTreeSource {
     suspend fun loadTree(): Map<String, *>
 }
 

@@ -1,7 +1,7 @@
 package io.github.andresviedma.poket.backends.redisson
 
 import io.github.andresviedma.poket.backends.redisson.env.IntegrationEnvironment
-import io.github.andresviedma.poket.config.configWith
+import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.DistributedMutex
 import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.LockWaitTimedOutException

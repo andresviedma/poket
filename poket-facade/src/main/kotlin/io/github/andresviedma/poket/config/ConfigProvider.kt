@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.config
 
+import io.github.andresviedma.poket.config.utils.ConstantConfigSource
 import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import kotlinx.coroutines.Job
@@ -10,6 +11,7 @@ import kotlinx.datetime.Instant
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import kotlin.reflect.KClass
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 private val CONFIG_RELOAD_CHECK_INTERVAL = 30.seconds
@@ -27,6 +29,7 @@ class ConfigProvider(
     private var warmedUp: Boolean = false
     private val sourcesLastUpdated: MutableMap<ConfigSource, Instant> = mutableMapOf()
     private var reloaderJob: Job? = null
+    private var reloadCheckInterval: Duration = CONFIG_RELOAD_CHECK_INTERVAL
 
     @Suppress("unused")
     suspend fun warmup() {
@@ -70,6 +73,11 @@ class ConfigProvider(
     fun <T : ConfigSource> source(clazz: KClass<T>): T? =
         sources.firstOrNull { clazz.isInstance(it) } as? T
 
+    fun withReloadCheckInterval(newCheckInterval: Duration): ConfigProvider {
+        reloadCheckInterval = newCheckInterval
+        return this
+    }
+
     private fun <T : Any> fetchConfig(configClass: KClass<T>): T {
         return sources.fold(null as T?) { currentConfig, patchSource ->
             patchSource.getConfig(configClass, currentConfig)
@@ -79,10 +87,14 @@ class ConfigProvider(
     }
 
     private suspend fun startReloaderDaemon() {
-        if (sources.any { it.getReloadConfig()?.outdateTimeInSeconds != null }) {
+        println("*** before start daemon")
+        if (sources.any { it.getReloadConfig()?.outdateTime != null }) {
+            println("*** starting daemon")
             reloaderJob = PoketAsyncRunnerProvider.launcher.launch("config-reloader") {
-                delay(CONFIG_RELOAD_CHECK_INTERVAL)
-                reloadOutdatedConfigSources()
+                while (true) {
+                    delay(reloadCheckInterval)
+                    reloadOutdatedConfigSources()
+                }
             }
         }
     }
@@ -90,14 +102,18 @@ class ConfigProvider(
     private suspend fun reloadOutdatedConfigSources() {
         val now = clock.now()
         val somethingChanged = sources.map { source ->
-            val ttl = source.getReloadConfig()?.outdateTimeInSeconds?.seconds
+            val ttl = source.getReloadConfig()?.outdateTime
             val lastUpdate = sourcesLastUpdated[source]
-            if (ttl != null && lastUpdate != null && (lastUpdate + ttl < now)) {
+            if (ttl != null && lastUpdate != null && (now - lastUpdate > ttl)) {
+                println("*** RELOAD")
                 source.reloadInfo()
                     .also { sourcesLastUpdated[source] = now }
+            } else {
+                println("No reload, elapsed: ${now - lastUpdate!!}, required at least: $ttl")
+                false
             }
-            false
-        }.any { true }
+        }.contains(true)
+        if (somethingChanged) println("*** Something changed: $somethingChanged")
         if (somethingChanged) cachedConfigs.clear()
     }
 }

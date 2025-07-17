@@ -18,6 +18,6 @@ object PoketAsyncRunnerProvider {
     }
 }
 
-interface PoketAsyncRunner {
+fun interface PoketAsyncRunner {
     suspend fun launch(operation: String, block: suspend Job.() -> Unit): Job
 }

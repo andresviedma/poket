@@ -2,7 +2,7 @@ package io.github.andresviedma.poket.cache
 
 import io.github.andresviedma.poket.cache.decorators.ObjectCacheTransactionHandler
 import io.github.andresviedma.poket.cache.local.MapCacheSystem
-import io.github.andresviedma.poket.config.configWith
+import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.mutex.local.distributedMutexFactoryStub
 import io.github.andresviedma.poket.support.SystemProvider
