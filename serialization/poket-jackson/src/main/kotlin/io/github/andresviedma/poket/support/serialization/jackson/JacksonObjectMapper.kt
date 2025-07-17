@@ -1,8 +1,9 @@
-package io.github.andresviedma.poket.config.propertytree
+package io.github.andresviedma.poket.support.serialization.jackson
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.github.andresviedma.poket.config.propertytree.MapObjectMapper
 import kotlin.reflect.KClass
 
 class JacksonObjectMapper : MapObjectMapper {
