@@ -4,7 +4,3 @@ dependencies {
     api(libs.trekkie.kotest)
     implementation(libs.micrometer.core)
 }
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}

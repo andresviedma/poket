@@ -33,4 +33,5 @@ include(
     ":inject:inject-testcommon",
 
     ":serialization:poket-jackson",
+    ":serialization:poket-snakeyaml",
 )

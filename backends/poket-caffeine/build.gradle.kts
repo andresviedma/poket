@@ -4,7 +4,3 @@ dependencies {
 
     testImplementation(libs.trekkie.kotest)
 }
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}

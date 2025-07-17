@@ -3,7 +3,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.datetime)
 
-    implementation(platform(libs.micrometer.bom))
     api(libs.micrometer.core)
     implementation(libs.kotlin.logging)
 
@@ -13,8 +12,4 @@ dependencies {
     testImplementation(libs.slf4j)
 
     testImplementation(libs.jackson.kotlin)
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }

@@ -29,6 +29,9 @@ jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-dat
 jackson-jdk8 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jdk8" }
 jackson-module-paranamer = { group = "com.fasterxml.jackson.module", name = "jackson-module-paranamer" }
 
+# Snake YAML
+snakeyaml = { module = "org.yaml:snakeyaml", version = "2.4" }
+
 # Guice
 guice-bom = { module = "com.google.inject:guice-bom", version = "7.0.0" }
 guice = { module = "com.google.inject:guice" }

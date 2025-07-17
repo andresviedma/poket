@@ -10,7 +10,3 @@ dependencies {
     testImplementation(libs.trekkie.kotest)
     testImplementation(libs.testcontainers)
 }
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-}
