@@ -60,9 +60,11 @@ class ConfigProvider(
 
     fun <T : Any> override(config: T) =
         source<ConstantConfigSource>()?.override(config)
+            .also { cachedConfigs.clear() }
 
     fun <T : Any> override(configClass: KClass<T>, block: T.() -> T) =
         source<ConstantConfigSource>()?.override(configClass, block)
+            .also { cachedConfigs.clear() }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : ConfigSource> source(clazz: KClass<T>): T? =

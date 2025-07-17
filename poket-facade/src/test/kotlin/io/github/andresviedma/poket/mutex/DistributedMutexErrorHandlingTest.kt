@@ -49,7 +49,7 @@ class DistributedMutexErrorHandlingTest : FeatureSpec({
     )
 
     fun ConfigProvider.withDefault(typeConfig: MutexTypeConfig) =
-        source<ConstantConfigSource>()!!.override(MutexConfig(default = typeConfig))
+        override(MutexConfig(default = typeConfig))
 
     feature("synchronized with error getting lock") {
         scenario("onLockSystemError = FAIL") {
