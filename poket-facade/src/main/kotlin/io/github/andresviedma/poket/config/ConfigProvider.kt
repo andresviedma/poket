@@ -43,6 +43,12 @@ class ConfigProvider(
         }
     }
 
+    inline fun <reified T : Any> getTypedConfig(): Config<T> =
+        getTypedConfig(T::class)
+
+    fun <T : Any> getTypedConfig(configClass: KClass<T>): Config<T> =
+        Config(this, configClass)
+
     @Suppress("unchecked_cast")
     fun <T : Any> getConfig(configClass: KClass<T>): T {
         // The ideal situation is loading this at service initialization, not now

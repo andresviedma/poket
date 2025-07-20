@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 class CacheSystemProvider(
     private val registeredSystems: Set<CacheSystem>,
     private val cacheMetrics: CacheMetrics,
-    private val configProvider: ConfigProvider
+    private val configProvider: ConfigProvider,
 ) {
     private val usedSystems = ConcurrentHashMap<String, CacheSystemWrapper>()
 

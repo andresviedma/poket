@@ -1,9 +1,10 @@
 package io.github.andresviedma.poket.cache
 
-import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
+import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.mutex.DistributedMutex
 import io.github.andresviedma.poket.mutex.DistributedMutexFactory
+import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
 import kotlinx.datetime.Clock
 
@@ -41,7 +42,7 @@ class ObjectCacheFactory(
 class ObjectCache<K : Any, V : Any>(
     mutexFactory: DistributedMutexFactory,
     private val systemProvider: CacheSystemProvider,
-    private val configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private val metrics: CacheMetrics,
     private val type: String,
     private val valueClass: Class<V>,
@@ -58,6 +59,8 @@ class ObjectCache<K : Any, V : Any>(
     /** Config that will be used as default for this cache, with precedence over "default" cache config */
     private val defaultTypeConfig: CacheTypeConfig? = null
 ) {
+    private val cacheConfig: Config<CacheConfig> = configProvider.getTypedConfig()
+
     private val collapsingMutex: DistributedMutex =
         mutexFactory.createMutex(type = "cache::$type", forceIgnoreLockErrors = true)
 
@@ -211,7 +214,7 @@ class ObjectCache<K : Any, V : Any>(
         }.also { put(key, it, forceInvalidation = false) }
 
     private fun getConfig(): CacheTypeConfig =
-        configProvider.get<CacheConfig>().getTypeConfig(type, defaultTypeConfig)
+        cacheConfig.get().getTypeConfig(type, defaultTypeConfig)
 
     private inline fun <T> ifEnabled(block: (CacheTypeConfig) -> T): T? {
         val config = getConfig()

@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.mutex
 
+import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.NonCancellable
@@ -22,13 +23,15 @@ class DistributedMutexFactory(
 
 class DistributedMutex(
     private val lockSystemProvider: LockSystemProvider,
-    private val configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private val type: String,
     private val forceIgnoreLockErrors: Boolean = false,
     private val baseTypeConfig: MutexTypeConfig? = null
 ) {
+    private val mutexConfig: Config<MutexConfig> = configProvider.getTypedConfig()
+
     suspend fun <T> synchronized(vararg keys: Any, mutexBlock: suspend () -> T): T {
-        val config = getMutexConfig().getTypeConfig(type, baseTypeConfig)
+        val config = mutexConfig.get().getTypeConfig(type, baseTypeConfig)
         val lockSystem = lockSystemProvider.getLockSystem(config.lockSystem!!)
         val name = lockName(keys)
         val ctx = getLockHandlingErrors(config, lockSystem) {
@@ -49,7 +52,7 @@ class DistributedMutex(
     }
 
     suspend fun <T> maybeSynchronized(vararg keys: Any, mutexBlock: suspend (Boolean) -> T): T {
-        val config = getMutexConfig().getTypeConfig(type, baseTypeConfig)
+        val config = mutexConfig.get().getTypeConfig(type, baseTypeConfig)
         val lockSystem = lockSystemProvider.getLockSystem(config.lockSystem!!)
         val name = lockName(keys)
         val ctx = getLockHandlingErrors(config, lockSystem) {
@@ -73,9 +76,6 @@ class DistributedMutex(
 
     private fun lockName(keys: Array<out Any>): String =
         (listOf(type) + keys).toList().joinToString("::")
-
-    private fun getMutexConfig(): MutexConfig =
-        configProvider.get()
 
     private suspend fun LockContext.releaseLock(name: String, config: MutexTypeConfig) {
         if (hasLock && lockSystemUsed != null) {

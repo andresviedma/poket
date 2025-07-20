@@ -1,6 +1,8 @@
 package io.github.andresviedma.poket.cache.decorators
 
+import io.github.andresviedma.poket.cache.CacheConfig
 import io.github.andresviedma.poket.cache.CacheSystem
+import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
 
@@ -9,10 +11,11 @@ private val logger = KotlinLogging.logger {}
 internal class ErrorIgnoreCacheSystem(
     private val target: CacheSystem,
     private val type: String,
-    private val configProvider: ConfigProvider,
+    configProvider: ConfigProvider,
     private val defaultConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?
 
 ) : CacheSystem by target {
+    private val cacheConfig: Config<CacheConfig> = configProvider.getTypedConfig()
 
     override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? =
         runOrFail(getConfig().failOnGetError) {
@@ -120,5 +123,5 @@ internal class ErrorIgnoreCacheSystem(
         }
 
     private fun getConfig(): io.github.andresviedma.poket.cache.CacheTypeConfig =
-        configProvider.get<io.github.andresviedma.poket.cache.CacheConfig>().getTypeConfig(type, defaultConfig)
+        cacheConfig.get().getTypeConfig(type, defaultConfig)
 }
