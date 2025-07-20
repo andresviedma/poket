@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.config.propertytree
 
+import io.github.andresviedma.poket.config.ConfigPriority
 import io.github.andresviedma.poket.config.ConfigSource
 import io.github.andresviedma.poket.config.ConfigSourceReloadConfig
 import kotlin.reflect.KClass
@@ -9,12 +10,15 @@ class PropertyTreeConfigSource(
     treeSources: Set<ConfigTreeSource>,
     configClassBindings: Set<ConfigClassBindings>,
     private val mapper: MapObjectMapper,
+    private val priority: ConfigPriority = ConfigPriority.DEFAULT,
 ) : ConfigSource {
 
     private val treeNodeSources = treeSources.map { ConfigTreeTreeNodeSource(it) } + propertySources.map { ConfigPropertiesTreeNodeSource(it) }
     private var treeNodes: List<ConfigNode.TreeNode> = emptyList()
     private val registeredConfigClasses: Map<KClass<*>, ConfigClassBinding> =
         configClassBindings.flatMap { it.getConfigClassBindings() }.associateBy { it.clazz }
+
+    override fun getConfigSourcePriority(): ConfigPriority = priority
 
     override suspend fun reloadInfo(): Boolean {
         val newTreeNodes = treeNodeSources.mapNotNull { it.loadTreeNode() }

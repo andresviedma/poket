@@ -25,14 +25,22 @@ class ConfigProviderTest : FeatureSpec({
     val configObject2 = TestConfig("b", 2)
 
     val source1ReloadTime = 1.minutes
-    val source1 = spyk(ConstantConfigSource(reloadConfig = ConfigSourceReloadConfig(source1ReloadTime)))
-    val source2 = spyk(ConstantConfigSource())
-    val patchSource = PatchFunctionConfigSource<TestConfig>()
+    val source1 = spyk(ConstantConfigSource(
+        reloadConfig = ConfigSourceReloadConfig(source1ReloadTime),
+        priority = ConfigPriority.BASE),
+    )
+    val source2 = spyk(ConstantConfigSource(
+        reloadConfig = null,
+        priority = ConfigPriority.APP)
+    )
+    val patchSource = PatchFunctionConfigSource<TestConfig>(
+        priority = ConfigPriority.APP_ENVIRONMENT,
+    )
     val configProvider = ConfigProvider(
         setOf(
-            source1,
             source2,
             patchSource,
+            source1,
         ),
     ).withReloadCheckInterval(5.milliseconds)
 

@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.config.utils
 
+import io.github.andresviedma.poket.config.ConfigPriority
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.ConfigSource
 import io.github.andresviedma.poket.config.ConfigSourceReloadConfig
@@ -12,10 +13,11 @@ import kotlin.reflect.KClass
 class ConstantConfigSource(
     configObjects: List<Any>,
     private val reloadConfig: ConfigSourceReloadConfig? = null,
+    private val priority: ConfigPriority = ConfigPriority.BASE,
 ) : ConfigSource {
     constructor(vararg configObjects: Any) : this(configObjects.toList())
-    constructor(reloadConfig: ConfigSourceReloadConfig?, vararg configObjects: Any) : this(configObjects.toList(), reloadConfig)
-    constructor(reloadConfig: ConfigSourceReloadConfig?) : this(emptyList(), reloadConfig)
+    constructor(reloadConfig: ConfigSourceReloadConfig?, priority: ConfigPriority, vararg configObjects: Any) : this(configObjects.toList(), reloadConfig, priority)
+    constructor(reloadConfig: ConfigSourceReloadConfig? = null, priority: ConfigPriority = ConfigPriority.BASE) : this(emptyList(), reloadConfig, priority)
 
     private val objects = configObjects.associateBy { it::class }.toMutableMap()
 
@@ -23,6 +25,8 @@ class ConstantConfigSource(
 
     override suspend fun reloadInfo(): Boolean =
         (reloadConfig != null) // If there's some reload config, we'll assume it can change
+
+    override fun getConfigSourcePriority(): ConfigPriority = priority
 
     override fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? =
         getConfigObject(configClass) ?: config

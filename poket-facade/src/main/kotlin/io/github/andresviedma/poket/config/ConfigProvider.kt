@@ -22,8 +22,9 @@ private val CONFIG_RELOAD_CHECK_INTERVAL = 30.seconds
  * changes.
  */
 class ConfigProvider(
-    private val sources: Set<ConfigSource>,
+    configSources: Set<ConfigSource>,
 ) {
+    private val sources: List<ConfigSource> = configSources.sortedBy { it.getConfigSourcePriority().value }
     private val clock: Clock = SystemProvider.clock
     private val cachedConfigs: ConcurrentMap<KClass<*>, Any> = ConcurrentHashMap()
     private var warmedUp: Boolean = false

@@ -27,7 +27,7 @@ open class PoketFacadeModuleBaseTest <I : Any> (
 
     "config bindings" {
         val configProvider = engine.getInstance<ConfigProvider>()
-        val sources = configProvider.getPrivateProperty<Set<ConfigSource>>("sources")
+        val sources = configProvider.getPrivateProperty<List<ConfigSource>>("sources")
         sources.toSet() shouldBe setOf(
         )
     }
