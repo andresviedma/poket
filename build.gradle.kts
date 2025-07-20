@@ -10,7 +10,7 @@ repositories {
     mavenCentral()
 }
 
-group = "io.github.andresviedma"
+group = "io.github.andresviedma.poket"
 val poketVersion: String by project
 version = poketVersion
 
@@ -53,8 +53,8 @@ allprojects {
 
     publishOnCentral {
         val repoOwner = "andresviedma"
-        projectLongName.set("Trekkie test")
-        projectDescription.set("Kotlin testing specification framework inspired by Spock framework")
+        projectLongName.set("Poket")
+        projectDescription.set("Kotlin utilities for advanced backends")
         scmConnection.set("scm:git:https://github.com/$repoOwner/${rootProject.name}")
         projectUrl.set("https://github.com/$repoOwner/${rootProject.name}")
         licenseName.set("Apache License 2.0")
