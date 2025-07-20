@@ -181,5 +181,74 @@ class TreeNodeTest : FeatureSpec({
                 )
             }
         }
+
+        scenario("Map with implicit list") {
+            val tree = ConfigNode.TreeNode()
+            When {
+                tree.addRawMap(
+                    mapOf(
+                        "a" to mapOf(
+                            "1" to mapOf(
+                                "b2" to mapOf(
+                                    "c2" to "hello",
+                                ),
+                            ),
+                            "0" to mapOf(
+                                "b1" to mapOf(
+                                    "c1" to "hello",
+                                ),
+                            ),
+                        ),
+                        "w" to mapOf(
+                            "0" to "zero",
+                            "1" to "one",
+                        ),
+                        "x" to listOf(
+                            mapOf("s" to 2),
+                            10,
+                        )
+                    )
+                )
+            } then {
+                tree.toRawMap() shouldBe mapOf(
+                    "a" to listOf(
+                        mapOf(
+                            "b1" to mapOf(
+                                "c1" to "hello",
+                            ),
+                        ),
+                        mapOf(
+                            "b2" to mapOf(
+                                "c2" to "hello",
+                            ),
+                        ),
+                    ),
+                    "w" to listOf("zero", "one"),
+                    "x" to listOf(
+                        mapOf("s" to 2),
+                        10,
+                    )
+                )
+
+                tree.propertyToRaw("a.0.b1.c1") shouldBe "hello"
+                tree.propertyToRaw("w") shouldBe listOf("zero", "one")
+                tree.propertyToRaw("a") shouldBe listOf(
+                    mapOf(
+                        "b1" to mapOf(
+                            "c1" to "hello",
+                        ),
+                    ),
+                    mapOf(
+                        "b2" to mapOf(
+                            "c2" to "hello",
+                        ),
+                    ),
+                )
+                tree.propertyToRaw("x") shouldBe listOf(
+                    mapOf("s" to 2),
+                    10,
+                )
+            }
+        }
     }
 })

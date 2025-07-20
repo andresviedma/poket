@@ -61,7 +61,7 @@ sealed interface ConfigNode {
         }
 
         fun overriddenWith(tree: TreeNode?): TreeNode =
-            if (tree == null) this else cloned().addRawMap(tree.toRaw())
+            if (tree == null) this else cloned().addRawMap(tree.toRawMap())
 
         private fun <T: ConfigNode> T.cloned(): T = when (this) {
             is TreeNode -> TreeNode(children.mapValues { (_, v) -> v.cloned() }.toMutableMap()) as T
@@ -83,12 +83,20 @@ sealed interface ConfigNode {
                 TreeNode().also { children[key] = it }
             )
 
-        override fun toRaw() = toRawMap()
+        override fun toRaw(): Any =
+            // Detection of list as map with numeric indexes
+            if (children.keys.all { runCatching { Integer.parseUnsignedInt(it) }.getOrNull() != null }) {
+                ListNode(children.entries.sortedBy { it.key.toInt() }.map { it.value })
+                    .toRaw()
+            } else {
+                toRawMap()
+            }
 
         fun propertyToRaw(property: String): Any? =
             getPropertyValue(PropertyKey.fromPropertyName(property))?.toRaw()
 
-        fun toRawMap(): Map<String, *> = children.mapValues { (_, v) -> v.toRaw() }
+        fun toRawMap(): Map<String, *> =
+            children.mapValues { (_, v) -> v.toRaw() }
 
         private fun TreeNode.getPropertyValue(key: PropertyKey?): ConfigNode? {
             if (key == null) return this
