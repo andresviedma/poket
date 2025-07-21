@@ -1,6 +1,7 @@
 package io.github.andresviedma.poket.transaction
 
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 
 /**
  * Object with functions for fast transaction handling access. The main function is "transactional", wrapping the
@@ -26,8 +27,8 @@ object TransactionWrapper {
      */
     suspend fun <T> suspendableTransactional(
         isolationLevel: TransactionIsolationLevel? = null, // use default
-        rollbackOn: Set<Class<out Throwable>> = emptySet(),
-        dontRollbackOn: Set<Class<out Throwable>> = emptySet(),
+        rollbackOn: Set<KClass<out Throwable>> = emptySet(),
+        dontRollbackOn: Set<KClass<out Throwable>> = emptySet(),
         block: suspend () -> T
     ): T =
         transactionManager.transactional(
@@ -40,8 +41,8 @@ object TransactionWrapper {
      */
     fun <T> blockingTransactional(
         isolationLevel: TransactionIsolationLevel? = null, // use default
-        rollbackOn: Set<Class<out Throwable>> = emptySet(),
-        dontRollbackOn: Set<Class<out Throwable>> = emptySet(),
+        rollbackOn: Set<KClass<out Throwable>> = emptySet(),
+        dontRollbackOn: Set<KClass<out Throwable>> = emptySet(),
         block: () -> T
     ): T =
         transactionManager.blockingTransactional(
@@ -71,8 +72,8 @@ object TransactionWrapper {
      * Returns current transaction data for a given type.
      */
     inline fun <reified T> currentTransactionData(): T? =
-        currentTransactionData(T::class.java) as T?
+        currentTransactionData(T::class) as T?
 
-    fun currentTransactionData(dataClass: Class<*>): Any? =
+    fun currentTransactionData(dataClass: KClass<*>): Any? =
         transactionManager.currentContext()?.getTransactionData(dataClass)
 }

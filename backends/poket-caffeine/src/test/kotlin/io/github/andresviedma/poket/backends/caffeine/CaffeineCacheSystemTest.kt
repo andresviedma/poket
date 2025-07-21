@@ -20,7 +20,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObject("testNamespace", "testKey", "testValue", 3600, false)
             }
             When {
-                cache.getObject("testNamespace", "testKey", String::class.java)
+                cache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe "testValue"
             }
@@ -28,7 +28,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
 
         scenario("cache entry not exists") {
             When {
-                cache.getObject("testNamespace", "testNoExistantKey", String::class.java)
+                cache.getObject("testNamespace", "testNoExistantKey", String::class)
             } then {
                 it shouldBe null
             }
@@ -39,7 +39,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObject("otherNamespace", "testKey", "testValue", 3600, false)
             }
             When {
-                cache.getObject("testNamespace", "testKey", String::class.java)
+                cache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe null
             }
@@ -53,7 +53,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
             When {
-                cache.getObjectList("testNamespace", listOf("testNoExistantKey", "testKey", "testKey3"), String::class.java)
+                cache.getObjectList("testNamespace", listOf("testNoExistantKey", "testKey", "testKey3"), String::class)
             } then {
                 it.size shouldBe 2
                 it["testKey"] shouldBe data
@@ -69,7 +69,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
             }
             When {
                 cache.setObject("testNamespace", "testKey", "testValue2", 3600, false)
-                cache.getObject("testNamespace", "testKey", String::class.java)
+                cache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe "testValue2"
             }
@@ -78,7 +78,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
         scenario("use TTL parameter when setting the value") {
             When {
                 cache.setObject("testNamespace", "testKey", "testValue2", ttlSeconds = 0, false)
-                cache.getObject("testNamespace", "testKey", String::class.java)
+                cache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe null // TTL = 0 so should expire
             }
@@ -90,7 +90,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                cache.getObject("testNamespace", "testKey", TestDataClass::class.java)
+                cache.getObject("testNamespace", "testKey", TestDataClass::class)
             } then {
                 it shouldBe data
             }
@@ -102,7 +102,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                cache.getObject("testNamespace", "testKey", SealedTestClass::class.java)
+                cache.getObject("testNamespace", "testKey", SealedTestClass::class)
             } then {
                 it.shouldBeInstanceOf<SealedTestClass.Class1>()
                 it.foo shouldBe 50
@@ -117,7 +117,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
                 cache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
             When {
-                cache.getObject("testNamespace", "testKey2", SealedTestClass::class.java)
+                cache.getObject("testNamespace", "testKey2", SealedTestClass::class)
             } then {
                 it.shouldBeInstanceOf<SealedTestClass.Class1>()
                 it.foo shouldBe 50
@@ -132,7 +132,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
             }
             When {
                 cache.invalidateObject("testNamespace", "testKey")
-                cache.getObject("testNamespace", "testKey", String::class.java)
+                cache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe null
             }
@@ -144,7 +144,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
             }
             When {
                 cache.invalidateObjectList("testNamespace", listOf("testKey", "testKey2"))
-                cache.getObjectList("testNamespace", listOf("testKey", "testKey2", "testKey3"), String::class.java)
+                cache.getObjectList("testNamespace", listOf("testKey", "testKey2", "testKey3"), String::class)
             } then {
                 it shouldBe mapOf("testKey3" to "testValue3")
             }

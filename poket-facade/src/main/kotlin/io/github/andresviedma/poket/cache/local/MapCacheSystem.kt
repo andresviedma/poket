@@ -2,6 +2,7 @@ package io.github.andresviedma.poket.cache.local
 
 import io.github.andresviedma.poket.cache.CacheSystem
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 /**
  * Implementation of CacheSystem using a map with no TTL handling, only stored for verification.
@@ -14,7 +15,7 @@ open class MapCacheSystem : CacheSystem {
     override fun getId(): String = "memory-perpetual"
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? =
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
         keyMap(namespace)[key]?.value as V?
 
     override suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean) {
@@ -26,7 +27,7 @@ open class MapCacheSystem : CacheSystem {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: Class<V>): Map<K, V> {
+    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: KClass<V>): Map<K, V> {
         val objectList = mutableMapOf<K, V>()
         keys.forEach {
             val entry = keyMap(namespace)[it]?.value as V?

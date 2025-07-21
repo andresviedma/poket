@@ -5,6 +5,7 @@ import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -17,7 +18,7 @@ internal class ErrorIgnoreCacheSystem(
 ) : CacheSystem by target {
     private val cacheConfig: Config<CacheConfig> = configProvider.getTypedConfig()
 
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? =
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
         runOrFail(getConfig().failOnGetError) {
             target.getObject(namespace, key, resultClass)
         }
@@ -33,7 +34,7 @@ internal class ErrorIgnoreCacheSystem(
             exceptionOnError = getConfig().failOnPutError,
             onIgnoredError = {
                 if (forceInvalidation) {
-                    val currentVal = getObject(namespace, key, value.javaClass)
+                    val currentVal = getObject(namespace, key, value::class)
                     if (currentVal != null && currentVal != value) invalidateObject(namespace, key)
                 }
             }
@@ -51,7 +52,7 @@ internal class ErrorIgnoreCacheSystem(
     override suspend fun <K : Any, V : Any> getObjectList(
         namespace: String,
         keys: List<K>,
-        resultClass: Class<V>
+        resultClass: KClass<V>
     ): Map<K, V> =
         runOrFail(getConfig().failOnGetError) {
             target.getObjectList(namespace, keys, resultClass)
@@ -69,7 +70,7 @@ internal class ErrorIgnoreCacheSystem(
                 if (forceInvalidation) {
                     // Invalidate in case of error, as this will work in case of full cache
                     val keys = values.keys.toList()
-                    val currentVals = getObjectList(namespace, keys, values.values.first().javaClass)
+                    val currentVals = getObjectList(namespace, keys, values.values.first()::class)
                     if (currentVals.isNotEmpty() && values != currentVals) invalidateObjectList(namespace, keys)
                 }
             }
@@ -85,7 +86,7 @@ internal class ErrorIgnoreCacheSystem(
                 if (values.anyValueForcesInvalidation()) {
                     // Invalidate in case of error, as this will work in case of full cache
                     val keys = values.keys.toList()
-                    val currentVals = getObjectList(namespace, keys, values.values.first().javaClass)
+                    val currentVals = getObjectList(namespace, keys, values.values.first()::class)
                     if (currentVals.isNotEmpty() && values != currentVals) invalidateObjectList(namespace, keys)
                 }
             }

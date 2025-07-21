@@ -19,7 +19,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObject("testNamespace", "testKey", "testValue", 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey", String::class.java)
+                redisCache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe "testValue"
             }
@@ -27,7 +27,7 @@ class RedissonCacheSystemTest : BaseSpec({
 
         scenario("cache entry not exists") {
             When {
-                redisCache.getObject("testNamespace", "testNoExistantKey", String::class.java)
+                redisCache.getObject("testNamespace", "testNoExistantKey", String::class)
             } then {
                 it shouldBe null
             }
@@ -41,7 +41,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
             When {
-                redisCache.getObjectList("testNamespace", listOf("testNoExistantKey", "testKey", "testKey3"), String::class.java)
+                redisCache.getObjectList("testNamespace", listOf("testNoExistantKey", "testKey", "testKey3"), String::class)
             } then {
                 it.size shouldBe 2
                 it["testKey"] shouldBe data
@@ -56,7 +56,7 @@ class RedissonCacheSystemTest : BaseSpec({
             }
             When {
                 redisCache.setObject("testNamespace", "testKey", "testValue2", 3600, false)
-                redisCache.getObject("testNamespace", "testKey", String::class.java)
+                redisCache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe "testValue2"
             }
@@ -68,7 +68,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey", TestDataClass::class.java)
+                redisCache.getObject("testNamespace", "testKey", TestDataClass::class)
             } then {
                 it shouldBe data
             }
@@ -80,7 +80,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey", Instant::class.java)
+                redisCache.getObject("testNamespace", "testKey", Instant::class)
             } then {
                 it shouldBe data
             }
@@ -92,7 +92,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey", TestClass::class.java)
+                redisCache.getObject("testNamespace", "testKey", TestClass::class)
             } then {
                 it!!.foo shouldBe "a"
                 it.bar shouldBe 5
@@ -104,7 +104,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObject("testNamespace", "testKey", data, 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey", SealedTestClass::class.java)
+                redisCache.getObject("testNamespace", "testKey", SealedTestClass::class)
             } then {
                 it!!::class.simpleName shouldBe "Class1"
                 (it as SealedTestClass.Class1).foo shouldBe 50
@@ -118,7 +118,7 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey2", SealedTestClass::class.java)
+                redisCache.getObject("testNamespace", "testKey2", SealedTestClass::class)
             } then {
                 it!!::class.simpleName shouldBe "Class1"
                 (it as SealedTestClass.Class1).foo shouldBe 50
@@ -133,7 +133,7 @@ class RedissonCacheSystemTest : BaseSpec({
             }
             When {
                 redisCache.invalidateObject("testNamespace", "testKey")
-                redisCache.getObject("testNamespace", "testKey", String::class.java)
+                redisCache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe null
             }
@@ -144,7 +144,7 @@ class RedissonCacheSystemTest : BaseSpec({
             }
             When {
                 redisCache.invalidateObjectList("testNamespace", listOf("testKey", "testKey2"))
-                redisCache.getObjectList("testNamespace", listOf("testKey", "testKey2", "testKey3"), String::class.java)
+                redisCache.getObjectList("testNamespace", listOf("testKey", "testKey2", "testKey3"), String::class)
             } then {
                 it shouldBe mapOf("testKey3" to "testValue3")
             }

@@ -3,16 +3,18 @@ package io.github.andresviedma.poket.backends.redisson
 import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_SERIALIZER
 import io.netty.channel.EventLoopGroup
 import org.redisson.Redisson
+import org.redisson.api.RedissonClient
 import org.redisson.api.RedissonReactiveClient
 import java.util.concurrent.ExecutorService
 
-class RedissonClientProvider constructor(
+class RedissonClientProvider(
     private val redisConfig: RedissonConfig
 ) {
     private val executor: ExecutorService? = null
 
     private val eventLoopGroup: EventLoopGroup? = null
 
+    private var redissonSyncClient: RedissonClient? = null
     private val redissonClient: RedissonReactiveClient by lazy { createRedissonClient() }
 
     fun getClient(): RedissonReactiveClient {
@@ -20,7 +22,7 @@ class RedissonClientProvider constructor(
     }
 
     fun close() {
-        redissonClient.shutdown()
+        redissonSyncClient?.shutdown()
     }
 
     private fun createRedissonClient(): RedissonReactiveClient {
@@ -32,6 +34,7 @@ class RedissonClientProvider constructor(
         if (executor != null) config.executor = executor
         if (eventLoopGroup != null) config.eventLoopGroup = eventLoopGroup
 
-        return Redisson.create(config).reactive()
+        redissonSyncClient = Redisson.create(config)
+        return redissonSyncClient!!.reactive()
     }
 }

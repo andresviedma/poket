@@ -2,13 +2,14 @@ package io.github.andresviedma.poket.cache.decorators
 
 import io.github.andresviedma.poket.cache.CacheMetrics
 import io.github.andresviedma.poket.cache.CacheSystem
+import kotlin.reflect.KClass
 
 internal class MetricsCacheSystem(
     private val target: CacheSystem,
     private val metrics: CacheMetrics,
 ) : CacheSystem by target {
 
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? =
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
         metrics.recordTimer("get", getId(), namespace, recordHitMiss = true) {
             target.getObject(namespace, key, resultClass)
         }
@@ -34,7 +35,7 @@ internal class MetricsCacheSystem(
     override suspend fun <K : Any, V : Any> getObjectList(
         namespace: String,
         keys: List<K>,
-        resultClass: Class<V>
+        resultClass: KClass<V>
     ): Map<K, V> =
         metrics.recordTimer("blockGet", getId(), namespace, blockSize = keys.size) {
             target.getObjectList(namespace, keys, resultClass)

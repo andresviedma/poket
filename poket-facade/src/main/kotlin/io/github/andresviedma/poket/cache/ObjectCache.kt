@@ -7,6 +7,7 @@ import io.github.andresviedma.poket.mutex.DistributedMutexFactory
 import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
 import kotlinx.datetime.Clock
+import kotlin.reflect.KClass
 
 /**
  * Main entry point to create a typed cache with configuration settings by type of cached element.
@@ -24,11 +25,11 @@ class ObjectCacheFactory(
         customSerializer: PoketSerializer? = null,
         defaultTypeConfig: CacheTypeConfig? = null
     ): ObjectCache<K, V> =
-        createCache(type, V::class.java, serializationVersion, customSerializer, defaultTypeConfig)
+        createCache(type, V::class, serializationVersion, customSerializer, defaultTypeConfig)
 
     fun <K : Any, V : Any> createCache(
         type: String,
-        valueClass: Class<V>,
+        valueClass: KClass<V>,
         serializationVersion: String = "1",
         customSerializer: PoketSerializer? = null,
         defaultTypeConfig: CacheTypeConfig? = null
@@ -45,7 +46,7 @@ class ObjectCache<K : Any, V : Any>(
     configProvider: ConfigProvider,
     private val metrics: CacheMetrics,
     private val type: String,
-    private val valueClass: Class<V>,
+    private val valueClass: KClass<V>,
 
     /** Version of the object format, should be incremented when the data format changes, invalidating the previous values */
     private val serializationVersion: String = "1",
@@ -179,7 +180,7 @@ class ObjectCache<K : Any, V : Any>(
         get(key)?.also {
             val config = getConfig()
             if (config.outdateTimeInSeconds != null) {
-                val ts = getCacheSystem(config).getObject(config.generationTimeNamespace(), key, Long::class.java)
+                val ts = getCacheSystem(config).getObject(config.generationTimeNamespace(), key, Long::class)
                 if (config.isOutdated(ts, Clock.System.now())) {
                     collapsingMutex.ifSynchronized(key) {
                         PoketAsyncRunnerProvider.launcher.launch("cache-regenerate") {

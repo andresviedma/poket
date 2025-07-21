@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import io.github.andresviedma.poket.cache.CacheSystem
 import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 class CaffeineCacheSystem : CacheSystem {
     private val cacheMap = ConcurrentHashMap<String, Cache<Any, Any>>()
@@ -12,7 +13,7 @@ class CaffeineCacheSystem : CacheSystem {
     override fun getId(): String = "memory"
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? =
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
         cacheOrNull(namespace)?.getIfPresent(key) as V?
 
     override suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean) {
@@ -24,7 +25,7 @@ class CaffeineCacheSystem : CacheSystem {
     }
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: Class<V>): Map<K, V> =
+    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: KClass<V>): Map<K, V> =
         (cacheOrNull(namespace)?.getAllPresent(keys) ?: emptyMap()) as Map<K, V>
 
     override suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, V>, ttlSeconds: Long, forceInvalidation: Boolean) {

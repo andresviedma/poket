@@ -5,6 +5,7 @@ import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import kotlinx.coroutines.reactive.awaitFirstOrDefault
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import java.time.Duration
+import kotlin.reflect.KClass
 
 class RedissonCacheSystem(
     private val redisProvider: RedissonClientProvider
@@ -12,7 +13,7 @@ class RedissonCacheSystem(
 
     override fun getId(): String = "redis"
 
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? {
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? {
         return getBucket<K, V>(namespace, key)?.get()?.awaitFirstOrNull()
     }
 
@@ -24,7 +25,7 @@ class RedissonCacheSystem(
         getBucket<K, Any>(namespace, key)?.andDelete?.awaitFirstOrNull()
     }
 
-    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: Class<V>): Map<K, V> {
+    override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: KClass<V>): Map<K, V> {
         val stringKeyMap = keys.associateBy { cacheKeyToString(namespace, it) }
         val objects = redisProvider.getClient().buckets.get<V>(*stringKeyMap.keys.toTypedArray()).awaitFirstOrDefault(emptyMap())
         return objects.mapKeys { stringKeyMap[it.key]!! }

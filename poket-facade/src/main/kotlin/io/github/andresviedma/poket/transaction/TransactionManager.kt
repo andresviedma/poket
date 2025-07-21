@@ -10,6 +10,7 @@ import java.util.Deque
 import java.util.LinkedList
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
 
@@ -180,7 +181,7 @@ class TransactionManager(
     }
 
     private suspend fun runActionsAfterTransaction(context: TransactionContext, commit: Boolean) {
-        (context.getTransactionData(TransactionHookRegister::class.java) as? TransactionHookRegister)
+        (context.getTransactionData(TransactionHookRegister::class) as? TransactionHookRegister)
             ?.clearTransactionHooks(commit = commit)
             ?.forEach { action -> action() }
     }
@@ -194,13 +195,13 @@ class TransactionManager(
 data class TransactionContext(
     var inTransaction: Boolean = false
 ) {
-    private val transactionData = ConcurrentHashMap<Class<*>, Any>()
+    private val transactionData = ConcurrentHashMap<KClass<*>, Any>()
 
     fun registerTransactionData(dataObject: Any?) {
-        dataObject?.let { transactionData[it.javaClass] = dataObject }
+        dataObject?.let { transactionData[it::class] = dataObject }
     }
 
-    fun getTransactionData(dataClass: Class<*>): Any? =
+    fun getTransactionData(dataClass: KClass<*>): Any? =
         transactionData[dataClass]
 
     fun clear() {

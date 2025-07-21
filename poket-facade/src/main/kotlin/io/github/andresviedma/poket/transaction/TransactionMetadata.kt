@@ -1,11 +1,13 @@
 package io.github.andresviedma.poket.transaction
 
+import kotlin.reflect.KClass
+
 /**
  * Properties of a transaction, declared when it is started.
  */
 class TransactionMetadata(
-    private val rollbackOn: Set<Class<out Throwable>> = emptySet(),
-    private val dontRollbackOn: Set<Class<out Throwable>> = emptySet(),
+    private val rollbackOn: Set<KClass<out Throwable>> = emptySet(),
+    private val dontRollbackOn: Set<KClass<out Throwable>> = emptySet(),
     val isolationLevel: TransactionIsolationLevel? = null // use default
 ) {
     /**
@@ -16,7 +18,7 @@ class TransactionMetadata(
         (rollbackOn.isEmpty() || exceptionInList(e, rollbackOn)) &&
             !exceptionInList(e, dontRollbackOn)
 
-    private fun exceptionInList(e: Throwable, classList: Set<Class<*>>): Boolean =
+    private fun exceptionInList(e: Throwable, classList: Set<KClass<*>>): Boolean =
         classList.any { it.isInstance(e) }
 }
 

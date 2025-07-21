@@ -3,6 +3,7 @@ package io.github.andresviedma.poket.cache
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.KClass
 
 class CacheSystemProvider(
     private val registeredSystems: Set<CacheSystem>,
@@ -44,13 +45,13 @@ class CacheSystemProvider(
 interface CacheSystem {
     fun getId(): String
 
-    suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V?
+    suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V?
 
     suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean)
 
     suspend fun <K : Any> invalidateObject(namespace: String, key: K)
 
-    suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: Class<V>): Map<K, V>
+    suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: KClass<V>): Map<K, V>
 
     suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, V>, ttlSeconds: Long, forceInvalidation: Boolean)
 

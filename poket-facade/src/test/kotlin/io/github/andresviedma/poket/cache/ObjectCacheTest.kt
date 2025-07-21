@@ -30,6 +30,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
+import kotlin.reflect.KClass
 
 class ObjectCacheTest : FeatureSpec({
     isolationMode = IsolationMode.InstancePerTest
@@ -45,10 +46,10 @@ class ObjectCacheTest : FeatureSpec({
     @Suppress("ktlint:standard:statement-wrapping")
     val errorCacheSystem = object : MapCacheSystem() {
         override fun getId(): String = "error-system"
-        override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: Class<V>): V? { throw Exception("boom") }
+        override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? { throw Exception("boom") }
         override suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean) { boom() }
         override suspend fun <K : Any> invalidateObject(namespace: String, key: K) { boom() }
-        override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: Class<V>): Map<K, V> { throw Exception("boom") }
+        override suspend fun <K : Any, V : Any> getObjectList(namespace: String, keys: List<K>, resultClass: KClass<V>): Map<K, V> { throw Exception("boom") }
         override suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, V>, ttlSeconds: Long, forceInvalidation: Boolean) { boom() }
         override suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, Triple<V, Long, Boolean>>) { boom() }
         override suspend fun <K : Any> invalidateObjectList(namespace: String, keys: List<K>) { boom() }
@@ -84,7 +85,7 @@ class ObjectCacheTest : FeatureSpec({
             configProvider = config,
             metrics = CacheMetrics(),
             type = type,
-            valueClass = String::class.java,
+            valueClass = String::class,
             serializationVersion = serializationVersion,
             customSerializer = customSerializer
         )
@@ -103,7 +104,7 @@ class ObjectCacheTest : FeatureSpec({
         configProvider = config,
         metrics = CacheMetrics(),
         type = "test",
-        valueClass = Int::class.java,
+        valueClass = Int::class,
         customSerializer = customSerializer
     )
 
