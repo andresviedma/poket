@@ -5,7 +5,7 @@ import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
-import java.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 private val log = KotlinLogging.logger {}
 
@@ -37,8 +37,8 @@ class DistributedMutex(
         val ctx = getLockHandlingErrors(config, lockSystem) {
             waitLock(
                 name,
-                Duration.ofMillis(config.timeoutInMillis!!.toLong()),
-                Duration.ofMillis(config.ttlInMillis!!.toLong())
+                config.timeoutInMillis!!.milliseconds,
+                config.ttlInMillis!!.milliseconds,
             )
         }
         if (!ctx.hasLock) {
@@ -56,7 +56,7 @@ class DistributedMutex(
         val lockSystem = lockSystemProvider.getLockSystem(config.lockSystem!!)
         val name = lockName(keys)
         val ctx = getLockHandlingErrors(config, lockSystem) {
-            getLockIfFree(name, Duration.ofMillis(config.ttlInMillis!!.toLong()))
+            getLockIfFree(name, config.ttlInMillis!!.milliseconds)
         }
         try {
             return mutexBlock(ctx.hasLock)
@@ -89,7 +89,7 @@ class DistributedMutex(
                     } else {
                         log.warn {
                             "Error releasing lock type $type key $name (will continue execution): " +
-                                    "${exception.javaClass.simpleName}: ${exception.message}"
+                                    "${exception::class.simpleName}: ${exception.message}"
                         }
                     }
                 }
@@ -113,14 +113,14 @@ class DistributedMutex(
                 MutexOnErrorAction.GET -> {
                     log.warn {
                         "Error getting lock type $type (will continue execution): " +
-                                "${exception.javaClass.simpleName}: ${exception.message}"
+                                "${exception::class.simpleName}: ${exception.message}"
                     }
                     LockContext(hasLock = true, lockSystemUsed = null)
                 }
                 MutexOnErrorAction.FALLBACK -> {
                     log.warn {
                         "Error getting lock type $type with system ${lockSystem.getId()} (will try fallback): " +
-                                "${exception.javaClass.simpleName}: ${exception.message}"
+                                "${exception::class.simpleName}: ${exception.message}"
                     }
                     if (config.fallbackLockSystem != null && config.fallbackLockSystem != lockSystem.getId()) {
                         val fallbackSystem = lockSystemProvider.getLockSystem(config.fallbackLockSystem)

@@ -5,8 +5,8 @@ import io.github.andresviedma.poket.mutex.LockContext
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration
 
 private val logger = KotlinLogging.logger {}
 
@@ -17,11 +17,11 @@ class LockExpirationWatcher(
     private val locks = ConcurrentHashMap<String, Job>()
 
     suspend fun scheduleTtlExpiration(lock: String, ttl: Duration, context: LockContext) {
-        if (ttl.toMillis() == 0L) return
+        if (ttl.inWholeMilliseconds == 0L) return
 
         locks[lock] = PoketAsyncRunnerProvider.launcher.launch("lock-expiration") {
             try {
-                delay(ttl.toMillis())
+                delay(ttl.inWholeMilliseconds)
                 if (isActive) {
                     if (locks.containsKey(lock)) {
                         logger.warn { "DB Lock expired TTL: $lock" }

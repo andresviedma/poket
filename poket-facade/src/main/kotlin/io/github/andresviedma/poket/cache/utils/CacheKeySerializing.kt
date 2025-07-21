@@ -20,7 +20,7 @@ private fun simpleKeyToString(key: Any): String =
     }
 
 private fun tryDecompose(value: Any): List<*> {
-    val clazz = value.javaClass.kotlin
+    val clazz = value::class
     return if (clazz.isData) {
         val result = mutableListOf<Any?>()
         do {

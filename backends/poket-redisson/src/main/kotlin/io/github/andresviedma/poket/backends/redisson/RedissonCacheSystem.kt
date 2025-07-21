@@ -4,8 +4,9 @@ import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import kotlinx.coroutines.reactive.awaitFirstOrDefault
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import java.time.Duration
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class RedissonCacheSystem(
     private val redisProvider: RedissonClientProvider
@@ -18,7 +19,7 @@ class RedissonCacheSystem(
     }
 
     override suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean) {
-        getBucket<K, V>(namespace, key)?.set(value, Duration.ofSeconds(ttlSeconds))?.awaitFirstOrNull()
+        getBucket<K, V>(namespace, key)?.set(value, ttlSeconds.seconds.toJavaDuration())?.awaitFirstOrNull()
     }
 
     override suspend fun <K : Any> invalidateObject(namespace: String, key: K) {
@@ -35,7 +36,7 @@ class RedissonCacheSystem(
         val batch = redisProvider.getClient().createBatch()
         values.forEach {
             batch.getBucket<V>(cacheKeyToString(namespace, it.key))
-                ?.set(it.value, Duration.ofSeconds(ttlSeconds))
+                ?.set(it.value, ttlSeconds.seconds.toJavaDuration())
         }
         batch.execute().awaitFirstOrNull()
     }
@@ -44,7 +45,7 @@ class RedissonCacheSystem(
         val batch = redisProvider.getClient().createBatch()
         values.forEach {
             batch.getBucket<V>(cacheKeyToString(namespace, it.key))
-                ?.set(it.value.first, Duration.ofSeconds(it.value.second))
+                ?.set(it.value.first, it.value.second.seconds.toJavaDuration())
         }
         batch.execute().awaitFirstOrNull()
     }

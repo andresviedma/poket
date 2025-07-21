@@ -44,7 +44,7 @@ open class InjectionModuleBaseTest <I : Any> (
         When {
             engine.getInstance<XContainer>()
         } then { xcontainer ->
-            xcontainer.elements.map { it.javaClass.simpleName }.toSet() shouldBe setOf("X1", "X2")
+            xcontainer.elements.map { it::class.simpleName }.toSet() shouldBe setOf("X1", "X2")
         }
     }
 

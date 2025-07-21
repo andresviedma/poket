@@ -3,9 +3,10 @@ package io.github.andresviedma.poket.backends.caffeine
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
 import io.github.andresviedma.poket.cache.CacheSystem
-import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class CaffeineCacheSystem : CacheSystem {
     private val cacheMap = ConcurrentHashMap<String, Cache<Any, Any>>()
@@ -50,7 +51,7 @@ class CaffeineCacheSystem : CacheSystem {
         cacheMap.getOrPut(namespace) {
             Caffeine.newBuilder()
                 .maximumSize(100) // TODO configurable limit per type / namespace?
-                .expireAfterWrite(Duration.ofSeconds(ttlSeconds))
+                .expireAfterWrite(ttlSeconds.seconds.toJavaDuration())
                 .build()
         }
 }

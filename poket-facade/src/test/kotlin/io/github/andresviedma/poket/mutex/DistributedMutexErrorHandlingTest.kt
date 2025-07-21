@@ -10,7 +10,7 @@ import io.github.andresviedma.trekkie.then
 import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
-import java.time.Duration
+import kotlin.time.Duration
 
 class DistributedMutexErrorHandlingTest : FeatureSpec({
     fun errorLockSystem(id: String, errorOnLock: Boolean, errorOnRelease: Boolean) = object : LockSystem {

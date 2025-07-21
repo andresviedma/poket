@@ -7,7 +7,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import java.time.Instant
+import kotlinx.datetime.Clock
 
 class CaffeineCacheSystemTest : FeatureSpec({
     isolationMode = IsolationMode.InstancePerTest
@@ -112,7 +112,7 @@ class CaffeineCacheSystemTest : FeatureSpec({
         scenario("set multiple data") {
             val data = TestDataClass("a", 5)
             val data2 = SealedTestClass.Class1(50)
-            val data3 = Instant.now()
+            val data3 = Clock.System.now()
             Given {
                 cache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }

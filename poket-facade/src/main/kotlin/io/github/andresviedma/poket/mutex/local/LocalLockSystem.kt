@@ -5,8 +5,8 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.github.andresviedma.poket.mutex.watcher.LockSystemWithTtlWatcher
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withTimeout
-import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.time.Duration
 
 /**
  * Implementation of a lock system using local mutex. It is mainly useful for tests, it should not be used for
@@ -32,7 +32,7 @@ private class SimpleLocalLockSystem : LockSystem {
             LockContext(true)
         } else {
             runCatching {
-                withTimeout(timeout.toMillis()) {
+                withTimeout(timeout.inWholeMilliseconds) {
                     mutex.lock()
                     LockContext(true)
                 }

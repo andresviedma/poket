@@ -6,9 +6,9 @@ import io.github.andresviedma.poket.support.metrics.recordTimer
 import io.micrometer.core.instrument.MeterRegistry
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
-import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import kotlin.time.Duration
 
 class RedissonLockSystem(
     private val redisProvider: RedissonClientProvider,
@@ -21,7 +21,7 @@ class RedissonLockSystem(
         meterRegistry.recordTimer("redis.lock.get") {
             val lock = redisProvider.getClient().getLock(name)
             val ownerId = Random.nextLong()
-            val lockAcquired = lock?.tryLock(timeout.toMillis(), ttl.toMillis(), TimeUnit.MILLISECONDS, ownerId)?.awaitFirstOrNull()
+            val lockAcquired = lock?.tryLock(timeout.inWholeMilliseconds, ttl.inWholeMilliseconds, TimeUnit.MILLISECONDS, ownerId)?.awaitFirstOrNull()
             LockContext(lockAcquired == true, ownerId)
         }
 

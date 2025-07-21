@@ -174,7 +174,7 @@ class TransactionManager(
             if (originalException != null) {
                 logger.warn(originalException) {
                     "Transaction commit run although an exception occurred: " +
-                            "${originalException.javaClass.simpleName} ${originalException.message}"
+                            "${originalException::class.simpleName} ${originalException.message}"
                 }
             }
         }

@@ -2,8 +2,7 @@ package io.github.andresviedma.poket.mutex.local
 
 import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.*
-import java.time.Duration
-import java.util.LinkedList
+import kotlin.time.Duration
 
 fun distributedMutexFactoryStub(lockSystem: LockSystem = lockSystemStub()) = DistributedMutexFactory(
     LockSystemProvider.withLockSystems(lockSystem),
@@ -16,7 +15,7 @@ fun lockSystemStub(): LockSystemStub = LockSystemStub()
 
 @Suppress("unused")
 class LockSystemStub : LockSystem {
-    private val willGetLock: MutableList<Boolean> = LinkedList()
+    private val willGetLock: MutableList<Boolean> = mutableListOf()
 
     fun willGetLock() {
         willGetLock.clear().also { willGetLock.add(true) }

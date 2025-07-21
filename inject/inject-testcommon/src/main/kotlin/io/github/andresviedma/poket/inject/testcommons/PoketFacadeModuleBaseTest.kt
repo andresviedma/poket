@@ -36,7 +36,7 @@ open class PoketFacadeModuleBaseTest <I : Any> (
         val transactionManager = TransactionWrapper.transactionManager
         val handlers = transactionManager.getPrivateProperty<List<TransactionDataHandler>>("transactionHandlers")
 
-        handlers.map { it.javaClass.simpleName }.toSet() shouldBe setOf(
+        handlers.map { it::class.simpleName }.toSet() shouldBe setOf(
             "ObjectCacheTransactionHandler",
             SagaTransactionHandler::class.simpleName,
         )

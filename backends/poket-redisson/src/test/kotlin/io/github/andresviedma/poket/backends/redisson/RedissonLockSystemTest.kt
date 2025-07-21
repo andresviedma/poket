@@ -80,8 +80,8 @@ class RedissonLockSystemTest : FeatureSpec({
                     }
                 }.awaitAll()
             } then { result ->
-                result[0].shouldBeFailure { it is java.lang.IllegalStateException }
-                result[1].shouldBeFailure { it is java.lang.IllegalStateException }
+                result[0].shouldBeFailure { it is IllegalStateException }
+                result[1].shouldBeFailure { it is IllegalStateException }
             } and {
                 events shouldBe listOf(
                     "start",

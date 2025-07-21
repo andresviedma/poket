@@ -22,7 +22,7 @@ class ClassPoketSerializer<V : Any>(
         if (clazz.isInstance(deserialized)) {
             typedSerializer.serializeValue(deserialized as V)
         } else {
-            error("Cache: Trying to serialize the wrong class ${deserialized.javaClass.name}")
+            error("Cache: Trying to serialize the wrong class ${deserialized::class.qualifiedName}")
         }
 
     override fun <T : Any> deserialize(serialized: String, resultClass: KClass<T>): T =

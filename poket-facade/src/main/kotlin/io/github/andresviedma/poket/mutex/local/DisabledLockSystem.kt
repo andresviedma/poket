@@ -2,7 +2,7 @@ package io.github.andresviedma.poket.mutex.local
 
 import io.github.andresviedma.poket.mutex.LockContext
 import io.github.andresviedma.poket.mutex.LockSystem
-import java.time.Duration
+import kotlin.time.Duration
 
 /**
  * Implementation of a lock system that is disabled and does not really get a lock.

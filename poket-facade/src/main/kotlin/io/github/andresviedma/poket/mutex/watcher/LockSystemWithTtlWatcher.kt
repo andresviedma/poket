@@ -2,7 +2,7 @@ package io.github.andresviedma.poket.mutex.watcher
 
 import io.github.andresviedma.poket.mutex.LockContext
 import io.github.andresviedma.poket.mutex.LockSystem
-import java.time.Duration
+import kotlin.time.Duration
 
 open class LockSystemWithTtlWatcher(
     protected val targetLockSystem: LockSystem

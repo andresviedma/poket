@@ -1,6 +1,7 @@
 package io.github.andresviedma.poket.mutex
 
-import java.time.Duration
+import kotlin.time.Duration
+
 
 class LockSystemProvider(
     private val registeredSystems: Set<LockSystem>

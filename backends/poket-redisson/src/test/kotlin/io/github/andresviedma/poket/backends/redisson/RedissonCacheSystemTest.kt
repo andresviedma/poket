@@ -6,7 +6,8 @@ import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
 import io.kotest.matchers.shouldBe
-import java.time.Instant
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 class RedissonCacheSystemTest : BaseSpec({
 
@@ -75,7 +76,7 @@ class RedissonCacheSystemTest : BaseSpec({
         }
 
         scenario("set Instant") {
-            val data = Instant.now()
+            val data = Clock.System.now()
             Given {
                 redisCache.setObject("testNamespace", "testKey", data, 3600, false)
             }
@@ -113,7 +114,7 @@ class RedissonCacheSystemTest : BaseSpec({
         scenario("set multiple data") {
             val data = TestDataClass("a", 5)
             val data2 = SealedTestClass.Class1(50)
-            val data3 = Instant.now()
+            val data3 = Clock.System.now()
             Given {
                 redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
