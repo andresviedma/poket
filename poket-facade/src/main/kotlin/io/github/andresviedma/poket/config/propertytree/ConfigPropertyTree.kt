@@ -85,7 +85,7 @@ sealed interface ConfigNode {
 
         override fun toRaw(): Any =
             // Detection of list as map with numeric indexes
-            if (children.keys.all { runCatching { Integer.parseUnsignedInt(it) }.getOrNull() != null }) {
+            if (children.isNotEmpty() && children.keys.all { runCatching { Integer.parseUnsignedInt(it) }.getOrNull() != null }) {
                 ListNode(children.entries.sortedBy { it.key.toInt() }.map { it.value })
                     .toRaw()
             } else {

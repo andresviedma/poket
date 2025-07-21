@@ -114,7 +114,9 @@ class TreeNodeTest : FeatureSpec({
                         "x" to listOf(
                             mapOf("s" to 2),
                             10,
-                        )
+                        ),
+                        "y" to emptyMap<String, String>(),
+                        "z" to emptyList<String>(),
                     )
                 )
             } then {
@@ -127,7 +129,9 @@ class TreeNodeTest : FeatureSpec({
                     "x" to listOf(
                         mapOf("s" to 2),
                         10,
-                    )
+                    ),
+                    "y" to emptyMap<String, String>(),
+                    "z" to emptyList<String>(),
                 )
 
                 tree.propertyToRaw("a.b.c") shouldBe "hello"
