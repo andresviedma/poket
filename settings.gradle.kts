@@ -26,6 +26,7 @@ include(
     ":poket-facade",
 
     ":backends:poket-caffeine",
+    ":backends:poket-lettuce",
     ":backends:poket-redisson",
 
     ":inject:poket-guice",
