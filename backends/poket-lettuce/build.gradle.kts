@@ -2,7 +2,6 @@ dependencies {
     api(projects.poket.poketFacade)
     implementation(projects.poket.serialization.poketJackson)
     implementation(libs.lettuce)
-    implementation(libs.redpulsar.lettuce)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.reactor)
     implementation(libs.micrometer.core)

@@ -177,4 +177,3 @@ class JacksonObjectMapperTest : FeatureSpec({
         }
     }
 })
-

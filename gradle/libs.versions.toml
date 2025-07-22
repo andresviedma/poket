@@ -22,7 +22,7 @@ slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.7" }
 
 # Jackson
-jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.19.1" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.19.2" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
 jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
@@ -47,7 +47,6 @@ redisson = { module = "org.redisson:redisson", version = "3.50.0" }
 
 # Lettuce (Redis)
 lettuce = { module = "io.lettuce:lettuce-core", version = "6.7.1.RELEASE" }
-redpulsar-lettuce = { module = "com.himadieiev:redpulsar-lettuce", version="1.4.0" }
 
 # Caffine memory cache
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2" }

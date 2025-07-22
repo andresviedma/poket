@@ -1,14 +1,17 @@
 package io.github.andresviedma.poket.backends.lettuce
 
-import com.himadieiev.redpulsar.lettuce.abstracts.LettuceUnified
-import com.himadieiev.redpulsar.lettuce.locks.LockFactory
 import io.github.andresviedma.poket.mutex.LockContext
 import io.github.andresviedma.poket.mutex.LockSystem
-import io.lettuce.core.cluster.api.sync.RedisClusterCommands
+import io.lettuce.core.ExperimentalLettuceCoroutinesApi
+import io.lettuce.core.SetArgs
+import kotlinx.coroutines.delay
+import kotlinx.datetime.Clock
+import java.util.UUID
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration
 
+@OptIn(ExperimentalLettuceCoroutinesApi::class)
 class LettuceLockSystem(
     private val redisConnection: RedisLettuceConnection,
 ) : LockSystem {
@@ -21,43 +24,38 @@ class LettuceLockSystem(
         timeout: Duration,
         ttl: Duration,
     ): LockContext {
-        val mutex =
-            LockFactory.createMutex(
-                listOf(redisConnection.toLettuceUnified()),
-                retryDelay = waitLockPollInterval.toJavaDuration(),
-                retryCount = ((timeout.inWholeMilliseconds + waitLockPollInterval.inWholeMilliseconds - 1) / waitLockPollInterval.inWholeMilliseconds).toInt(),
-            )
-        val gotLock = mutex.lock(name, ttl.toJavaDuration())
-        return LockContext(gotLock)
+        val t0 = Clock.System.now()
+        val key = "mutex::$name"
+        val value = UUID.randomUUID().toString()
+        do {
+            val result = redisConnection.coroutines.set(key, value, SetArgs.Builder.nx().px(ttl.toJavaDuration()))
+            if (result == "OK") return LockContext(hasLock = true, lockContext = value)
+            if (Clock.System.now() - t0 < timeout) {
+                delay(waitLockPollInterval)
+            }
+        } while (Clock.System.now() - t0 < timeout)
+        return LockContext(hasLock = false)
     }
 
     override suspend fun getLockIfFree(
         name: String,
         ttl: Duration,
     ): LockContext {
-        val mutex =
-            LockFactory.createMutex(
-                listOf(redisConnection.toLettuceUnified()),
-                retryDelay = 1.milliseconds.toJavaDuration(),
-                retryCount = 1,
-            )
-        val gotLock = mutex.lock(name, ttl.toJavaDuration())
-        return LockContext(gotLock)
+        val key = "mutex::$name"
+        val value = UUID.randomUUID().toString()
+        val result = redisConnection.coroutines.set(key, value, SetArgs.Builder.nx().px(ttl.toJavaDuration()))
+        if (result == "OK") return LockContext(hasLock = true, lockContext = value)
+        return LockContext(hasLock = false)
     }
 
     override suspend fun releaseLock(
         name: String,
         lockContext: LockContext,
-    ): Boolean =
-        LockFactory
-            .createMutex(
-                listOf(redisConnection.toLettuceUnified()),
-                retryDelay = 1.milliseconds.toJavaDuration(),
-                retryCount = 1,
-            ).unlock(name)
-
-    private fun RedisLettuceConnection.toLettuceUnified(): LettuceUnified<String, String> =
-        object : LettuceUnified<String, String> {
-            override fun <R> sync(consumer: (RedisClusterCommands<String, String>) -> R): R = consumer(this@toLettuceUnified.sync)
-        }
+    ): Boolean {
+        val key = "mutex::$name"
+        val currentValue = redisConnection.coroutines.get(key)
+        if (currentValue != lockContext.lockContext) return false
+        redisConnection.coroutines.del(key)
+        return true
+    }
 }

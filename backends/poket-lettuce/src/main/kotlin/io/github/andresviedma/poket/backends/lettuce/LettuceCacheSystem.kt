@@ -58,7 +58,9 @@ class LettuceCacheSystem(
         return redisConnection.coroutines
             .mget(*keysMap.keys.toTypedArray())
             .toList()
-            .associate { keysMap[it.key]!! to it.value.deserialized(resultClass) }
+            .map { it.key to runCatching { it.value }.getOrNull() }
+            .filter { (_, v) -> v != null }
+            .associate { (key, value) -> keysMap[key]!! to value!!.deserialized(resultClass) }
     }
 
     override suspend fun <K : Any, V : Any> setObjectList(
@@ -95,9 +97,11 @@ class LettuceCacheSystem(
         cacheSerializer = JacksonPoketSerializer(objectMapper)
     }
 
-    private fun <T : Any> String.deserialized(clazz: KClass<T>): T = cacheSerializer.deserialize(this, clazz)
+    private fun <T : Any> String.deserialized(clazz: KClass<T>): T =
+        cacheSerializer.deserialize(this, clazz)
 
-    private fun <T : Any> T.serialized(): String = cacheSerializer.serialize(this)
+    private fun <T : Any> T.serialized(): String =
+        cacheSerializer.serialize(this)
 
     companion object {
         fun create(
