@@ -11,7 +11,7 @@ import com.fasterxml.jackson.module.kotlin.kotlinModule
 @Suppress("unused")
 object DefaultJacksonMappers {
     /** Default Jackson ObjectMapper to be used for serialization */
-    val DEFAULT_JACKSON_SERIALIZER: ObjectMapper = JsonMapper.builder()
+    val DEFAULT_JACKSON_OBJECT_MAPPER: ObjectMapper = JsonMapper.builder()
         .addModules(
             kotlinModule(),
             Jdk8Module(),
@@ -21,7 +21,7 @@ object DefaultJacksonMappers {
         .build()
 
     /** Default Jackson ObjectMapper to be used for serialization, but using snake case for properties */
-    val DEFAULT_JACKSON_SNAKECASE_SERIALIZER: ObjectMapper = JsonMapper.builder()
+    val DEFAULT_JACKSON_SNAKECASE_OBJECT_MAPPER: ObjectMapper = JsonMapper.builder()
         .addModules(
             kotlinModule(),
             Jdk8Module(),

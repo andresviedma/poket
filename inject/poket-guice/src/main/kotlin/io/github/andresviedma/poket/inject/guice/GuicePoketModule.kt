@@ -38,6 +38,11 @@ class GuicePoketModule(
         bindings.flatMap { it.interfaceObjects.entries }.forEach { (clazz, instance) ->
             bind(clazz.java).toInstance(casted(instance))
         }
+        bindings.flatMap { it.interfaceSingletons.entries }.forEach { (interfaceClass, singletonClass) ->
+            bind(interfaceClass.java)
+                .toConstructor(classConstructor(singletonClass))
+                .`in`(Singleton::class.java)
+        }
 
         bindings.flatMap { it.staticWrappers }.forEach { clazz ->
             StaticInitializer.addWrapper(clazz)

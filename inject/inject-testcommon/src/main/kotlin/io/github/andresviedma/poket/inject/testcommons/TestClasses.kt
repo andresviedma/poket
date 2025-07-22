@@ -2,6 +2,9 @@
 
 package io.github.andresviedma.poket.inject.testcommons
 
+import io.github.andresviedma.poket.support.inject.OptionalBinder
+import io.github.andresviedma.poket.support.inject.getOptionalInstance
+
 interface X
 
 class X1 : X
@@ -31,4 +34,8 @@ object NullableBWrapper {
     fun init(b: B?): NullableBWrapper = apply {
         this.b = b
     }
+}
+
+class NullableBWrapperSingleton(optionalBinder: OptionalBinder) {
+    val b: B? = optionalBinder.getOptionalInstance()
 }

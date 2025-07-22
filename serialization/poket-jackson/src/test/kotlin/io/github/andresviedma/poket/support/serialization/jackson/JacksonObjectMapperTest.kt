@@ -1,5 +1,6 @@
 package io.github.andresviedma.poket.support.serialization.jackson
 
+import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_OBJECT_MAPPER
 import io.github.andresviedma.trekkie.Expect
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
@@ -7,7 +8,7 @@ import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 
 class JacksonObjectMapperTest : FeatureSpec({
-    val mapper = JacksonObjectMapper()
+    val mapper = JacksonMapObjectMapper(ObjectMapperProvider.ofDefaultMapper())
 
     feature("object to map") {
         scenario("null") {

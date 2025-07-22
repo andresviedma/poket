@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
-import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_SERIALIZER
 import io.github.andresviedma.poket.support.serialization.jackson.JacksonPoketSerializer
+import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.SetArgs
 import kotlinx.coroutines.flow.toList
@@ -14,8 +14,9 @@ import kotlin.reflect.KClass
 @OptIn(ExperimentalLettuceCoroutinesApi::class)
 class LettuceCacheSystem(
     private val redisConnection: RedisLettuceConnection,
+    objectMapperProvider: ObjectMapperProvider,
 ) : CacheSystem {
-    private var cacheSerializer: PoketSerializer = JacksonPoketSerializer(DEFAULT_JACKSON_SERIALIZER)
+    private val cacheSerializer: PoketSerializer = JacksonPoketSerializer(objectMapperProvider)
 
     override fun getId(): String = "lettuce-redis"
 
@@ -93,10 +94,6 @@ class LettuceCacheSystem(
         redisConnection.coroutines.del(*keys.map { cacheKeyToString(namespace, it) }.toTypedArray())
     }
 
-    fun withObjectMapper(objectMapper: ObjectMapper) {
-        cacheSerializer = JacksonPoketSerializer(objectMapper)
-    }
-
     private fun <T : Any> String.deserialized(clazz: KClass<T>): T =
         cacheSerializer.deserialize(this, clazz)
 
@@ -104,12 +101,10 @@ class LettuceCacheSystem(
         cacheSerializer.serialize(this)
 
     companion object {
-        fun create(
+        fun withObjectMapper(
             redisConnection: RedisLettuceConnection,
             objectMapper: ObjectMapper,
         ): LettuceCacheSystem =
-            LettuceCacheSystem(redisConnection).apply {
-                withObjectMapper(objectMapper)
-            }
+            LettuceCacheSystem(redisConnection, ObjectMapperProvider.of(objectMapper))
     }
 }

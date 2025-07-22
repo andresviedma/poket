@@ -7,6 +7,7 @@ import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.LockWaitTimedOutException
 import io.github.andresviedma.poket.mutex.MutexConfig
 import io.github.andresviedma.poket.mutex.MutexTypeConfig
+import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.and
@@ -26,7 +27,7 @@ class RedissonLockSystemTest : FeatureSpec({
     LoggerFactory.getLogger("test").trace("* Warming up slf4j")
 
     val redisConfig = RedissonConfig.singleConnection(IntegrationEnvironment.redis.address)
-    val lockSystem = RedissonLockSystem(RedissonClientProvider(redisConfig), CompositeMeterRegistry())
+    val lockSystem = RedissonLockSystem(RedissonClientProvider(redisConfig, ObjectMapperProvider.ofDefaultMapper()), CompositeMeterRegistry())
 
     val mutexSettings = MutexTypeConfig(
         lockSystem = lockSystem.getId(),

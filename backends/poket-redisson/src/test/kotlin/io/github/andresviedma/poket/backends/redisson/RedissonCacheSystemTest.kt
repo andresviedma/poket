@@ -2,6 +2,7 @@ package io.github.andresviedma.poket.backends.redisson
 
 import io.github.andresviedma.poket.backends.redisson.env.BaseSpec
 import io.github.andresviedma.poket.backends.redisson.env.IntegrationEnvironment
+import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
@@ -12,7 +13,7 @@ import kotlinx.datetime.Instant
 class RedissonCacheSystemTest : BaseSpec({
 
     val redisConfig = RedissonConfig.singleConnection(IntegrationEnvironment.redis.address)
-    val redisCache = RedissonCacheSystem(RedissonClientProvider(redisConfig))
+    val redisCache = RedissonCacheSystem(RedissonClientProvider(redisConfig, ObjectMapperProvider.ofDefaultMapper()))
 
     feature("getAndSetCacheData") {
         scenario("cache entry exists") {

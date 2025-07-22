@@ -12,24 +12,26 @@ import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.local.DisabledLockSystem
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.poketCoreBindings
+import io.github.andresviedma.poket.support.inject.InjectorBindings
 import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
 open class PoketFacadeModuleBaseTest <I : Any> (
     private val engine: GenericInjector<I>,
+    private val injectorBindings: InjectorBindings,
 ) : StringSpec({
 
-    engine.createInjector(poketCoreBindings)
+    engine.createInjector(poketCoreBindings, injectorBindings)
     afterSpec { engine.reset() }
 
     "config bindings" {
         val configProvider = engine.getInstance<ConfigProvider>()
         val sources = configProvider.getPrivateProperty<List<ConfigSource>>("sources")
-        sources.toSet() shouldBe setOf(
-        )
+        sources shouldHaveSize 1 // Only the base config source by injection
     }
 
     "transaction bindings" {

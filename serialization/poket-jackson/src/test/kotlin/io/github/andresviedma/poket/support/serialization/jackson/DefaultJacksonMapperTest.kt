@@ -1,6 +1,6 @@
 package io.github.andresviedma.poket.support.serialization.jackson
 
-import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_SERIALIZER
+import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_OBJECT_MAPPER
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.Where
 import io.github.andresviedma.trekkie.then
@@ -19,8 +19,8 @@ class DefaultJacksonMapperTest : StringSpec({
     ) { value ->
         "map ${value::class.qualifiedName}" {
             When {
-                val serialized = DEFAULT_JACKSON_SERIALIZER.writeValueAsString(value)
-                DEFAULT_JACKSON_SERIALIZER.readValue(serialized, value::class.java)
+                val serialized = DEFAULT_JACKSON_OBJECT_MAPPER.writeValueAsString(value)
+                DEFAULT_JACKSON_OBJECT_MAPPER.readValue(serialized, value::class.java)
             } then {
                 it shouldBe value
             }

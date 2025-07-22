@@ -1,6 +1,6 @@
 package io.github.andresviedma.poket.backends.redisson
 
-import io.github.andresviedma.poket.support.serialization.jackson.DefaultJacksonMappers.DEFAULT_JACKSON_SERIALIZER
+import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.netty.channel.EventLoopGroup
 import org.redisson.Redisson
 import org.redisson.api.RedissonClient
@@ -8,7 +8,8 @@ import org.redisson.api.RedissonReactiveClient
 import java.util.concurrent.ExecutorService
 
 class RedissonClientProvider(
-    private val redisConfig: RedissonConfig
+    private val redisConfig: RedissonConfig,
+    private val objectMapperProvider: ObjectMapperProvider,
 ) {
     private val executor: ExecutorService? = null
 
@@ -28,7 +29,7 @@ class RedissonClientProvider(
     private fun createRedissonClient(): RedissonReactiveClient {
         val config = redisConfig.redissonConfig
 
-        val codec = JsonJacksonKotlinCodec(DEFAULT_JACKSON_SERIALIZER)
+        val codec = JsonJacksonKotlinCodec(objectMapperProvider.objectMapper)
         config.codec = codec
 
         if (executor != null) config.executor = executor

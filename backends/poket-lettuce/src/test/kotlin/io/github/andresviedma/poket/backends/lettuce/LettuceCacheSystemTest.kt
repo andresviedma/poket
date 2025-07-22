@@ -2,6 +2,7 @@ package io.github.andresviedma.poket.backends.lettuce
 
 import io.github.andresviedma.poket.backends.lettuce.env.BaseSpec
 import io.github.andresviedma.poket.backends.lettuce.env.IntegrationEnvironment
+import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
@@ -9,7 +10,7 @@ import io.kotest.matchers.shouldBe
 
 class LettuceCacheSystemTest : BaseSpec({
 
-    val redisCache = LettuceCacheSystem(IntegrationEnvironment.redis.redisClient)
+    val redisCache = LettuceCacheSystem(IntegrationEnvironment.redis.redisClient, ObjectMapperProvider.ofDefaultMapper())
 
     feature("getAndSetCacheData") {
         scenario("cache entry exists") {

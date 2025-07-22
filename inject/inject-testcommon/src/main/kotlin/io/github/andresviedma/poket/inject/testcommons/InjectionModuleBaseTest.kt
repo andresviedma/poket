@@ -11,6 +11,7 @@ import io.kotest.matchers.types.shouldBeSameInstanceAs
 
 open class InjectionModuleBaseTest <I : Any> (
     private val engine: GenericInjector<I>,
+    private val injectorBindings: InjectorBindings,
 ) : StringSpec({
 
     afterEach { engine.reset() }
@@ -18,6 +19,7 @@ open class InjectionModuleBaseTest <I : Any> (
     "singleton bindings" {
         Given(engine) {
             createInjector(
+                injectorBindings,
                 InjectorBindings(
                     singletons = listOf(B::class, A::class),
                 )
@@ -33,6 +35,7 @@ open class InjectionModuleBaseTest <I : Any> (
     "multi-binding" {
         Given(engine) {
             createInjector(
+                injectorBindings,
                 InjectorBindings(
                     singletons = listOf(XContainer::class),
                     multiBindings = mapOf(
@@ -51,6 +54,7 @@ open class InjectionModuleBaseTest <I : Any> (
     "empty multi-binding" {
         Given(engine) {
             createInjector(
+                injectorBindings,
                 InjectorBindings(
                     singletons = listOf(XContainer::class),
                     multiBindings = mapOf(
@@ -69,6 +73,7 @@ open class InjectionModuleBaseTest <I : Any> (
     "static bindings" {
         Given(engine) {
             createInjector(
+                injectorBindings,
                 InjectorBindings(
                     singletons = listOf(B::class, A::class),
                     staticWrappers = listOf(BWrapper::class),
@@ -85,6 +90,7 @@ open class InjectionModuleBaseTest <I : Any> (
     "nullable static bindings" {
         Given(engine) {
             createInjector(
+                injectorBindings,
                 InjectorBindings(
                     staticWrappers = listOf(NullableBWrapper::class),
                 )
@@ -92,6 +98,21 @@ open class InjectionModuleBaseTest <I : Any> (
         }
         Expect {
             NullableBWrapper.myb shouldBe null
+        }
+    }
+
+    "singleton with optional binding" {
+        Given(engine) {
+            createInjector(
+                injectorBindings,
+                InjectorBindings(
+                    singletons = listOf(NullableBWrapperSingleton::class),
+                )
+            )
+        }
+        Expect {
+            val nullable = engine.getInstance<NullableBWrapperSingleton>()
+            nullable.b shouldBe null
         }
     }
 })

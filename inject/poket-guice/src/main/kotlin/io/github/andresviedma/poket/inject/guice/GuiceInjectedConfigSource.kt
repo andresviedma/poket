@@ -6,11 +6,10 @@ import io.github.andresviedma.poket.config.ConfigPriority
 import io.github.andresviedma.poket.config.ConfigSource
 import kotlin.reflect.KClass
 
-class GuiceInjectedConfigSource(
+open class GuiceInjectedConfigSource(
     private val injector: Injector,
-    private val priority: ConfigPriority = ConfigPriority.DEFAULT,
 ) : ConfigSource {
-    override fun getConfigSourcePriority(): ConfigPriority = priority
+    override fun getConfigSourcePriority(): ConfigPriority = ConfigPriority.DEFAULT
 
     override fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? =
         try {

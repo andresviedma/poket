@@ -27,6 +27,9 @@ fun poketModule(vararg bindings: InjectorBindings) = module {
     bindings.flatMap { it.interfaceObjects.entries }.forEach { (clazz, instance) ->
         single { instance }.bind(clazz as KClass<Any>)
     }
+    bindings.flatMap { it.interfaceSingletons.entries }.forEach { (interfaceClazz, singletonClazz) ->
+        singleton(singletonClazz as KClass<Any>).bind(interfaceClazz as KClass<Any>)
+    }
 
     val staticWrappers = bindings.flatMap { it.staticWrappers }
     if (staticWrappers.isNotEmpty()) {

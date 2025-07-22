@@ -5,10 +5,8 @@ import io.github.andresviedma.poket.config.ConfigSource
 import org.koin.core.context.GlobalContext
 import kotlin.reflect.KClass
 
-class KoinInjectedConfigSource(
-    private val priority: ConfigPriority = ConfigPriority.DEFAULT,
-) : ConfigSource {
-    override fun getConfigSourcePriority(): ConfigPriority = priority
+open class KoinInjectedConfigSource : ConfigSource {
+    override fun getConfigSourcePriority(): ConfigPriority = ConfigPriority.DEFAULT
 
     override fun <T : Any> getConfig(configClass: KClass<T>, config: T?): T? =
         GlobalContext.get().getOrNull(configClass)
