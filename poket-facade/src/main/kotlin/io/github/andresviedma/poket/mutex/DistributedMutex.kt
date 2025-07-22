@@ -9,18 +9,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private val log = KotlinLogging.logger {}
 
-class DistributedMutexFactory(
-    private val lockSystemProvider: LockSystemProvider,
-    private val configProvider: ConfigProvider
-) {
-    @Suppress("unused")
-    fun createMutex(type: String, baseTypeConfig: MutexTypeConfig? = null) =
-        DistributedMutex(lockSystemProvider, configProvider, type, baseTypeConfig = baseTypeConfig)
-
-    fun createMutex(type: String, forceIgnoreLockErrors: Boolean, baseTypeConfig: MutexTypeConfig? = null) =
-        DistributedMutex(lockSystemProvider, configProvider, type, forceIgnoreLockErrors, baseTypeConfig)
-}
-
 class DistributedMutex(
     private val lockSystemProvider: LockSystemProvider,
     configProvider: ConfigProvider,
