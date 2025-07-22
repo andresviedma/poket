@@ -145,6 +145,16 @@ class ObjectCache<K : Any, V : Any>(
         }
             ?: generator(keys)
 
+    /**
+     * For Pair keys, invalidates all keys with the given parent key as first value in the pair.
+     */
+    @Suppress("unused")
+    suspend fun invalidateChildren(parentKey: Any) {
+        ifEnabled { config ->
+            getCacheSystem(config).invalidateChildren(config.namespace(), parentKey)
+        }
+    }
+
     private suspend fun getAndMaybeRegenerate(key: K, generator: suspend () -> V): V? =
         get(key)?.also {
             val config = getConfig()

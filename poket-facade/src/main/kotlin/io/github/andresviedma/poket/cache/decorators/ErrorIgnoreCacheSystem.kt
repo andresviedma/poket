@@ -95,6 +95,12 @@ internal class ErrorIgnoreCacheSystem(
         }
     }
 
+    override suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
+        runOrFail(getConfig().failOnInvalidateError) {
+            target.invalidateChildren(namespace, parentKey)
+        }
+    }
+
     private fun <K : Any, V : Any> Map<K, Triple<V, Long, Boolean>>.anyValueForcesInvalidation() =
         values.any { it.third }
 

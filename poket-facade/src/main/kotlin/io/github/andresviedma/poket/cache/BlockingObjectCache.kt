@@ -29,4 +29,7 @@ class BlockingObjectCache<K : Any, V : Any>(
 
     fun getOrPutBlock(keys: List<K>, generator: (List<K>) -> Map<K, V>): Map<K, V> =
         runBlocking { objectCache.getOrPutBlock(keys, generator) }
+
+    fun invalidateChildren(parentKey: Any) =
+        runBlocking { objectCache.invalidateChildren(parentKey) }
 }

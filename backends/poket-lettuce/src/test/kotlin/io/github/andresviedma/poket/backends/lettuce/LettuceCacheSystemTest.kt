@@ -169,6 +169,23 @@ class LettuceCacheSystemTest : BaseSpec({
             }
         }
     }
+
+    feature("invalidateChildren") {
+        scenario("invalidates multiple keys for Pair key") {
+            Given {
+                redisCache.setObject("testNamespace", Pair("parent", "1"), "testValue", 3600, false)
+                redisCache.setObject("testNamespace", Pair("parent", "2"), "testValue", 3600, false)
+                redisCache.setObject("testNamespace", Pair("parentKK", "1"), "testValue", 3600, false)
+            }
+            When {
+                redisCache.invalidateChildren("testNamespace", "parent")
+            } then {
+                redisCache.getObject("testNamespace", Pair("parent", "1"), String::class) shouldBe null
+                redisCache.getObject("testNamespace", Pair("parent", "2"), String::class) shouldBe null
+                redisCache.getObject("testNamespace", Pair("parentKK", "1"), String::class) shouldBe "testValue"
+            }
+        }
+    }
 })
 
 data class TestDataClass(val foo: String, val bar: Int)

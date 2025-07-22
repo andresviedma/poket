@@ -8,6 +8,7 @@ import io.github.andresviedma.poket.support.serialization.jackson.JacksonPoketSe
 import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.SetArgs
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.toList
 import kotlin.reflect.KClass
 
@@ -43,6 +44,7 @@ class LettuceCacheSystem(
         ttlSeconds: Long,
         forceInvalidation: Boolean,
     ) {
+        println("- set: ${cacheKeyToString(namespace, key)}")
         redisConnection.coroutines.set(
             key = cacheKeyToString(namespace, key),
             value = value.serialized(),
@@ -92,6 +94,15 @@ class LettuceCacheSystem(
         keys: List<K>,
     ) {
         redisConnection.coroutines.del(*keys.map { cacheKeyToString(namespace, it) }.toTypedArray())
+    }
+
+    override suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
+        val multiCacheKey = cacheKeyToString(namespace, parentKey to "*")
+        println("*** $multiCacheKey")
+        redisConnection.coroutines.keys(multiCacheKey).toList().forEach { key ->
+            println("* Deleting $key")
+            redisConnection.coroutines.del(key)
+        }
     }
 
     private fun <T : Any> String.deserialized(clazz: KClass<T>): T =

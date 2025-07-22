@@ -2,6 +2,7 @@ package io.github.andresviedma.poket.cache
 
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
+import jdk.jshell.spi.ExecutionControl.NotImplementedException
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -61,4 +62,8 @@ interface CacheSystem {
     suspend fun <K : Any, V : Any> setObjectList(namespace: String, values: Map<K, Triple<V, Long, Boolean>>)
 
     suspend fun <K : Any> invalidateObjectList(namespace: String, keys: List<K>)
+
+    suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
+        throw NotImplementedError("invalidate by parent key not implemented")
+    }
 }

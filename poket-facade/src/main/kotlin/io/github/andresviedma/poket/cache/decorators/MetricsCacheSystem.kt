@@ -63,4 +63,10 @@ internal class MetricsCacheSystem(
             target.invalidateObjectList(namespace, keys)
         }
     }
+
+    override suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
+        metrics.recordTimer("invalidateChildren", getId(), namespace) {
+            target.invalidateChildren(namespace, parentKey)
+        }
+    }
 }
