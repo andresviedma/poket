@@ -15,7 +15,7 @@ class RedissonLockSystem(
     private val meterRegistry: MeterRegistry
 ) : LockSystem {
 
-    override fun getId(): String = "redis"
+    override fun getId(): String = "redisson"
 
     override suspend fun waitLock(name: String, timeout: Duration, ttl: Duration): LockContext =
         meterRegistry.recordTimer("redis.lock.get") {

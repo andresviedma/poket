@@ -5,7 +5,7 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.github.andresviedma.poket.support.inject.InjectorBindings
 
 @Suppress("unused")
-val poketResissonModule = InjectorBindings(
+val poketRedissonBindings = InjectorBindings(
     multiBindings = mapOf(
         CacheSystem::class to listOf(
             RedissonCacheSystem::class,

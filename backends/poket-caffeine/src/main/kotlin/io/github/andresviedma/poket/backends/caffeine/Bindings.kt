@@ -4,7 +4,7 @@ import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.support.inject.InjectorBindings
 
 @Suppress("unused")
-val poketCaffeineModule = InjectorBindings(
+val poketCaffeineBindings = InjectorBindings(
     multiBindings = mapOf(
         CacheSystem::class to listOf(
             CaffeineCacheSystem::class,

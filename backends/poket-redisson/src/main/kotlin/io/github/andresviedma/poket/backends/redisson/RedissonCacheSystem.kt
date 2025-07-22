@@ -12,7 +12,7 @@ class RedissonCacheSystem(
     private val redisProvider: RedissonClientProvider
 ) : CacheSystem {
 
-    override fun getId(): String = "redis"
+    override fun getId(): String = "redisson"
 
     override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? {
         return getBucket<K, V>(namespace, key)?.get()?.awaitFirstOrNull()

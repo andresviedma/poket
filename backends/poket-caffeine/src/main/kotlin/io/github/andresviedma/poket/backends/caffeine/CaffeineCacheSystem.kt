@@ -50,7 +50,7 @@ class CaffeineCacheSystem : CacheSystem {
     private fun cache(namespace: String, ttlSeconds: Long): Cache<Any, Any> =
         cacheMap.getOrPut(namespace) {
             Caffeine.newBuilder()
-                .maximumSize(100) // TODO configurable limit per type / namespace?
+                .maximumSize(100) // Configurable limit per type / namespace?
                 .expireAfterWrite(ttlSeconds.seconds.toJavaDuration())
                 .build()
         }
