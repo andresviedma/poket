@@ -1,7 +1,7 @@
 package io.github.andresviedma.poket.config
 
 import io.github.andresviedma.poket.config.utils.ConstantConfigSource
-import io.github.andresviedma.poket.config.utils.ControlledClock
+import io.github.andresviedma.poket.testutils.ControlledClock
 import io.github.andresviedma.poket.config.utils.PatchFunctionConfigSource
 import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.trekkie.Given

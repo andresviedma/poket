@@ -1,4 +1,4 @@
-package io.github.andresviedma.poket.config.utils
+package io.github.andresviedma.poket.testutils
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

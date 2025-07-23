@@ -6,6 +6,7 @@ import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.CacheSystemProvider
 import io.github.andresviedma.poket.cache.CacheTypeConfig
 import io.github.andresviedma.poket.cache.ObjectCacheFactory
+import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.DistributedMutexFactory
 import io.github.andresviedma.poket.mutex.LockSystem
@@ -19,15 +20,17 @@ fun createCacheFactoryWithSystem(
     lockSystem: LockSystem = LocalLockSystem(),
     baseCacheConfig: CacheTypeConfig? = null,
     baseMutexConfig: MutexTypeConfig? = null,
+    configProvider: ConfigProvider? = null,
 ): ObjectCacheFactory {
-    val config = configWith(
-        CacheConfig(
-            default = CacheTypeConfig(cacheSystem = cacheSystem.getId()).overriddenWith(baseCacheConfig),
-        ),
-        MutexConfig(
-            default = MutexTypeConfig(lockSystem = lockSystem.getId()).overriddenWith(baseMutexConfig),
-        ),
-    )
+    val config = configProvider
+        ?: configWith(
+            CacheConfig(
+                default = CacheTypeConfig(cacheSystem = cacheSystem.getId()).overriddenWith(baseCacheConfig),
+            ),
+            MutexConfig(
+                default = MutexTypeConfig(lockSystem = lockSystem.getId()).overriddenWith(baseMutexConfig),
+            ),
+        )
     return ObjectCacheFactory(
         mutexFactory = DistributedMutexFactory(
             lockSystemProvider = LockSystemProvider.withLockSystems(lockSystem),
