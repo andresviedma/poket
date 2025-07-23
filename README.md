@@ -1,6 +1,8 @@
 # poket
 Small multi-implementation facade utilities around data handling in distributed
-environments. Advanced backend features, always in your poket.
+environments.
+
+Advanced backend features, always in your poket.
 
 Currently it provides utilities for: distributed caches and mutex, backend
 configuration and generic transaction support.
@@ -42,14 +44,13 @@ But then you start having problems with that functionality. For example:
 * Your cache fails because you changed the format of the stored data.
 * Your cache stores incorrect data that gets from other service, and when that
 service is fixed in the middle of the night, the incorrect data is still in your
-cache. And fixing that takes a long time.
-* Your cache 
+cache.
 * A mutex gets stuck and many requests have timeout errors when reaching it.
 
 And you realize that:
 1. Fixing any of those problems takes too much time, as you need to change your
 code and run a new build.
-2. You don't have visibility of how well are your caches and your mutex working.
+2. You don't have visibility of how well your caches and your mutex are working.
 What's the hit rate? How much processing time they are saving, if any?
 3. You are duplicating the same code again and again.
 
@@ -190,7 +191,7 @@ providing any or all of these sources:
   * Injected configuration objects
 
 
-<a name="phylosophy"></a>
+<a name="philosophy"></a>
 ## Poket library philosophy
 
 The utilities have been created with this approach:
@@ -431,14 +432,6 @@ val simpleCacheFactory = ObjectCacheFactory(
     ConstantConfigProvider(CacheConfig(default = CacheTypeConfig(cacheSystem = simpleCacheSystem.getId()))),
     CacheMetrics(CompositeMeterRegistry())
 )
-
-// (...)
-
-// (specific test)
-    // (given)
-    Given(simpleCacheSystem) {
-        contains("<namespace>", "<key>", "<value>")
-    }
 ```
 
 #### Operational parameters tuning / monitoring
@@ -464,7 +457,7 @@ These metrics allow us to verify the efficiency of the cache and detect if the c
 useful or not and tune the TTL of the cache elements in config.
 
 #### Transaction aware
-The caches are compatible with the generic [transaction system](transactions.md) in
+The caches are compatible with the generic transaction system in
 the library. So if we run operations inside a transaction, every set or invalidate
 operations will be executed only after the transaction has been committed in the main
 storage.
