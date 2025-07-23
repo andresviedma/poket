@@ -15,12 +15,11 @@ import kotlin.time.Duration.Companion.minutes
 
 class RateLimiterFactory(
     private val configProvider: ConfigProvider,
-    private val meterRegistry: MeterRegistry,
     private val mutexFactory: DistributedMutexFactory,
     private val cacheFactory: ObjectCacheFactory,
 ) {
     fun createRateLimiter(type: String) =
-        RateLimiter(type, configProvider, meterRegistry, mutexFactory, cacheFactory)
+        RateLimiter(type, configProvider, SystemProvider.meterRegistry, mutexFactory, cacheFactory)
 }
 
 /**

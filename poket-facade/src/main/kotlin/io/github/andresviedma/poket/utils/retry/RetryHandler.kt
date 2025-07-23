@@ -1,17 +1,15 @@
 package io.github.andresviedma.poket.utils.retry
 
 import io.github.andresviedma.poket.config.ConfigProvider
+import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.metrics.incrementCounter
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.composite.CompositeMeterRegistry
 import kotlinx.coroutines.delay
 
 class RetryHandler(
     private val configProvider: ConfigProvider,
-    private val meterRegistry: MeterRegistry,
 ) {
-    constructor(configProvider: ConfigProvider) :
-        this(configProvider, CompositeMeterRegistry())
+    private val meterRegistry: MeterRegistry = SystemProvider.meterRegistry
 
     suspend fun <T> run(
         profile: String? = null,
@@ -31,7 +29,7 @@ class RetryHandler(
     }
 }
 
-class CustomRetryHandler<T>(
+private class CustomRetryHandler<T>(
     private val profile: String?,
     private val config: RetryPolicyConfig,
     private val meterRegistry: MeterRegistry,

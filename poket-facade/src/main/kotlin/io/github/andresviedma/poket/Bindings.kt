@@ -20,6 +20,8 @@ import io.github.andresviedma.poket.transaction.TransactionDataHandler
 import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.utils.SagaTransactionHandler
+import io.github.andresviedma.poket.utils.ratelimit.RateLimiterFactory
+import io.github.andresviedma.poket.utils.retry.RetryHandler
 
 val poketCoreBindings = InjectorBindings(
     singletons = listOf(
@@ -33,6 +35,9 @@ val poketCoreBindings = InjectorBindings(
         LockSystemProvider::class,
 
         TransactionManager::class,
+
+        RateLimiterFactory::class,
+        RetryHandler::class,
     ),
     multiBindings = mapOf(
         ConfigSource::class to listOf(
