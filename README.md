@@ -5,7 +5,22 @@ environments. Advanced backend features, always in your poket.
 Currently it provides utilities for: distributed caches and mutex, backend
 configuration and generic transaction support.
 
+## Table of Contents
+* [The problem](#problem)  
+* [The solution](#solution)
+* [Poket library philosophy](#philosophy)
+* [Usage](#usage)
+  * [Gradle dependencies](#gradle)
+  * [Dependency injection](#dependency-injection)
+  * [Configuration](#configuration)
+  * [Optional injected objects](#optional-injected-objects)
+  * [Object cache](#object-cache)
+  * [Distributed mutex](#distributed-mutex)
+  * [Generic transactions](#generic-transactions)
+
+<a name="problem"></a>
 ## The problem
+
 When you need to create a backend service, you usually choose:
 * Some web framework (or not web e.g. gRPC), providing an
 interface to accept calls from the outside.
@@ -84,6 +99,7 @@ service has already changed the status. You have heard of distributed transactio
 and you are really scared of them. You have also heard of the saga pattern, but
 it also looks difficult to implement in the context of a rolled back transaction.
 
+<a name="solution"></a>
 ## The solution
 Wouldn't it be nice having some library that solves all these small problems
 that are not the core of a backend, but that you are going to find before or later
@@ -94,7 +110,6 @@ Wouldn't it be nice having the solution to these little problems... **in your po
 Poket provides:
 
 ### Distributed caches
-
 * Using the same interface and added features for any cache underlying library,
 for the moment:
   * Lettuce (redis)
@@ -175,6 +190,7 @@ providing any or all of these sources:
   * Injected configuration objects
 
 
+<a name="phylosophy"></a>
 ## Poket library philosophy
 
 The utilities have been created with this approach:
@@ -188,8 +204,10 @@ engine and/or serialization.
 * Use pure Kotlin libraries whenever it's possible. Currently, most of the codebase
 is 100% kotlin, and some day it's expected to turn into a multiplatform project.
 
+<a name="usage"></a>
 ## Usage
 
+<a name="gradle"></a>
 ### Gradle dependencies
 
 ```
@@ -207,6 +225,7 @@ poket-xxx = { module = "io.github.andresviedma.poket:poket-xxx", version = "z.z.
 | poket-redisson  | Backend implementations for [Redisson Redis library](https://redisson.pro/).                      |
 | poket-caffeine  | Backend implementations for [Caffeine memory-based cache](https://github.com/ben-manes/caffeine). |
 
+<a name="dependency-injection"></a>
 ### Dependency injection
 
 Poket provides the dependencies in the form of generic "Bindings", that are passed
@@ -272,6 +291,7 @@ class MyModule ... {
 }
 ```
 
+<a name="configuration"></a>
 ### Configuration
 
 The only config source bound by default is using the dependency injection engine.
@@ -323,6 +343,7 @@ single {
 Any config framework or library will probably return the keys in form of either
 properties, json-like maps, or injected objects.
 
+<a name="optional-injected-objects"></a>
 ### Optional injected objects
 
 Poket will use these objects if they are bound in the dependency injection engine.
@@ -333,6 +354,7 @@ If they are not, it will just use some working defaults:
 a coroutine with some reserved threads (see `DefaultPoketAsyncRunner`).
 * `kotlinx.datetime.Clock`: to get current time. By default it uses system clock.
 
+<a name="object-cache"></a>
 ### Object cache
 
 The normal usage to create a cache will be injecting the factory and creating the specific
@@ -519,6 +541,7 @@ This behaviour can be changed with three independent boolean config keys:
 `failOnGetError`, `failOnPutError`, `failOnInvalidateError`.
 
 
+<a name="distributed-mutex"></a>
 ### Distributed mutex
 
 Use case: we need some piece of code never to be run concurrently, in a single service
@@ -643,6 +666,7 @@ val mutexFactory = distributedMutexFactoryStub(lockSystem)
 ```
 
 
+<a name="generic-transactions"></a>
 ### Generic transactions
 
 The library uses a generic system of "pluggable" transaction handlers, intending to
@@ -775,7 +799,7 @@ transactional {
 }
 ```
 
-#### Saga patter in a transaction
+#### Saga pattern in a transaction
 We might need to run an operation in a transaction that cannot be done
 transactionally (for example a call to an external service),
 but have a compensaction action which can undo it. In that case, we can use `sagaOperation`
