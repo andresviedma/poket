@@ -120,6 +120,14 @@ class ObjectCache<K : Any, V : Any>(
         } ?: generator()
 
     /**
+     * Generates a value for a cache key and stores it.
+     */
+    suspend fun fetchAndPut(key: K, generator: suspend () -> V): V =
+        ifEnabled {
+            generate(key, generator)
+        } ?: generator()
+
+    /**
      * Gets a list of keys from the cache. For the keys that are not in the cache, the generator
      * function will be called, only with the keys that are not already in the cache.
      * This method allows generating data in blocks except of one by one, which quite often will be more efficient.

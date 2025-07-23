@@ -27,6 +27,9 @@ class BlockingObjectCache<K : Any, V : Any>(
     fun getOrPut(key: K, generator: () -> V): V =
         runBlocking { objectCache.getOrPut(key, generator) }
 
+    fun fetchAndPut(key: K, generator: suspend () -> V): V =
+        runBlocking { objectCache.fetchAndPut(key, generator) }
+
     fun getOrPutBlock(keys: List<K>, generator: (List<K>) -> Map<K, V>): Map<K, V> =
         runBlocking { objectCache.getOrPutBlock(keys, generator) }
 

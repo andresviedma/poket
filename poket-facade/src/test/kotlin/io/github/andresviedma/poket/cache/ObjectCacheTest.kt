@@ -1082,4 +1082,76 @@ class ObjectCacheTest : FeatureSpec({
             }
         }
     }
+
+    feature("fetchAndPut") {
+        scenario("transaction commit") {
+            When {
+                transactional {
+                    objectCache.fetchAndPut("my-key") { "my-value" }
+                }
+            } then {
+                it shouldBe "my-value"
+                cacheSystem.content("test-1") shouldBe mapOf("my-key" to "my-value")
+                cacheSystem.valueTtl("test-1", "my-key") shouldBe 30
+                cacheSystem.valueInvalidated("test-1", "my-key") shouldBe false
+
+                meterRegistry.generatedMetrics() shouldBe setOf(
+                    Metric("cache.blockPut", mapOf("blockSize" to "1", "cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric("cache.blockPutSize", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric("cache.generate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true)
+                )
+            }
+        }
+
+        scenario("transaction rollback") {
+            When {
+                transactional {
+                    objectCache.fetchAndPut("my-key") { "my-value" }
+                    error("boom")
+                }
+            } thenExceptionThrown { _: IllegalStateException ->
+                cacheSystem.content("test-1") shouldBe emptyMap()
+                meterRegistry.generatedMetrics() shouldBe setOf(
+                    Metric("cache.generate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true)
+                )
+            }
+        }
+
+        scenario("cache disabled") {
+            Given(config) {
+                override(disabledConfig)
+            }
+            When {
+                objectCache.fetchAndPut("my-key") { "my-value" }
+            } then {
+                it shouldBe "my-value"
+                cacheSystem.content("test-1") shouldBe emptyMap<String, String>()
+                meterRegistry.generatedMetrics() shouldBe emptySet()
+            }
+        }
+
+        scenario("error in cache when put exceptions enabled") {
+            Given(config) {
+                override(CacheConfig::class) {
+                    withErrorConfigHandling { copy(failOnPutError = true) }
+                }
+            }
+            When {
+                errorCache.fetchAndPut("my-key") { "my-value" }
+            }.thenExceptionThrown(Exception::class)
+        }
+
+        scenario("error in cache when put exceptions disabled") {
+            Given(config) {
+                override(CacheConfig::class) {
+                    withErrorConfigHandling { copy(failOnPutError = false) }
+                }
+            }
+            When {
+                errorCache.fetchAndPut("my-key") { "my-value" }
+            }.then {
+                it shouldBe "my-value"
+            }
+        }
+    }
 })
