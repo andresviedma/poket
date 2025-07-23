@@ -69,4 +69,10 @@ internal class MetricsCacheSystem(
             target.invalidateChildren(namespace, parentKey)
         }
     }
+
+    override suspend fun invalidateAll(namespace: String) {
+        metrics.recordTimer("invalidateAll", getId(), namespace) {
+            target.invalidateAll(namespace)
+        }
+    }
 }

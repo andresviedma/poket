@@ -101,6 +101,12 @@ internal class ErrorIgnoreCacheSystem(
         }
     }
 
+    override suspend fun invalidateAll(namespace: String) {
+        runOrFail(getConfig().failOnInvalidateError) {
+            target.invalidateAll(namespace)
+        }
+    }
+
     private fun <K : Any, V : Any> Map<K, Triple<V, Long, Boolean>>.anyValueForcesInvalidation() =
         values.any { it.third }
 

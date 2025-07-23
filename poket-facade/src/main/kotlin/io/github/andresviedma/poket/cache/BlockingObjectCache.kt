@@ -32,4 +32,7 @@ class BlockingObjectCache<K : Any, V : Any>(
 
     fun invalidateChildren(parentKey: Any) =
         runBlocking { objectCache.invalidateChildren(parentKey) }
+
+    fun invalidateAll() =
+        runBlocking { objectCache.invalidateAll() }
 }

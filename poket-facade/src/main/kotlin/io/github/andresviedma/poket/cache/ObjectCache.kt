@@ -155,6 +155,16 @@ class ObjectCache<K : Any, V : Any>(
         }
     }
 
+    /**
+     * Invalidate all keys in the cache.
+     */
+    @Suppress("unused")
+    suspend fun invalidateAll() {
+        ifEnabled { config ->
+            getCacheSystem(config).invalidateAll(config.namespace())
+        }
+    }
+
     private suspend fun getAndMaybeRegenerate(key: K, generator: suspend () -> V): V? =
         get(key)?.also {
             val config = getConfig()

@@ -66,4 +66,8 @@ interface CacheSystem {
     suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
         throw NotImplementedError("invalidate by parent key not implemented")
     }
+
+    suspend fun invalidateAll(namespace: String) {
+        throw NotImplementedError("invalidate all not implemented")
+    }
 }
