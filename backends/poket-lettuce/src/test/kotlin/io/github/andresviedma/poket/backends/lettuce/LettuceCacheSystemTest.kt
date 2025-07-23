@@ -74,20 +74,6 @@ class LettuceCacheSystemTest : BaseSpec({
             }
         }
 
-        /*
-        scenario("set kotlin Instant") {
-            val data = Clock.System.now()
-            Given {
-                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
-            }
-            When {
-                redisCache.getObject("testNamespace", "testKey", Instant::class)
-            } then {
-                it shouldBe data
-            }
-        }
-         */
-
         scenario("set java Instant") {
             val data = java.time.Instant.now()
             Given {
@@ -113,35 +99,20 @@ class LettuceCacheSystemTest : BaseSpec({
             }
         }
 
-        /*
-        scenario("set sealed class") {
-            val data = SealedTestClass.Class1(50)
-            Given {
-                redisCache.setObject("testNamespace", "testKey", data, 3600, false)
-            }
-            When {
-                redisCache.getObject("testNamespace", "testKey", SealedTestClass::class)
-            } then {
-                it!!::class.simpleName shouldBe "Class1"
-                (it as SealedTestClass.Class1).foo shouldBe 50
-            }
-        }
-
         scenario("set multiple data") {
             val data = TestDataClass("a", 5)
             val data2 = SealedTestClass.Class1(50)
-            val data3 = Clock.System.now()
+            val data3 = 2.0.toBigDecimal()
             Given {
                 redisCache.setObjectList("testNamespace", mapOf("testKey" to data, "testKey2" to data2, "testKey3" to data3), 3600, false)
             }
             When {
-                redisCache.getObject("testNamespace", "testKey2", SealedTestClass::class)
+                redisCache.getObject("testNamespace", "testKey", TestDataClass::class)
             } then {
-                it!!::class.simpleName shouldBe "Class1"
-                (it as SealedTestClass.Class1).foo shouldBe 50
+                it!!::class.simpleName shouldBe "TestDataClass"
+                it.foo shouldBe "a"
             }
         }
-         */
     }
 
     feature("invalidateObject") {

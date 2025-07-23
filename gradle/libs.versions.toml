@@ -5,6 +5,7 @@ kotlin = "2.0.21"
 kotlinx-coroutines = "1.8.1"
 kotlinx-datetime = "0.6.2"
 slf4j = "2.0.17"
+trekkie = "1.0.0"
 
 [libraries]
 
@@ -55,8 +56,8 @@ caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
-trekkie-kotest = { module = "io.github.andresviedma:trekkie-kotest", version = "1.0.0-rc-1" }
-trekkie-mockk = { module = "io.github.andresviedma:trekkie-mockk", version = "1.0.0-rc-1" }
+trekkie-kotest = { module = "io.github.andresviedma.trekkie:trekkie-kotest", version.ref = "trekkie" }
+trekkie-mockk = { module = "io.github.andresviedma.trekkie:trekkie-mockk", version.ref = "trekkie" }
 kotest-bom = { group = "io.kotest", name = "kotest-bom", version = "5.9.1" }
 kotest-junit5 = { group = "io.kotest", name = "kotest-runner-junit5" }
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core" }
