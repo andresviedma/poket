@@ -1,7 +1,7 @@
 package io.github.andresviedma.poket.support
 
 import io.micrometer.core.instrument.MeterRegistry
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry
 import kotlinx.datetime.Clock
 
 object SystemProvider {
@@ -11,7 +11,7 @@ object SystemProvider {
 
     private var injectedMeterRegistry: MeterRegistry? = null
     var overriddenMeterRegistry: MeterRegistry? = null
-    val meterRegistry: MeterRegistry get() = overriddenMeterRegistry ?: injectedMeterRegistry ?: SimpleMeterRegistry()
+    val meterRegistry: MeterRegistry get() = overriddenMeterRegistry ?: injectedMeterRegistry ?: CompositeMeterRegistry()
 
     fun init(clock: Clock?, meterRegistry: MeterRegistry?) {
         injectedClock = clock
