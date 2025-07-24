@@ -8,4 +8,6 @@ dependencies {
     api(libs.jackson.jsr310)
 
     testImplementation(libs.trekkie.kotest)
+    testImplementation(libs.slf4j)
+    testImplementation(libs.slf4j.simple)
 }

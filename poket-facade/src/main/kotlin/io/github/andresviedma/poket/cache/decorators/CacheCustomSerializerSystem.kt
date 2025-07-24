@@ -10,7 +10,10 @@ class CacheCustomSerializerSystem(
     private val customSerializer: PoketSerializer?
 ) : CacheSystemDecorator(target) {
     override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
-        super.getObject(namespace, key, resultClass)?.maybeDeserialized(resultClass)
+        if (customSerializer != null)
+            super.getObject(namespace, key, String::class)?.deserialized(resultClass)
+        else
+            super.getObject(namespace, key, resultClass)
 
     override suspend fun <K : Any, V : Any> setObject(
         namespace: String,
@@ -26,7 +29,10 @@ class CacheCustomSerializerSystem(
         keys: List<K>,
         resultClass: KClass<V>
     ): Map<K, V> =
-        super.getObjectList(namespace, keys, resultClass).mapValues { (_, v) -> v.maybeDeserialized(resultClass) }
+        if (customSerializer != null)
+            super.getObjectList(namespace, keys, String::class).mapValues { (_, v) -> v.deserialized(resultClass) }
+        else
+            super.getObjectList(namespace, keys, resultClass)
 
     override suspend fun <K : Any, V : Any> setObjectList(
         namespace: String,
@@ -43,6 +49,6 @@ class CacheCustomSerializerSystem(
         customSerializer?.serialize(this) ?: this
 
     @Suppress("UNCHECKED_CAST")
-    private fun <V : Any> Any.maybeDeserialized(resultClass: KClass<V>): V =
-        customSerializer?.deserialize(this.toString(), resultClass) ?: (this as V)
+    private fun <V : Any> String.deserialized(resultClass: KClass<V>): V =
+        customSerializer!!.deserialize(this, resultClass) ?: (this as V)
 }

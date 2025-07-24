@@ -9,6 +9,7 @@ import io.github.andresviedma.trekkie.then
 import io.kotest.matchers.shouldBe
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.reflect.KClass
 
 class RedissonCacheSystemTest : BaseSpec({
 
@@ -24,6 +25,18 @@ class RedissonCacheSystemTest : BaseSpec({
                 redisCache.getObject("testNamespace", "testKey", String::class)
             } then {
                 it shouldBe "testValue"
+            }
+        }
+
+        scenario("cache entry exists, with generics") {
+            val value = listOf(TestDataClass(foo = "fuu", bar = 3))
+            Given {
+                redisCache.setObject("testNamespace", "testKey", value, 3600, false)
+            }
+            When {
+                redisCache.getObject<String, List<TestDataClass>>("testNamespace", "testKey", List::class as KClass<List<TestDataClass>>)
+            } then {
+                it shouldBe value
             }
         }
 

@@ -20,6 +20,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version = "1.12.3" }
 micrometer-core = { group = "io.micrometer", name = "micrometer-core" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.7" }
 
 # Jackson
