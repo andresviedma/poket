@@ -1,6 +1,5 @@
 dependencies {
     api(projects.poket.poketFacade)
-    implementation(projects.poket.serialization.poketJackson)
     implementation(libs.lettuce)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.reactor)
@@ -9,4 +8,5 @@ dependencies {
 
     testImplementation(libs.trekkie.kotest)
     testImplementation(libs.testcontainers)
+    testImplementation(projects.poket.serialization.poketJackson)
 }

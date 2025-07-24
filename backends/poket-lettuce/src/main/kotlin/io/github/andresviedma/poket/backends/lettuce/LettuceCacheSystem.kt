@@ -1,11 +1,8 @@
 package io.github.andresviedma.poket.backends.lettuce
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
-import io.github.andresviedma.poket.support.serialization.jackson.JacksonPoketSerializer
-import io.github.andresviedma.poket.support.serialization.jackson.ObjectMapperProvider
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.SetArgs
 import kotlinx.coroutines.flow.toList
@@ -14,9 +11,8 @@ import kotlin.reflect.KClass
 @OptIn(ExperimentalLettuceCoroutinesApi::class)
 class LettuceCacheSystem(
     private val redisConnection: RedisLettuceConnection,
-    objectMapperProvider: ObjectMapperProvider,
+    private val cacheSerializer: PoketSerializer,
 ) : CacheSystem {
-    private val cacheSerializer: PoketSerializer = JacksonPoketSerializer(objectMapperProvider)
 
     override fun getId(): String = "lettuce-redis"
 
@@ -113,12 +109,4 @@ class LettuceCacheSystem(
 
     private fun <T : Any> T.serialized(): String =
         cacheSerializer.serialize(this)
-
-    companion object {
-        fun withObjectMapper(
-            redisConnection: RedisLettuceConnection,
-            objectMapper: ObjectMapper,
-        ): LettuceCacheSystem =
-            LettuceCacheSystem(redisConnection, ObjectMapperProvider.of(objectMapper))
-    }
 }

@@ -28,6 +28,7 @@ class RedissonCacheSystemTest : BaseSpec({
             }
         }
 
+        @Suppress("UNCHECKED_CAST")
         scenario("cache entry exists, with generics") {
             val value = listOf(TestDataClass(foo = "fuu", bar = 3))
             Given {
