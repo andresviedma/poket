@@ -102,7 +102,10 @@ class LettuceCacheSystem(
     }
 
     override suspend fun invalidateAll(namespace: String) {
-        invalidateChildren(namespace, "*")
+        val multiCacheKey = cacheKeyToString(namespace, "*")
+        redisConnection.coroutines.keys(multiCacheKey).toList().forEach { key ->
+            redisConnection.coroutines.del(key)
+        }
     }
 
     private fun <T : Any> String.deserialized(clazz: KClass<T>): T =
