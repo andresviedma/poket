@@ -8,16 +8,16 @@ Currently it provides utilities for: distributed caches and mutex, backend
 configuration and generic transaction support.
 
 ## Table of Contents
-* [The problem](#problem)  
-* [The solution](#solution)
-* [Poket library philosophy](#philosophy)
+* [The problem](#the-problem)  
+* [The solution](#the-solution)
+* [Poket library philosophy](#poket-library-philosophy)
 * [Usage](#usage)
-  * [Gradle dependencies](#gradle)
+  * [Gradle dependencies](#gradle-dependencies)
   * [Dependency injection](#dependency-injection)
   * [Configuration](#configuration)
   * [Optional injected objects](#optional-injected-objects)
   * [Object cache](#object-cache)
-  * [Distributed mutex](#distributed-mutex)
+  * [Distributed mutex](#distributed-mutex-1)
   * [Generic transactions](#generic-transactions)
 
 ## The problem
