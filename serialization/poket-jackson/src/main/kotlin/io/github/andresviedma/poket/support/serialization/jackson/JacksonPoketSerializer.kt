@@ -1,6 +1,5 @@
 package io.github.andresviedma.poket.support.serialization.jackson
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.andresviedma.poket.support.inject.OptionalBinder
 import io.github.andresviedma.poket.support.serialization.PoketSerializer

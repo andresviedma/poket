@@ -3,6 +3,7 @@ package io.github.andresviedma.poket.backends.lettuce
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.cache.utils.cacheKeyToString
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
+import io.github.andresviedma.poket.support.serialization.PoketSerializerOrString
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.SetArgs
 import kotlinx.coroutines.flow.toList
@@ -11,8 +12,9 @@ import kotlin.reflect.KClass
 @OptIn(ExperimentalLettuceCoroutinesApi::class)
 class LettuceCacheSystem(
     private val redisConnection: RedisLettuceConnection,
-    private val cacheSerializer: PoketSerializer,
+    cacheSerializer: PoketSerializer,
 ) : CacheSystem {
+    private val cacheSerializer: PoketSerializer = PoketSerializerOrString(cacheSerializer)
 
     override fun getId(): String = "lettuce-redis"
 
