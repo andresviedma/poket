@@ -1,11 +1,13 @@
 # poket
-Small multi-implementation facade utilities around data handling in distributed
-environments.
+A bunch of small advanced backend features. You might not need them at the beginning,
+but when you do, you will be able to find them in your poket.
 
-Advanced backend features, always in your poket.
-
-Currently it provides utilities for: distributed caches and mutex, backend
-configuration and generic transaction support.
+This library provices small multi-implementation facade utilities around data handling in distributed
+environments. Currently it provides utilities for:
+* distributed caches
+* distributed mutex
+* generic transaction support
+* backend configuration
 
 ## Table of Contents
 * [The problem](#the-problem)  
@@ -85,7 +87,7 @@ need a transaction. So that turns into spaghetti code.
 * Access directly different tables from the data access class, although the access
 to other tables is theoretically encapsulated in other data access classes.
 
-So all this starts getting messy some way. You are moderately happy with you somehow
+So all this starts getting messy some way. You are moderately happy with your somehow
 dirty solution, but then you start having more problems:
 * You store data that you get from the database in a cache. But then you start
 having incidents because some functionality is using data that is not the data
@@ -101,7 +103,7 @@ it also looks difficult to implement in the context of a rolled back transaction
 
 ## The solution
 Wouldn't it be nice having some library that solves all these small problems
-that are not the core of a backend, but that you are going to find before or later
+that are not the core of a backend, but that you are going to find sooner or later
 as your backend grows?
 
 Wouldn't it be nice having the solution to these little problems... **in your poket**?
