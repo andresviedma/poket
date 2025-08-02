@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.publishOnCentral)
     alias(libs.plugins.dokka)
     `java-library`
+    jacoco
 }
 
 repositories {
@@ -24,6 +25,7 @@ allprojects {
         apply(plugin = kotlin.jvm.id)
         apply(plugin = publishOnCentral.id)
         apply(plugin = dokka.id)
+        apply(plugin = "jacoco")
     }
 
     repositories {
