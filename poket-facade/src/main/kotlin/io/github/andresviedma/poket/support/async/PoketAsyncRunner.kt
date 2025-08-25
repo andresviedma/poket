@@ -9,8 +9,7 @@ object PoketAsyncRunnerProvider {
     private val defaultLauncher = DefaultPoketAsyncRunner()
 
     val launcher: PoketAsyncRunner
-        get() =
-        injectedLauncher ?: defaultLauncher
+        get() = injectedLauncher ?: defaultLauncher
 
     @Suppress("unused")
     fun init(launcher: PoketAsyncRunner?) = apply {

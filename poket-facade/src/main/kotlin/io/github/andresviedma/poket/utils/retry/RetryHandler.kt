@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 class RetryHandler(
     private val configProvider: ConfigProvider,
 ) {
-    private val meterRegistry: MeterRegistry = SystemProvider.meterRegistry
+    private val meterRegistry: MeterRegistry get() = SystemProvider.meterRegistry
 
     suspend fun <T> run(
         profile: String? = null,

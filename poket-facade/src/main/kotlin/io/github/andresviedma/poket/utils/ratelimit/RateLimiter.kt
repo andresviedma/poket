@@ -10,6 +10,7 @@ import io.github.andresviedma.poket.mutex.MutexTypeConfig
 import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.metrics.incrementCounter
 import io.micrometer.core.instrument.MeterRegistry
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.minutes
 
@@ -33,7 +34,7 @@ class RateLimiter(
     mutexFactory: DistributedMutexFactory,
     cacheFactory: ObjectCacheFactory
 ) {
-    private val clock = SystemProvider.clock
+    private val clock: Clock by lazy { SystemProvider.clock }
 
     private val globalCacheKey: String = "-"
     private val rateLimiterMutex = mutexFactory.createMutex(

@@ -25,7 +25,7 @@ class ConfigProvider(
     configSources: Set<ConfigSource>,
 ) {
     private val sources: List<ConfigSource> = configSources.sortedBy { it.getConfigSourcePriority().value }
-    private val clock: Clock = SystemProvider.clock
+    private val clock: Clock by lazy { SystemProvider.clock }
     private val cachedConfigs: ConcurrentMap<KClass<*>, Any> = ConcurrentHashMap()
     private var warmedUp: Boolean = false
     private val sourcesLastUpdated: MutableMap<ConfigSource, Instant> = mutableMapOf()

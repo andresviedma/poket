@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 class CacheMetrics {
-    private val meterRegistry: MeterRegistry = SystemProvider.meterRegistry
+    private val meterRegistry: MeterRegistry get() = SystemProvider.meterRegistry
 
     suspend fun <X> recordTimer(
         timer: String,
