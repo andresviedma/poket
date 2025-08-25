@@ -39,3 +39,7 @@ object NullableBWrapper {
 class NullableBWrapperSingleton(optionalBinder: OptionalBinder) {
     val b: B? = optionalBinder.getOptionalInstance()
 }
+
+class BWrapperSingleton {
+    val b: B? = BWrapper.myb
+}

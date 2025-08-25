@@ -83,7 +83,6 @@ open class InjectionModuleBaseTest <I : Any> (
         Expect {
             val b = engine.getInstance<B>()
             BWrapper.myb shouldBeSameInstanceAs b
-
         }
     }
 
@@ -98,6 +97,24 @@ open class InjectionModuleBaseTest <I : Any> (
         }
         Expect {
             NullableBWrapper.myb shouldBe null
+        }
+    }
+
+    "static bindings are used by singleton after initialized" {
+        Given(engine) {
+            createInjector(
+                injectorBindings,
+                InjectorBindings(
+                    singletons = listOf(B::class, A::class, BWrapperSingleton::class),
+                    staticWrappers = listOf(BWrapper::class),
+                )
+            )
+        }
+        Expect {
+            val b = engine.getInstance<B>()
+            BWrapper.myb shouldBeSameInstanceAs b
+            val bWrapperSingleton = engine.getInstance<BWrapperSingleton>()
+            bWrapperSingleton.b shouldBeSameInstanceAs BWrapper.myb
         }
     }
 

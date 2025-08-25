@@ -17,6 +17,12 @@ class GuicePoketModule(
     constructor(vararg bindings: InjectorBindings) : this(bindings.toList())
 
     override fun configure() {
+        bindings.flatMap { it.staticWrappers }.forEach { clazz ->
+            StaticInitializer.addWrapper(clazz)
+        }
+
+        bind(StaticInitializer::class.java).asEagerSingleton()
+
         bindings.flatMap { it.singletons }.forEach {
             bind(it.java)
                 .toConstructor(classConstructor(it))
@@ -43,12 +49,6 @@ class GuicePoketModule(
                 .toConstructor(classConstructor(singletonClass))
                 .`in`(Singleton::class.java)
         }
-
-        bindings.flatMap { it.staticWrappers }.forEach { clazz ->
-            StaticInitializer.addWrapper(clazz)
-        }
-
-        bind(StaticInitializer::class.java).asEagerSingleton()
     }
 }
 
