@@ -29,7 +29,7 @@ class DistributedMutex(
                 config.ttlInMillis!!.milliseconds,
             )
         }
-        if (!ctx.hasLock) {
+        if (!ctx.hasLock && !forceIgnoreLockErrors) {
             throw LockWaitTimedOutException("Lock $name wait timed out")
         }
         try {

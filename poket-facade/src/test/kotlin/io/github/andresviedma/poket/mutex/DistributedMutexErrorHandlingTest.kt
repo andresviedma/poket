@@ -3,6 +3,7 @@ package io.github.andresviedma.poket.mutex
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.config.utils.configWith
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
+import io.github.andresviedma.poket.mutex.local.lockSystemStub
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.Where
@@ -30,8 +31,9 @@ class DistributedMutexErrorHandlingTest : FeatureSpec({
     val errorLockSystem = errorLockSystem("error-all", errorOnLock = true, errorOnRelease = true)
     val errorLockSystem2 = errorLockSystem("error-all2", errorOnLock = true, errorOnRelease = true)
     val errorReleaseLockSystem = errorLockSystem("error-release", errorOnLock = false, errorOnRelease = true)
+    val doNotGetLockSystem = lockSystemStub().apply { willNotGetLock() }
     val lockSystems = LockSystemProvider.withLockSystems(
-        setOf(workingLockSystem, errorLockSystem, errorLockSystem2, errorReleaseLockSystem)
+        setOf(workingLockSystem, errorLockSystem, errorLockSystem2, errorReleaseLockSystem, doNotGetLockSystem)
     )
 
     val mutexSettings = MutexTypeConfig(
@@ -187,6 +189,17 @@ class DistributedMutexErrorHandlingTest : FeatureSpec({
     }
 
     feature("force ignoring errors") {
+        scenario("Timeout on synchronized") {
+            Given(mutexConfig) {
+                withDefault(MutexTypeConfig(lockSystem = doNotGetLockSystem.getId()))
+            }
+            When {
+                mutexForceIgnoringErrors.synchronized { "ok" }
+            } then {
+                it shouldBe "ok"
+            }
+        }
+
         Where(
             "onLockSystemError = FAIL" to
                 MutexTypeConfig(lockSystem = "error-all", onLockSystemError = MutexOnErrorAction.FAIL),
