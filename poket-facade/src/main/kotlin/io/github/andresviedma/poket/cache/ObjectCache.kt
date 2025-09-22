@@ -179,8 +179,8 @@ class ObjectCache<K : Any, V : Any>(
             if (config.outdateTimeInSeconds != null) {
                 val ts = getCacheSystem(config).getObject(config.generationTimeNamespace(), key, Long::class)
                 if (config.isOutdated(ts, Clock.System.now())) {
-                    collapsingMutex.ifSynchronized(key) {
-                        PoketAsyncRunnerProvider.launcher.launch("cache-regenerate") {
+                    PoketAsyncRunnerProvider.launcher.launch("cache-regenerate") {
+                        collapsingMutex.ifSynchronized(key) {
                             generate(key, generator)
                         }
                     }
