@@ -878,6 +878,49 @@ class ObjectCacheTest : FeatureSpec({
                 )
             }
         }
+
+
+        scenario("cache with background updates and request collapsing, value already in cache and outdated") {
+            var generationCount = 0
+            Given(config) {
+                override(CacheConfig::class) {
+                    copy(
+                        type = mapOf(
+                            "test" to CacheTypeConfig(outdateTimeInSeconds = 60 * 5)
+                        )
+                    )
+                }
+            }
+            Given(cacheSystem) {
+                contains("test-1", "my-key", "my-old-value")
+                contains("test-gents", "my-key", Clock.System.now().toEpochMilliseconds() - 60 * 6 * 1000)
+            }
+            When {
+                awaitAll(
+                    async {
+                        objectCache.getOrPut("my-key") { delay(100); generationCount++; "my-value" }
+                    },
+                    async {
+                        objectCache.getOrPut("my-key") { delay(100); generationCount++; "my-value" }
+                    }
+                ).also { waitForAsyncJobs() }
+            } then {
+                it shouldBe listOf("my-old-value", "my-old-value")
+
+                cacheSystem.content("test-1") shouldBe
+                        mapOf("my-key" to "my-value")
+
+                generationCount shouldBe 1
+
+                meterRegistry.generatedMetrics() shouldBe setOf(
+                    Metric("cache.get", mapOf("type" to "test-1", "result" to "hit", "cacheSystem" to "memory-perpetual"), timer = true, count = 2),
+                    Metric("cache.get", mapOf("type" to "test-gents", "result" to "hit", "cacheSystem" to "memory-perpetual"), timer = true, count = 2),
+                    Metric("cache.generate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true, count = 1),
+                    Metric("cache.put", mapOf("type" to "test-1", "cacheSystem" to "memory-perpetual"), timer = true),
+                    Metric("cache.put", mapOf("type" to "test-gents", "cacheSystem" to "memory-perpetual"), timer = true)
+                )
+            }
+        }
     }
 
     feature("getOrPutBlock") {
