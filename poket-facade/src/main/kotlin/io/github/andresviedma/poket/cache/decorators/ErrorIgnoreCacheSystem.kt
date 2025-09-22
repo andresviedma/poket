@@ -4,6 +4,7 @@ import io.github.andresviedma.poket.cache.CacheConfig
 import io.github.andresviedma.poket.cache.CacheSystem
 import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
+import io.github.andresviedma.poket.utils.retry.RetryHandler
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlin.reflect.KClass
 
@@ -13,7 +14,8 @@ internal class ErrorIgnoreCacheSystem(
     private val target: CacheSystem,
     private val type: String,
     configProvider: ConfigProvider,
-    private val defaultConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?
+    private val defaultConfig: io.github.andresviedma.poket.cache.CacheTypeConfig?,
+    private val retryHandler: RetryHandler,
 
 ) : CacheSystem by target {
     private val cacheConfig: Config<CacheConfig> = configProvider.getTypedConfig()
@@ -45,7 +47,9 @@ internal class ErrorIgnoreCacheSystem(
 
     override suspend fun <K : Any> invalidateObject(namespace: String, key: K) {
         runOrFail(getConfig().failOnInvalidateError) {
-            target.invalidateObject(namespace, key)
+            retryHandler.run("cacheretry::$type") {
+                target.invalidateObject(namespace, key)
+            }
         }
     }
 

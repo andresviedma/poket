@@ -14,6 +14,7 @@ import io.github.andresviedma.poket.mutex.LockSystemProvider
 import io.github.andresviedma.poket.mutex.MutexConfig
 import io.github.andresviedma.poket.mutex.MutexTypeConfig
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
+import io.github.andresviedma.poket.utils.retry.RetryHandler
 
 fun createCacheFactoryWithSystem(
     cacheSystem: CacheSystem,
@@ -40,6 +41,7 @@ fun createCacheFactoryWithSystem(
             registeredSystems = setOf(cacheSystem),
             cacheMetrics = CacheMetrics(),
             configProvider = config,
+            retryHandler = RetryHandler(config),
         ),
         configProvider = config,
         cacheMetrics = CacheMetrics(),

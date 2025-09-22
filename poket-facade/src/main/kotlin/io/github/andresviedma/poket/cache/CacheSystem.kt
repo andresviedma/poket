@@ -2,7 +2,7 @@ package io.github.andresviedma.poket.cache
 
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
-import jdk.jshell.spi.ExecutionControl.NotImplementedException
+import io.github.andresviedma.poket.utils.retry.RetryHandler
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
@@ -10,6 +10,7 @@ class CacheSystemProvider(
     private val registeredSystems: Set<CacheSystem>,
     private val cacheMetrics: CacheMetrics,
     private val configProvider: ConfigProvider,
+    private val retryHandler: RetryHandler,
 ) {
     private val usedSystems = ConcurrentHashMap<String, CacheSystemWrapper>()
 
@@ -26,7 +27,8 @@ class CacheSystemProvider(
                 cacheMetrics,
                 configProvider,
                 customSerializer,
-                defaultTypeConfig
+                defaultTypeConfig,
+                retryHandler,
             )
         }
 
@@ -39,7 +41,7 @@ class CacheSystemProvider(
 
     companion object {
         fun withCacheSystems(cacheMetrics: CacheMetrics, configProvider: ConfigProvider, vararg systems: CacheSystem) =
-            CacheSystemProvider(systems.toSet(), cacheMetrics, configProvider)
+            CacheSystemProvider(systems.toSet(), cacheMetrics, configProvider, RetryHandler(configProvider))
     }
 }
 

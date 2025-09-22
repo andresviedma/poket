@@ -7,6 +7,7 @@ import io.github.andresviedma.poket.cache.decorators.PendingCacheOperations
 import io.github.andresviedma.poket.cache.decorators.TransactionAwareCacheSystem
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
+import io.github.andresviedma.poket.utils.retry.RetryHandler
 
 open class CacheSystemDecorator(
     protected val target: CacheSystem
@@ -22,7 +23,8 @@ internal class CacheSystemWrapper(
     metrics: CacheMetrics,
     configProvider: ConfigProvider,
     customSerializer: PoketSerializer?,
-    defaultTypeConfig: CacheTypeConfig?
+    defaultTypeConfig: CacheTypeConfig?,
+    retryHandler: RetryHandler,
 
 ) : CacheSystemDecorator(
     TransactionAwareCacheSystem(
@@ -33,7 +35,8 @@ internal class CacheSystemWrapper(
             ),
             type,
             configProvider,
-            defaultTypeConfig
+            defaultTypeConfig,
+            retryHandler,
         ),
         type
     )

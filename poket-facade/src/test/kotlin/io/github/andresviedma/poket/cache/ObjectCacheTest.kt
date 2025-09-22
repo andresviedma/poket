@@ -16,6 +16,7 @@ import io.github.andresviedma.poket.testutils.testMicrometerRegistry
 import io.github.andresviedma.poket.transaction.TransactionManager
 import io.github.andresviedma.poket.transaction.TransactionWrapper
 import io.github.andresviedma.poket.transaction.suspendable.transactional
+import io.github.andresviedma.poket.utils.retry.RetryProfileConfig
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.Where
@@ -73,7 +74,7 @@ class ObjectCacheTest : FeatureSpec({
         )
     )
     val disabledConfig = baseConfig.copy(default = baseConfig.default.copy(disabled = true))
-    val config = configWith(baseConfig)
+    val config = configWith(baseConfig, RetryProfileConfig())
 
     val cacheProvider = CacheSystemProvider.withCacheSystems(CacheMetrics(), config, cacheSystem, cacheSystem2, errorCacheSystem)
     TransactionWrapper.overriddenTransactionManager = TransactionManager.withHandlers(ObjectCacheTransactionHandler(cacheProvider))
@@ -498,7 +499,8 @@ class ObjectCacheTest : FeatureSpec({
             } then {
                 cacheSystem.content("test-1").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
-                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true)
+                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
                 )
             }
         }
@@ -512,7 +514,8 @@ class ObjectCacheTest : FeatureSpec({
             } then {
                 cacheSystem.content("test-1").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
-                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true)
+                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
                 )
             }
         }
@@ -596,7 +599,8 @@ class ObjectCacheTest : FeatureSpec({
             } then {
                 cacheSystem.content("test-3").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
-                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-3"), timer = true)
+                    Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-3"), timer = true),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
                 )
             }
         }
