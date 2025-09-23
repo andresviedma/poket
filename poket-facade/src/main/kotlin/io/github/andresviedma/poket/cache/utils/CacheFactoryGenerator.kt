@@ -15,12 +15,15 @@ import io.github.andresviedma.poket.mutex.MutexConfig
 import io.github.andresviedma.poket.mutex.MutexTypeConfig
 import io.github.andresviedma.poket.mutex.local.LocalLockSystem
 import io.github.andresviedma.poket.utils.retry.RetryHandler
+import io.github.andresviedma.poket.utils.retry.RetryPolicyConfig
+import io.github.andresviedma.poket.utils.retry.RetryProfileConfig
 
 fun createCacheFactoryWithSystem(
     cacheSystem: CacheSystem,
     lockSystem: LockSystem = LocalLockSystem(),
     baseCacheConfig: CacheTypeConfig? = null,
     baseMutexConfig: MutexTypeConfig? = null,
+    retryPolicyConfig: RetryPolicyConfig? = null,
     configProvider: ConfigProvider? = null,
 ): ObjectCacheFactory {
     val config = configProvider
@@ -31,6 +34,7 @@ fun createCacheFactoryWithSystem(
             MutexConfig(
                 default = MutexTypeConfig(lockSystem = lockSystem.getId()).overriddenWith(baseMutexConfig),
             ),
+            retryPolicyConfig?.let { RetryProfileConfig(default = it) } ?: RetryProfileConfig(),
         )
     return ObjectCacheFactory(
         mutexFactory = DistributedMutexFactory(
