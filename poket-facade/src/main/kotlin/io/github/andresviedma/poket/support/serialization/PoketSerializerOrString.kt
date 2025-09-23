@@ -14,6 +14,7 @@ class PoketSerializerOrString(
         else
             serializer.serialize(deserialized)
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : Any> deserialize(serialized: String, resultClass: KClass<T>): T =
         if (resultClass == String::class)
             serialized as T

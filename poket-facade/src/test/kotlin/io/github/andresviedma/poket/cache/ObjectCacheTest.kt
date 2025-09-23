@@ -27,11 +27,13 @@ import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.data.row
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.datetime.Clock
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.seconds
 
 class ObjectCacheTest : FeatureSpec({
     isolationMode = IsolationMode.InstancePerTest
@@ -62,7 +64,7 @@ class ObjectCacheTest : FeatureSpec({
         default = CacheTypeConfig(
             cacheSystem = cacheSystem.getId(),
             ttlInSeconds = 30,
-            requestCollapsing = false
+            requestCollapsing = false,
         ),
         type = mapOf(
             "test2" to CacheTypeConfig(
@@ -71,7 +73,7 @@ class ObjectCacheTest : FeatureSpec({
             "error" to CacheTypeConfig(
                 cacheSystem = errorCacheSystem.getId()
             )
-        )
+        ),
     )
     val disabledConfig = baseConfig.copy(default = baseConfig.default.copy(disabled = true))
     val config = configWith(baseConfig, RetryProfileConfig())
@@ -500,7 +502,7 @@ class ObjectCacheTest : FeatureSpec({
                 cacheSystem.content("test-1").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
                     Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
-                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry.test", "result" to "ok")),
                 )
             }
         }
@@ -515,7 +517,7 @@ class ObjectCacheTest : FeatureSpec({
                 cacheSystem.content("test-1").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
                     Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
-                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry.test", "result" to "ok")),
                 )
             }
         }
@@ -600,7 +602,7 @@ class ObjectCacheTest : FeatureSpec({
                 cacheSystem.content("test-3").shouldBeEmpty()
                 meterRegistry.generatedMetrics() shouldBe setOf(
                     Metric("cache.invalidate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-3"), timer = true),
-                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry::test", "result" to "ok")),
+                    Metric(name = "retry", tags = mapOf("attempt" to "0", "profile" to "cacheretry.test", "result" to "ok")),
                 )
             }
         }
@@ -922,6 +924,43 @@ class ObjectCacheTest : FeatureSpec({
                     Metric("cache.generate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true, count = 1),
                     Metric("cache.put", mapOf("type" to "test-1", "cacheSystem" to "memory-perpetual"), timer = true),
                     Metric("cache.put", mapOf("type" to "test-gents", "cacheSystem" to "memory-perpetual"), timer = true)
+                )
+            }
+        }
+
+        scenario("cache with background updates and custom serializer, value already in cache and outdated") {
+            val outdatedTime = (Clock.System.now() - 30.seconds).toEpochMilliseconds()
+            val oldValue = 555
+            val newValue = 666
+
+            Given(config) {
+                override(CacheConfig::class) {
+                    copy(
+                        type = mapOf(
+                            "test" to CacheTypeConfig(outdateTimeInSeconds = 10)
+                        )
+                    )
+                }
+            }
+            Given(cacheSystem) {
+                contains("test-1", "my-key", "ser:$oldValue")
+                contains("test-gents", "my-key", outdatedTime)
+            }
+            When {
+                objectCacheCustomSerializer.getOrPut("my-key") { newValue }
+                    .also { waitForAsyncJobs() }
+            } then {
+                it shouldBe oldValue
+
+                cacheSystem.content("test-1") shouldBe mapOf("my-key" to "ser:$newValue")
+                cacheSystem.content("test-gents")["my-key"] shouldNotBe outdatedTime
+
+                meterRegistry.generatedMetrics() shouldBe setOf(
+                    Metric("cache.get", mapOf("result" to "hit", "cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric("cache.get", mapOf("result" to "hit", "cacheSystem" to "memory-perpetual", "type" to "test-gents"), timer = true),
+                    Metric("cache.generate", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric("cache.put", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-1"), timer = true),
+                    Metric("cache.put", mapOf("cacheSystem" to "memory-perpetual", "type" to "test-gents"), timer = true),
                 )
             }
         }

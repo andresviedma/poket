@@ -63,7 +63,8 @@ class ObjectCache<K : Any, V : Any>(
 
             if (config.isUpdatableAsynchronously()) {
                 val now = Clock.System.now().toEpochMilliseconds()
-                system.setObject(config.generationTimeNamespace(), key, now, ttl, forceInvalidation)
+                val genTsSystem = getCacheSystem(config, ignoringCustomSerializer = true)
+                genTsSystem.setObject(config.generationTimeNamespace(), key, now, ttl, forceInvalidation)
             }
         }
     }
@@ -177,16 +178,21 @@ class ObjectCache<K : Any, V : Any>(
         get(key)?.also {
             val config = getConfig()
             if (config.outdateTimeInSeconds != null) {
-                val ts = getCacheSystem(config).getObject(config.generationTimeNamespace(), key, Long::class)
+                val ts = getCacheSystem(config, ignoringCustomSerializer = true)
+                    .getObject(config.generationTimeNamespace(), key, Long::class)
                 if (config.isOutdated(ts, Clock.System.now())) {
-                    PoketAsyncRunnerProvider.launcher.launch("cache-regenerate") {
-                        collapsingMutex.ifSynchronized(key) {
-                            generate(key, generator)
-                        }
-                    }
+                    launchBackgroundRegenerate(key, generator)
                 }
             }
         }
+
+    private suspend fun launchBackgroundRegenerate(key: K, generator: suspend () -> V) {
+        PoketAsyncRunnerProvider.launcher.launch("cache-regenerate") {
+            collapsingMutex.ifSynchronized(key) {
+                generate(key, generator)
+            }
+        }
+    }
 
     private suspend fun generateOrCollapse(key: K, generator: suspend () -> V): V =
         if (getConfig().requestCollapsing == true) {
@@ -219,12 +225,12 @@ class ObjectCache<K : Any, V : Any>(
         return if (config.disabled == true) null else block(config)
     }
 
-    private fun getCacheSystem(config: CacheTypeConfig, suffix: String? = null) =
+    private fun getCacheSystem(config: CacheTypeConfig, suffix: String? = null, ignoringCustomSerializer: Boolean = false) =
         systemProvider.getCacheSystem(
             config.cacheSystem!!,
             listOfNotNull(type, suffix).joinToString("-"),
-            customSerializer,
-            defaultTypeConfig
+            customSerializer.takeIf { !ignoringCustomSerializer },
+            defaultTypeConfig,
         )
 
     private suspend fun <X> recordTimer(

@@ -20,7 +20,7 @@ class CacheSystemProvider(
         customSerializer: PoketSerializer?,
         defaultTypeConfig: CacheTypeConfig?
     ): CacheSystem =
-        usedSystems.getOrPut(type) {
+        usedSystems.getOrPut("$type::${customSerializer?.let { it::class.simpleName }}") {
             CacheSystemWrapper(
                 getNotWrappedCacheSystem(cacheSystemId),
                 type,

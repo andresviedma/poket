@@ -15,8 +15,15 @@ open class MapCacheSystem : CacheSystem {
     override fun getId(): String = "memory-perpetual"
 
     @Suppress("UNCHECKED_CAST")
-    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? =
-        keyMap(namespace)[key]?.value as V?
+    override suspend fun <K : Any, V : Any> getObject(namespace: String, key: K, resultClass: KClass<V>): V? {
+        val value = keyMap(namespace)[key]?.value
+        return when {
+            value == null -> null
+            resultClass.isInstance(value) -> value as V
+            resultClass == String::class -> value?.toString() as V
+            else -> error("Cached item $key has class ${value::class.qualifiedName} but requested ${resultClass.qualifiedName}")
+        }
+    }
 
     override suspend fun <K : Any, V : Any> setObject(namespace: String, key: K, value: V, ttlSeconds: Long, forceInvalidation: Boolean) {
         keyMap(namespace)[key] = MapCacheEntry(value = value, ttlSeconds = ttlSeconds, invalidation = forceInvalidation)
