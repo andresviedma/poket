@@ -6,6 +6,8 @@ import io.github.andresviedma.poket.config.Config
 import io.github.andresviedma.poket.config.ConfigProvider
 import io.github.andresviedma.poket.utils.retry.RetryHandler
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 private val logger = KotlinLogging.logger {}
@@ -46,10 +48,8 @@ internal class ErrorIgnoreCacheSystem(
     }
 
     override suspend fun <K : Any> invalidateObject(namespace: String, key: K) {
-        runOrFail(getConfig().failOnInvalidateError) {
-            retryHandler.run("cacheretry::$type") {
-                target.invalidateObject(namespace, key)
-            }
+        invalidateOrFail {
+            target.invalidateObject(namespace, key)
         }
     }
 
@@ -100,13 +100,13 @@ internal class ErrorIgnoreCacheSystem(
     }
 
     override suspend fun <K1 : Any> invalidateChildren(namespace: String, parentKey: K1) {
-        runOrFail(getConfig().failOnInvalidateError) {
+        invalidateOrFail {
             target.invalidateChildren(namespace, parentKey)
         }
     }
 
     override suspend fun invalidateAll(namespace: String) {
-        runOrFail(getConfig().failOnInvalidateError) {
+        invalidateOrFail {
             target.invalidateAll(namespace)
         }
     }
@@ -129,6 +129,8 @@ internal class ErrorIgnoreCacheSystem(
             block()
         } catch (exception: IllegalStateException) {
             throw exception // illegal state is due to misconfiguration, so it is always thrown
+        } catch (exception: InterruptedException) {
+            throw exception // Coroutine killed, let's always allow that
         } catch (exception: Throwable) {
             if (exceptionOnError == true) {
                 throw exception
@@ -138,6 +140,16 @@ internal class ErrorIgnoreCacheSystem(
                 null
             }
         }
+
+    private suspend fun invalidateOrFail(block: suspend () -> Unit) {
+        withContext(NonCancellable) {
+            runOrFail(getConfig().failOnInvalidateError) {
+                retryHandler.run("cacheretry::$type") {
+                    block()
+                }
+            }
+        }
+    }
 
     private fun getConfig(): io.github.andresviedma.poket.cache.CacheTypeConfig =
         cacheConfig.get().getTypeConfig(type, defaultConfig)
