@@ -144,7 +144,7 @@ internal class ErrorIgnoreCacheSystem(
     private suspend fun invalidateOrFail(block: suspend () -> Unit) {
         withContext(NonCancellable) {
             runOrFail(getConfig().failOnInvalidateError) {
-                retryHandler.run("cacheretry::$type") {
+                retryHandler.run("cacheretry.$type") {
                     block()
                 }
             }
