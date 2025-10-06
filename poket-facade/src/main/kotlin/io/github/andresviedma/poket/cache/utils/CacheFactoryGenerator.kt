@@ -25,6 +25,7 @@ fun createCacheFactoryWithSystem(
     baseMutexConfig: MutexTypeConfig? = null,
     retryPolicyConfig: RetryPolicyConfig? = null,
     configProvider: ConfigProvider? = null,
+    additionalCacheSystems: Set<CacheSystem> = emptySet(),
 ): ObjectCacheFactory {
     val config = configProvider
         ?: configWith(
@@ -42,7 +43,7 @@ fun createCacheFactoryWithSystem(
             configProvider = config,
         ),
         cacheSystemProvider = CacheSystemProvider(
-            registeredSystems = setOf(cacheSystem),
+            registeredSystems = additionalCacheSystems + cacheSystem,
             cacheMetrics = CacheMetrics(),
             configProvider = config,
             retryHandler = RetryHandler(config),
