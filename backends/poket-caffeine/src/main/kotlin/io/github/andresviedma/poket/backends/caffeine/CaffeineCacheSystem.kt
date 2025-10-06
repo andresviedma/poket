@@ -44,6 +44,10 @@ class CaffeineCacheSystem : CacheSystem {
         cacheOrNull(namespace)?.invalidateAll(keys)
     }
 
+    override suspend fun invalidateAll(namespace: String) {
+        cacheOrNull(namespace)?.invalidateAll()
+    }
+
     private fun cacheOrNull(namespace: String): Cache<Any, Any>? =
         cacheMap[namespace]
 
