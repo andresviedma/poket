@@ -2,7 +2,7 @@
 
 # Core
 kotlin = "2.0.21"
-kotlinx-coroutines = "1.8.1"
+kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.6.2"
 slf4j = "2.0.17"
 trekkie = "1.0.0"
@@ -48,7 +48,7 @@ koin-core = { module = "io.insert-koin:koin-core" }
 redisson = { module = "org.redisson:redisson", version = "3.50.0" }
 
 # Lettuce (Redis)
-lettuce = { module = "io.lettuce:lettuce-core", version = "6.7.1.RELEASE" }
+lettuce = { module = "io.lettuce:lettuce-core", version = "7.2.1.RELEASE" }
 
 # Caffine memory cache
 caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2" }
