@@ -6,8 +6,8 @@ import io.github.andresviedma.poket.mutex.DistributedMutex
 import io.github.andresviedma.poket.mutex.DistributedMutexFactory
 import io.github.andresviedma.poket.support.async.PoketAsyncRunnerProvider
 import io.github.andresviedma.poket.support.serialization.PoketSerializer
-import kotlinx.datetime.Clock
 import kotlin.reflect.KClass
+import kotlin.time.Clock
 
 class ObjectCache<K : Any, V : Any>(
     mutexFactory: DistributedMutexFactory,

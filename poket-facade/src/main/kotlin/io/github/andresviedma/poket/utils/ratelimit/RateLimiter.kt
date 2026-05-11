@@ -10,9 +10,9 @@ import io.github.andresviedma.poket.mutex.MutexTypeConfig
 import io.github.andresviedma.poket.support.SystemProvider
 import io.github.andresviedma.poket.support.metrics.incrementCounter
 import io.micrometer.core.instrument.MeterRegistry
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 class RateLimiterFactory(
     private val configProvider: ConfigProvider,

@@ -1,8 +1,8 @@
 package io.github.andresviedma.poket.testutils
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
 import kotlin.time.Duration
+import kotlin.time.Instant
 
 class ControlledClock(initialTime: Instant = Clock.System.now()) : Clock {
     private var time: Instant = initialTime

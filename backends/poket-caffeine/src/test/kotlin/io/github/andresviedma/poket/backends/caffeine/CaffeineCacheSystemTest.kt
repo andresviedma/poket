@@ -7,7 +7,7 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 class CaffeineCacheSystemTest : FeatureSpec({
     isolationMode = IsolationMode.InstancePerTest

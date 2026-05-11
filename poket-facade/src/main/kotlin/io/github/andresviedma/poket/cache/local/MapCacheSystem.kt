@@ -20,7 +20,7 @@ open class MapCacheSystem : CacheSystem {
         return when {
             value == null -> null
             resultClass.isInstance(value) -> value as V
-            resultClass == String::class -> value?.toString() as V
+            resultClass == String::class -> value.toString() as V
             else -> error("Cached item $key has class ${value::class.qualifiedName} but requested ${resultClass.qualifiedName}")
         }
     }

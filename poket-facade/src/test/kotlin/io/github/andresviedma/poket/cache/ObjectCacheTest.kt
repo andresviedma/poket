@@ -20,19 +20,20 @@ import io.github.andresviedma.poket.utils.retry.RetryProfileConfig
 import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.Where
+import io.github.andresviedma.trekkie.row
 import io.github.andresviedma.trekkie.then
 import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
-import io.kotest.data.row
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Clock
 import kotlin.reflect.KClass
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class ObjectCacheTest : FeatureSpec({
@@ -707,12 +708,12 @@ class ObjectCacheTest : FeatureSpec({
                 awaitAll(
                     async {
                         objectCache.getOrPut("my-key") {
-                            delay(100)
+                            delay(100.milliseconds)
                             "my-value-1"
                         }
                     },
                     async {
-                        delay(10)
+                        delay(10.milliseconds)
                         objectCache.getOrPut("my-key") { "my-value-2" }
                     }
                 )
@@ -904,10 +905,10 @@ class ObjectCacheTest : FeatureSpec({
             When {
                 awaitAll(
                     async {
-                        objectCache.getOrPut("my-key") { delay(100); generationCount++; "my-value" }
+                        objectCache.getOrPut("my-key") { delay(100.milliseconds); generationCount++; "my-value" }
                     },
                     async {
-                        objectCache.getOrPut("my-key") { delay(100); generationCount++; "my-value" }
+                        objectCache.getOrPut("my-key") { delay(100.milliseconds); generationCount++; "my-value" }
                     }
                 ).also { waitForAsyncJobs() }
             } then {

@@ -1,7 +1,6 @@
 dependencies {
     implementation(libs.kotlin.reflect)
     implementation(libs.kotlinx.coroutines.core)
-    api(libs.kotlinx.datetime)
 
     api(libs.micrometer.core)
     implementation(libs.kotlin.logging)

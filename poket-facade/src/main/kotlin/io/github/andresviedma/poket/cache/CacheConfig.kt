@@ -1,7 +1,7 @@
 package io.github.andresviedma.poket.cache
 
-import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Instant
 
 data class CacheConfig(
     val type: Map<String, CacheTypeConfig> = emptyMap(),

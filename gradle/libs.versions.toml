@@ -1,9 +1,8 @@
 [versions]
 
 # Core
-kotlin = "2.0.21"
-kotlinx-coroutines = "1.10.2"
-kotlinx-datetime = "0.6.2"
+kotlin = "2.3.21"
+kotlinx-coroutines = "1.11.0"
 slf4j = "2.0.17"
 trekkie = "1.0.0"
 
@@ -15,16 +14,15 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core" }
 kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
-micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version = "1.12.3" }
+micrometer-bom = { group = "io.micrometer", name = "micrometer-bom", version = "1.16.5" }
 micrometer-core = { group = "io.micrometer", name = "micrometer-core" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
-kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.7" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version = "7.0.14" }
 
 # Jackson
-jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.19.2" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version = "2.21.3" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 jackson-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
 jackson-jsr310 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datatype-jsr310" }
@@ -32,7 +30,7 @@ jackson-jdk8 = { group = "com.fasterxml.jackson.datatype", name = "jackson-datat
 jackson-module-paranamer = { group = "com.fasterxml.jackson.module", name = "jackson-module-paranamer" }
 
 # Snake YAML
-snakeyaml = { module = "org.yaml:snakeyaml", version = "2.4" }
+snakeyaml = { module = "org.yaml:snakeyaml", version = "2.6" }
 
 # Guice
 guice-bom = { module = "com.google.inject:guice-bom", version = "7.0.0" }
@@ -41,17 +39,17 @@ guice-assistedinject = { module = "com.google.inject.extensions:guice-assistedin
 guice-kotlin = { module = "dev.misfitlabs.kotlinguice4:kotlin-guice", version = "3.0.0" }
 
 # Koin
-koin-bom = { module = "io.insert-koin:koin-bom", version = "4.0.3" }
+koin-bom = { module = "io.insert-koin:koin-bom", version = "4.2.1" }
 koin-core = { module = "io.insert-koin:koin-core" }
 
 # Redisson (Redis library)
-redisson = { module = "org.redisson:redisson", version = "3.50.0" }
+redisson = { module = "org.redisson:redisson", version = "4.3.1" }
 
 # Lettuce (Redis)
-lettuce = { module = "io.lettuce:lettuce-core", version = "7.2.1.RELEASE" }
+lettuce = { module = "io.lettuce:lettuce-core", version = "7.5.1.RELEASE" }
 
 # Caffine memory cache
-caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.2" }
+caffeine = { module = "com.github.ben-manes.caffeine:caffeine", version = "3.2.4" }
 
 # Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -62,9 +60,9 @@ trekkie-mockk = { module = "io.github.andresviedma.trekkie:trekkie-mockk", versi
 kotest-bom = { group = "io.kotest", name = "kotest-bom", version = "5.9.1" }
 kotest-junit5 = { group = "io.kotest", name = "kotest-runner-junit5" }
 kotest-assertions = { group = "io.kotest", name = "kotest-assertions-core" }
-mockk = { module = "io.mockk:mockk", version = "1.14.5" }
+mockk = { module = "io.mockk:mockk", version = "1.14.9" }
 
-testcontainers-bom = "org.testcontainers:testcontainers-bom:1.21.3"
+testcontainers-bom = "org.testcontainers:testcontainers-bom:2.0.5"
 testcontainers = { group = "org.testcontainers", name = "testcontainers" }
 
 [plugins]
@@ -72,5 +70,5 @@ testcontainers = { group = "org.testcontainers", name = "testcontainers" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 # Publish
-publishOnCentral = { id = "org.danilopianini.publish-on-central", version = "9.0.7" }
-dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
+publishOnCentral = { id = "org.danilopianini.publish-on-central", version = "9.2.3" }
+dokka = { id = "org.jetbrains.dokka", version = "2.2.0" }

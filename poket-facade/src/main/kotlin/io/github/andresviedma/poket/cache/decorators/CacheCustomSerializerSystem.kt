@@ -50,5 +50,5 @@ class CacheCustomSerializerSystem(
 
     @Suppress("UNCHECKED_CAST")
     private fun <V : Any> String.deserialized(resultClass: KClass<V>): V =
-        customSerializer!!.deserialize(this, resultClass) ?: (this as V)
+        customSerializer!!.deserialize(this, resultClass)
 }

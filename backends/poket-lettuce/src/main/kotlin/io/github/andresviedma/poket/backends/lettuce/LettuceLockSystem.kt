@@ -5,8 +5,8 @@ import io.github.andresviedma.poket.mutex.LockSystem
 import io.lettuce.core.ExperimentalLettuceCoroutinesApi
 import io.lettuce.core.SetArgs
 import kotlinx.coroutines.delay
-import kotlinx.datetime.Clock
 import java.util.UUID
+import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration

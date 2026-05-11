@@ -7,9 +7,9 @@ import io.github.andresviedma.trekkie.Given
 import io.github.andresviedma.trekkie.When
 import io.github.andresviedma.trekkie.then
 import io.kotest.matchers.shouldBe
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.reflect.KClass
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 class RedissonCacheSystemTest : BaseSpec({
 

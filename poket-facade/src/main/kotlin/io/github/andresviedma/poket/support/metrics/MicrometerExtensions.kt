@@ -3,7 +3,7 @@ package io.github.andresviedma.poket.support.metrics
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlin.time.toJavaDuration
 
 /**

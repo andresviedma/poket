@@ -15,8 +15,8 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.shouldBe
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
-import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Instant
 
 class RateLimiterTest : FeatureSpec({
     // Independent mocks per scenario

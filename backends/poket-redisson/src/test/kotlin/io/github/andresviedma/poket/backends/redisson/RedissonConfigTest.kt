@@ -7,6 +7,7 @@ import io.github.andresviedma.trekkie.thenExceptionThrown
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
+import org.yaml.snakeyaml.constructor.ConstructorException
 
 class RedissonConfigTest : FeatureSpec({
 
@@ -80,7 +81,9 @@ class RedissonConfigTest : FeatureSpec({
                         )
                     )
                 ).redissonConfig
-            }.thenExceptionThrown(UnrecognizedPropertyException::class)
+            }.thenExceptionThrown(ConstructorException::class) {
+                println(it::class.qualifiedName)
+            }
         }
     }
 })

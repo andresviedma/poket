@@ -2,7 +2,7 @@ package io.github.andresviedma.poket.support
 
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 object SystemProvider {
     private var injectedClock: Clock? = null
